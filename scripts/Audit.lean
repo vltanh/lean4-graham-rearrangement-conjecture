@@ -37,7 +37,7 @@ import all GrahamRearrangement.Rearrangement.Lemma56
 import all GrahamRearrangement.Rearrangement.Parameters
 import all GrahamRearrangement.Rearrangement.Repair
 import all GrahamRearrangement.Rearrangement.Reversal
-import Solution
+import all Solution
 
 /-!
 # Axiom and dependency audit

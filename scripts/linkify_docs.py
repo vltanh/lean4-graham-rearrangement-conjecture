@@ -55,15 +55,15 @@ def module_file(module):
 
 def load_locations():
     """Each declaration's module and the line of its name, read from the `.ilean` files."""
-    locations = {}
+    locations, challenge = {}, {}
     for ilean in sorted(BUILD.rglob('*.ilean')):
         data = json.loads(ilean.read_text(encoding='utf-8'))
-        # `Solution` restates the theorems of `Challenge`; link them to their statements.
-        if data['module'] == 'Solution':
-            continue
+        # `Solution` restates the theorems of `Challenge`; those link to the challenge.
+        target = challenge if data['module'] == 'Challenge' else locations
         for name, ranges in data.get('decls', {}).items():
             # `ranges` holds the declaration's range, then its name's; lines count from 0.
-            locations[name] = (data['module'], ranges[4] + 1)
+            target[name] = (data['module'], ranges[4] + 1)
+    locations.update(challenge)
     if not locations:
         sys.exit('no .ilean files under %s; run `lake build` first' % BUILD)
     return locations

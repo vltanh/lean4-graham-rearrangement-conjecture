@@ -4,14 +4,21 @@ public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.Analysis.SpecialFunctions.Sqrt
 public import Mathlib.Data.ZMod.Defs
-import GrahamRearrangement
+public import GrahamRearrangement.Introduction
+public import GrahamRearrangement.Preliminaries
+public import GrahamRearrangement.BooleanSlice
+public import GrahamRearrangement.Combinatorial
+public import GrahamRearrangement.Rearrangement
+public import GrahamRearrangement.Main
 
 /-!
-# Proofs of the results of `Challenge.lean`
+# Graham's rearrangement conjecture
 
-Each theorem restates the corresponding theorem of `Challenge.lean` verbatim and proves it from
-the formalization in `GrahamRearrangement/`, translating between the paper's vocabulary used
-there and the Mathlib-only statements of the challenge.
+The formalization of H. T. Pham and L. Sauermann, *On Graham's rearrangement conjecture*
+(arXiv:2602.15797v1). This module imports the whole development in `GrahamRearrangement/`, and
+proves the three theorems of `Challenge.lean` from it: each restates the corresponding theorem
+of `Challenge.lean` verbatim, and translates between the paper's vocabulary used in the
+development and the Mathlib-only statements of the challenge.
 -/
 
 @[expose] public section

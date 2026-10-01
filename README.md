@@ -30,7 +30,7 @@ work each result depends on. The main findings are summarized below.
 ## The main results
 
 The paper's three main results are stated in [`Challenge.lean`](Challenge.lean) with Mathlib's vocabulary only,
-and proved in [`Solution.lean`](Solution.lean) from the formalization:
+and proved from the formalization in [`Solution.lean`](Solution.lean):
 
 - [`PhamSauermann.theorem_1_2`](Challenge.lean#L45) (Theorem 1.2): for every `0 < α < 1` there is `C > 0` such that,
   for every prime `p`, every `S ⊆ ℤ_p ∖ {0}` with `C ≤ |S| ≤ p^{1-α}` has a list `l` of its
@@ -180,8 +180,9 @@ The hypergeometric tail bounds cited from Janson–Łuczak–Ruciński are prove
 [`GrahamRearrangement/External/Hypergeometric/`](GrahamRearrangement/External/README.md): sampling without replacement (`Sampling.lean`),
 Hoeffding's inequality (`Hoeffding.lean`) and the two tail bounds (`Tails.lean`).
 
-[`Challenge.lean`](Challenge.lean) and [`Solution.lean`](Solution.lean) state and prove Theorems 1.2, 1.3 and Corollary 1.4 in
-Mathlib's vocabulary, for Palomar; [`scripts/`](scripts) holds the audit and the link checker.
+[`Challenge.lean`](Challenge.lean) states Theorems 1.2, 1.3 and Corollary 1.4 in Mathlib's vocabulary, for Palomar,
+and [`Solution.lean`](Solution.lean) imports the whole development and proves them.
+[`scripts/`](scripts) holds the audit and the link checker.
 
 ## GitHub configuration
 
