@@ -47,8 +47,8 @@ Status of the formalization:
 
 | Result | Where the paper uses it | Source | Theorem in `External/` |
 | --- | --- | --- | --- |
-| Lower tail of the hypergeometric distribution: if `|G| ≥ |U|/4`, a uniformly random `k`-subset of `U` meets `G` in at least `k/8` elements, except with probability `e^{-k/32}` | Lemma 3.1 | Janson–Łuczak–Ruciński, *Random Graphs*, Thm 2.10 and Eq. (2.6) | [`External.hypergeom_quarter_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L222) |
-| The same with `|G| ≥ 3|U|/4`: at least `k/2` elements, except with probability `e^{-k/24}` | Lemma 3.3 | same | [`External.hypergeom_three_quarters_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L233) |
+| Lower tail of the hypergeometric distribution: if `\|G\| ≥ \|U\|/4`, a uniformly random `k`-subset of `U` meets `G` in at least `k/8` elements, except with probability `e^{-k/32}` | Lemma 3.1 | Janson–Łuczak–Ruciński, *Random Graphs*, Thm 2.10 and Eq. (2.6) | [`External.hypergeom_quarter_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L222) |
+| The same with `\|G\| ≥ 3\|U\|/4`: at least `k/2` elements, except with probability `e^{-k/24}` | Lemma 3.3 | same | [`External.hypergeom_three_quarters_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L233) |
 
 Both are deduced from Hoeffding's inequality for sampling without replacement,
 [`uniformSubset_hoeffding_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L66), which is proved from Mathlib's Hoeffding lemma
@@ -78,7 +78,7 @@ give context and are not used in the proofs.
 
 | Cited result | Where | Verdict |
 | --- | --- | --- |
-| Janson–Łuczak–Ruciński, Thm 2.10 and Eq. (2.6) | Lemmas 3.1, 3.3 | Correct. The paper conditions on the part containing a fixed element, so that the rest of that part is a uniformly random subset of `S ∖ {x'}` of a known size `k ≥ |S|/(2m)`, and applies the lower tail with the densities `1/4` and `3/4`; both exponents check out. |
+| Janson–Łuczak–Ruciński, Thm 2.10 and Eq. (2.6) | Lemmas 3.1, 3.3 | Correct. The paper conditions on the part containing a fixed element, so that the rest of that part is a uniformly random subset of `S ∖ {x'}` of a known size `k ≥ \|S\|/(2m)`, and applies the lower tail with the densities `1/4` and `3/4`; both exponents check out. |
 | Cauchy–Davenport (uncited) | Fact 2.4 | Correct for nonempty sets, but stated for arbitrary sets; see E2. |
 | Bedert–Kravitz and Bedert–Bucić–Kravitz–Montgomery–Müyesser | §1 | Used only to deduce Graham's conjecture for all large primes from Theorem 1.2. That deduction is not part of the formalization (Section 8). |
 
@@ -170,10 +170,10 @@ each proof uses:
 
 | Where | Standing assumption used | In the formalization |
 | --- | --- | --- |
-| Lemmas 3.1, 3.3 | the range of `m` (for the union bound `|S| e^{−|S|/(64m)} ≤ |S|^{−9}`) | [`lemma3_1`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L559) and [`lemma3_3`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L613) assume it |
-| Lemma 3.4 | `|S| ≥ 10^7`, for `1 + k(9|S|/10 − 1) ≥ 4k|S|/5` | [`lemma3_4`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L1049) assumes `10^7 ≤ |S|` |
+| Lemmas 3.1, 3.3 | the range of `m` (for the union bound `\|S\| e^{−\|S\|/(64m)} ≤ \|S\|^{−9}`) | [`lemma3_1`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L559) and [`lemma3_3`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L613) assume it |
+| Lemma 3.4 | `\|S\| ≥ 10^7`, for `1 + k(9\|S\|/10 − 1) ≥ 4k\|S\|/5` | [`lemma3_4`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L1049) assumes `10^7 ≤ \|S\|` |
 | Lemma 3.5 | `S` nonempty, `m ≥ 1` | [`lemma3_5`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L700) assumes both |
-| Lemmas 5.1–5.6 | `0 < α < 1/2`, `D = ⌈3/α⌉`, the conditions on `C_α` of §5, and `C_α ≤ |S| ≤ p^{1−α}` | packaged as [`Section5Parameters`](GrahamRearrangement/Rearrangement/Parameters.lean#L40) and [`Section5Regime`](GrahamRearrangement/Rearrangement/Parameters.lean#L114) |
+| Lemmas 5.1–5.6 | `0 < α < 1/2`, `D = ⌈3/α⌉`, the conditions on `C_α` of §5, and `C_α ≤ \|S\| ≤ p^{1−α}` | packaged as [`Section5Parameters`](GrahamRearrangement/Rearrangement/Parameters.lean#L40) and [`Section5Regime`](GrahamRearrangement/Rearrangement/Parameters.lean#L114) |
 
 ## 5. Redundant hypotheses
 
@@ -185,13 +185,13 @@ Theorems 1.2, 1.3 and Corollary 1.4 in [`Challenge.lean`](Challenge.lean) are ex
 | --- | --- | --- |
 | Fact 2.3 | `p` prime: the fact holds in `ℤ_n` for every `n ≥ 1` | [`fact2_3`](GrahamRearrangement/Preliminaries.lean#L304) |
 | Fact 2.5 | `p` prime | [`fact2_5`](GrahamRearrangement/Preliminaries.lean#L456) |
-| (3.4) | `|S| ≥ 2` | [`equation_3_4`](GrahamRearrangement/BooleanSlice/Fourier.lean#L501) |
+| (3.4) | `\|S\| ≥ 2` | [`equation_3_4`](GrahamRearrangement/BooleanSlice/Fourier.lean#L501) |
 | Lemma 3.1 | `t ≥ 1`: for `t = 0` the event `ψ(χ) < 0` is empty | [`lemma3_1`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L559) |
 | Lemma 3.2 | `χ ∈ D_t`, which the paper needs only to define `y_χ` (E6) | [`lemma3_2`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L314) |
 | Lemma 3.6 | `t ≥ 1` | [`lemma3_6`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L899) |
 | Lemma 3.7 | `δ > 0` | [`lemma3_7`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L1002) |
-| Lemma 4.3 | that the constant is the `C_k` of Corollary 4.2: every `C > 0` works, and every `n ≥ 2` in place of `|S|` | [`lemma4_3`](GrahamRearrangement/Combinatorial/Lemma43.lean#L127) (keeps `p` prime, of which the proof uses only `p > 0`) |
-| Lemma 5.5 | `b' ≤ |S| − 2`: `b ≥ 2` and `b' − b = 5D` suffice | [`lemma5_5`](GrahamRearrangement/Rearrangement/Lemma55.lean#L630) |
+| Lemma 4.3 | that the constant is the `C_k` of Corollary 4.2: every `C > 0` works, and every `n ≥ 2` in place of `\|S\|` | [`lemma4_3`](GrahamRearrangement/Combinatorial/Lemma43.lean#L127) (keeps `p` prime, of which the proof uses only `p > 0`) |
+| Lemma 5.5 | `b' ≤ \|S\| − 2`: `b ≥ 2` and `b' − b = 5D` suffice | [`lemma5_5`](GrahamRearrangement/Rearrangement/Lemma55.lean#L630) |
 
 In Lemma 3.2, `y_χ` is defined (as [`centerAt`](GrahamRearrangement/BooleanSlice/Definitions.lean#L520)) for every `χ`, and the bound holds for that
 centre whether or not `χ ∈ D_t`. Section 5 applies Lemma 4.3 to the ground set
