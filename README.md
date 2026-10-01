@@ -67,6 +67,11 @@ lake comparator
 Comparator without it, copy the file with `"enable_nanoda": false` and pass the copy with
 `--config`; Lean's kernel then accepts the solution.
 
+Before submitting, run Palomar's own mechanical verification on the commit to submit: the
+workflow [`palomar_preflight.yml`](.github/workflows/palomar_preflight.yml) (**Actions → Palomar preflight → Run workflow**) calls
+Palomar's verifier at a pinned commit and publishes its report as an artifact. The
+verifier fetches the repository anonymously, so the repository must be public.
+
 ## Audit summary
 
 References are to the paper's numbering; E-numbers refer to [`REPORT.md`](REPORT.md), §3.
