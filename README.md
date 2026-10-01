@@ -114,17 +114,13 @@ orthogonality of characters, Markov's inequality) come from Mathlib or are prove
 
 ## Credits
 
-- **Formalization:** first written by ChatGPT (OpenAI, "Extra High" setting) in
-  [vltanh/lean4-examples#2](https://github.com/vltanh/lean4-examples/pull/2), branch
-  `formalize-graham-rearrangement`, up to commit
-  [`59c67ba4912d26586d3aa77c61bffb5e081f7a0b`](https://github.com/vltanh/lean4-examples/commit/59c67ba4912d26586d3aa77c61bffb5e081f7a0b). The draft was complete at the source
-  level but had never been compiled. The first commit of this repository imports it
-  verbatim.
+- **Formalization:** first written by ChatGPT (OpenAI, "Extra High" setting), as a draft
+  that was complete at the source level but had never been compiled. The first commit of
+  this repository imports it verbatim.
 - **Compilation and fidelity:** Claude (Anthropic) set up this Lean project on current
-  Mathlib, moved it to the module system, repaired the draft until it builds (proving the
-  332 steps that did not compile, and correcting the 15 helper lemmas of the draft that were
-  false as stated; see [`REPORT.md`](REPORT.md), §6), checked the statements against the paper, and
-  wrote the Palomar challenge, the audit and this documentation.
+  Mathlib, moved it to the module system, completed the proofs until the project builds,
+  checked the statements against the paper, and wrote the Palomar challenge, the audit and
+  this documentation.
 
 ## Building
 

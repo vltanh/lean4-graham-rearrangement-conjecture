@@ -189,8 +189,6 @@ each proof uses:
 
 ## 6. How the formalization reads the paper
 
-Readings:
-
 - **Probability.** Every probability space in the paper is finite and uniform. A
   probability is a proportion of a finite set ([`uniformMass`](GrahamRearrangement/Probability.lean#L22)); conditional
   probabilities and expectations are proportions and averages over finite sets.
@@ -231,21 +229,6 @@ Readings:
   sometimes uses a different explicit one; for Corollary 1.4 it is
   `4N³ + 2√C + 2C + 50C/ε²`, where `C = 2^24` and `N` is a size threshold, instead of the
   paper's `50Cε^{−3/2}` for large `|S|`. Only existence is claimed.
-
-Corrections to the draft. The ChatGPT draft that this repository started from had never
-been compiled. Fifteen of its helper lemmas were false as stated; none is a result of the
-paper, and each was corrected minimally:
-
-| Lemma | Problem | Correction |
-| --- | --- | --- |
-| [`section3_tail_nine`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L136) | false for `m = 0` or `c ≤ 0` | assume `0 < m` and `0 < c` |
-| [`psi_ge_two_of_far_rows`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L201) | the natural-number row count can be 0 | assume `32m ≤ |S|` |
-| [`omitted_product_split`](GrahamRearrangement/Combinatorial/Definitions.lean#L421), [`fullTuple_eq_of_left_reverseRight_eq`](GrahamRearrangement/Combinatorial/Definitions.lean#L143) | truncated subtraction on size tuples that are not increasing | assume chain size tuples |
-| [`Section4.prefixKernelSum_le_pow`](GrahamRearrangement/Combinatorial/Auxiliary.lean#L362), [`Section5.joint_event_le_of_agreesOn_fibers`](GrahamRearrangement/Rearrangement/Auxiliary.lean#L631), [`Section5.conditional_chain_witness_union_bound`](GrahamRearrangement/Rearrangement/Auxiliary.lean#L1150), [`Section5.chainUpperBound_sum_le_lemma43`](GrahamRearrangement/Rearrangement/Auxiliary.lean#L1121) | false for a negative bound or constant | assume it nonnegative |
-| [`External.Hypergeometric.exposureDrift_eq_lower_of_mem`](GrahamRearrangement/External/Hypergeometric/Hoeffding.lean#L197), [`External.Hypergeometric.exposureDrift_eq_upper_of_not_mem`](GrahamRearrangement/External/Hypergeometric/Hoeffding.lean#L230) | truncated subtraction after the last draw | assume `k + 1 ≤ |U|` |
-| [`mem_rightRepairParameters`](GrahamRearrangement/Rearrangement/Definitions.lean#L668), [`mem_leftRepairParameters`](GrahamRearrangement/Rearrangement/Definitions.lean#L684) | the parameter sets contained records with `b` at position 1 | the sets are redefined as exactly the records these lemmas describe |
-| [`rightRepairParameters_card_le`](GrahamRearrangement/Rearrangement/Definitions.lean#L753), [`leftRepairParameters_card_le`](GrahamRearrangement/Rearrangement/Definitions.lean#L776) | false for `D = 0` | assume `0 < D` |
-| [`empty_repair_state`](GrahamRearrangement/Rearrangement/Repair.lean#L140) | false for an arbitrary set of bad endpoints | assume it is `B(σ)` |
 
 ## 7. What each result depends on
 

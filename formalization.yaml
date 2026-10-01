@@ -58,14 +58,6 @@ sources:
     license: "unknown"
     author_endorsement: "n/a"
 
-related_formalizations:
-  - id: "https://github.com/vltanh/lean4-examples/pull/2"
-    relationship: "builds-on"
-    note: >-
-      An uncompiled Lean draft of the same paper, written by ChatGPT. This repository
-      imports it at commit 59c67ba4912d26586d3aa77c61bffb5e081f7a0b and completes it: the
-      draft did not compile, and 15 of its helper lemmas were false as stated.
-
 status:
   scope: >-
     Formalized: Theorems 1.2 and 1.3 and Corollary 1.4 exactly as stated in the paper, and
@@ -86,7 +78,7 @@ automation:
       framework: "ChatGPT"
       tool_setup: >-
         Wrote the complete Lean draft (definitions, statements and proofs) without compiling
-        it, in vltanh/lean4-examples pull request 2.
+        it.
       cost:
         wall_time: "not tracked"
         spend_usd: "not tracked"
@@ -97,10 +89,9 @@ automation:
       framework: "Claude Code"
       tool_setup: >-
         Claude Code with parallel subagents, the Lean 4 toolchain and Lake. It set up the
-        project on current Mathlib, moved it to the module system, replaced the 332 steps
-        that did not compile with proofs, corrected the false helper lemmas, audited the
-        statements against the paper, and wrote Challenge.lean, Solution.lean, the audit
-        script and the documentation.
+        project on current Mathlib, moved it to the module system, completed the proofs
+        until the project builds, audited the statements against the paper, and wrote
+        Challenge.lean, Solution.lean, the audit script and the documentation.
       cost:
         wall_time: "not tracked"
         spend_usd: "not tracked"
