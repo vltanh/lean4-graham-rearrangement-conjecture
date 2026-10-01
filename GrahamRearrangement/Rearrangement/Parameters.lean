@@ -65,7 +65,38 @@ structure Section5Parameters (α : ℝ) where
 theorem exists_section5Parameters {α : ℝ}
     (hα0 : 0 < α) (hαh : α < 1 / 2) :
     ∃ P : Section5Parameters α, True := by
-  sorry
+  let D := section5D α
+  have hD7 : 7 ≤ D := section5D_ge_seven hα0 hαh
+  have hK : 0 ≤ 4 * max (chainConstant D) (chainConstant 1) :=
+    mul_nonneg (by norm_num) (le_max_of_le_left (chainConstant_pos D).le)
+  obtain ⟨N, -, hNasym⟩ :=
+    External.exists_sqrt_log_power_threshold
+      (α := α) (K := 4 * max (chainConstant D) (chainConstant 1)) hα0 hαh hK
+  let A : ℝ := ((10 ^ 4 : ℝ) * (2 : ℝ) ^ (40 * D)) ^ (1 / α)
+  let B : ℝ := (D + 1 : ℝ) * (2 : ℝ) ^ D * (D : ℝ) ^ (14 * D ^ 2)
+  let Cα : ℝ := max A (max B (max (50 * D : ℝ) N))
+  have hA : 0 < A := by positivity
+  have hCA : A ≤ Cα := le_max_left _ _
+  have hCB : B ≤ Cα := le_trans (le_max_left _ _) (le_max_right _ _)
+  have hC50 : (50 * D : ℝ) ≤ Cα :=
+    le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) (le_max_right _ _)
+  have hCN : (N : ℝ) ≤ Cα :=
+    le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) (le_max_right _ _)
+  obtain ⟨hB100, h10040⟩ := External.section5_power_inequalities D hD7
+  refine ⟨{
+    D := D
+    D_eq := rfl
+    Cα := Cα
+    Cα_pos := lt_of_lt_of_le hA hCA
+    Cα_first := hCA
+    Cα_second := hCB
+    Cα_fiftyD := hC50
+    second_ge_100 := hB100
+    hundred_ge_40 := h10040
+    asymptotic := ?_ }, trivial⟩
+  intro n hn
+  apply hNasym n
+  exact_mod_cast le_trans hCN hn
 
 theorem section5Parameters_D_pos {α : ℝ}
     (hα0 : 0 < α) (hαh : α < 1 / 2)
@@ -121,7 +152,26 @@ theorem section5_chainConstant_bound {α : ℝ}
     4 * chainConstant k * Real.sqrt (Real.log (S.card : ℝ)) /
         Real.sqrt (S.card : ℝ) ≤
       (S.card : ℝ) ^ (-α) := by
-  sorry
+  have hC : chainConstant k ≤ max (chainConstant P.D) (chainConstant 1) := by
+    rcases hk with rfl | rfl
+    · exact le_max_right _ _
+    · exact le_max_left _ _
+  have hbase := P.asymptotic S.card hreg.2.1
+  have hfactor :
+      0 ≤ Real.sqrt (Real.log (S.card : ℝ)) / Real.sqrt (S.card : ℝ) := by
+    positivity
+  calc 4 * chainConstant k * Real.sqrt (Real.log (S.card : ℝ)) /
+          Real.sqrt (S.card : ℝ)
+        = 4 * chainConstant k *
+            (Real.sqrt (Real.log (S.card : ℝ)) / Real.sqrt (S.card : ℝ)) := by
+          ring
+    _ ≤ 4 * max (chainConstant P.D) (chainConstant 1) *
+            (Real.sqrt (Real.log (S.card : ℝ)) / Real.sqrt (S.card : ℝ)) := by
+          gcongr
+    _ = 4 * max (chainConstant P.D) (chainConstant 1) *
+            Real.sqrt (Real.log (S.card : ℝ)) / Real.sqrt (S.card : ℝ) := by
+          ring
+    _ ≤ (S.card : ℝ) ^ (-α) := hbase
 
 /-- The first lower bound on Cα in the power form actually used by union bounds. -/
 theorem section5_Calpha_power {α : ℝ}

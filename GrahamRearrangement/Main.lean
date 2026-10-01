@@ -57,7 +57,32 @@ ordering. -/
 theorem theorem12_of_section5_bounds
     (hbad : Section5BadEventBoundsStatement) :
     Theorem12Statement := by
-  sorry
+  intro α hα0 hα1
+  -- The paper's reduction: the statement for `β = min α (1/4) < 1/2` implies
+  -- the statement for `α`, since `p ^ (1 - α) ≤ p ^ (1 - β)`.
+  set β : ℝ := min α (1 / 4)
+  have hβ0 : 0 < β := lt_min hα0 (by norm_num)
+  have hβh : β < 1 / 2 := lt_of_le_of_lt (min_le_right α (1 / 4 : ℝ)) (by norm_num)
+  have hβα : β ≤ α := min_le_left α (1 / 4 : ℝ)
+  obtain ⟨Cβ, hCβ, hbounds⟩ := hbad β hβ0 hβh
+  refine ⟨Cβ, hCβ, ?_⟩
+  intro p hp S hzero hC hsize
+  have : NeZero p := ⟨hp.ne_zero⟩
+  have hpone : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.one_le
+  have hpow : (p : ℝ) ^ (1 - α) ≤ (p : ℝ) ^ (1 - β) :=
+    External.rpow_exponent_mono_of_one_le hpone (by linarith)
+  have hb := hbounds p hp S hzero hC (le_trans hsize hpow)
+  have hDpos : 0 < Nat.ceil (3 / β) := section5D_pos hβ0 hβh
+  obtain ⟨σ, hσmem, hgood⟩ :=
+    exists_section5_good_ordering (D := Nat.ceil (3 / β)) S hb.1 hb.2.1 hb.2.2
+  have hσ : IsIndexedOrdering S σ := by
+    simpa only [indexedOrderings, Finset.mem_filter, Finset.mem_univ, true_and]
+      using hσmem
+  obtain ⟨π, -, hnozero⟩ := section5_local_repair hDpos σ hgood
+  have hσ' : IsIndexedOrdering S (applyPositionPerm σ π) :=
+    applyPositionPerm_isIndexedOrdering hσ π
+  exact ⟨indexedToList (applyPositionPerm σ π),
+    (valid_iff_noZeroPaperSegments hzero hσ').2 hnozero⟩
 
 /-- Theorem 1.2 of Pham--Sauermann. -/
 theorem theorem12 : Theorem12Statement :=

@@ -29,13 +29,31 @@ def reversePermTuple {n D : ℕ}
 theorem reverseTuple_strictMono {n D : ℕ}
     {x : Fin D → Fin n} (hx : StrictMono x) :
     StrictMono (reverseTuple x) := by
-  sorry
+  intro i j hij
+  have hji : reverseIndex D j < reverseIndex D i := by
+    rw [Fin.lt_def, reverseIndex_apply_val, reverseIndex_apply_val]
+    rw [Fin.lt_def] at hij
+    have := i.isLt
+    have := j.isLt
+    omega
+  have hx' := hx hji
+  rw [Fin.lt_def] at hx' ⊢
+  simp only [reverseTuple, reverseIndex_apply_val]
+  have := (x (reverseIndex D i)).isLt
+  omega
 
 theorem reverseTuple_head_to_tail {n D : ℕ}
     (b : Fin n) {x : Fin D → Fin n}
     (hx : x ∈ headTuples b D) :
     reverseTuple x ∈ tailTuples (reverseIndex n b) D := by
-  sorry
+  rcases (Finset.mem_filter.1 hx).2 with ⟨hmono, hrange⟩
+  apply Finset.mem_filter.2
+  refine ⟨Finset.mem_univ _, reverseTuple_strictMono hmono, ?_⟩
+  intro i
+  have h := hrange (reverseIndex D i)
+  simp only [paperPos, reverseTuple, reverseIndex_apply_val] at h ⊢
+  have := b.isLt
+  omega
 
 theorem reverse_indexInterval_image {n : ℕ}
     (a b : Fin n) (hab : a.val ≤ b.val) :
@@ -126,7 +144,10 @@ theorem reverse_gap {n D : ℕ}
     (hgap : paperPos b' - paperPos b = 5 * D) :
     paperPos (reverseIndex n b) -
         paperPos (reverseIndex n b') = 5 * D := by
-  sorry
+  simp only [paperPos, reverseIndex_apply_val] at hgap ⊢
+  have := b.isLt
+  have := b'.isLt
+  omega
 
 theorem lemma56_reversal_subset {p D : ℕ} [NeZero p]
     (S : Finset (ZMod p))
@@ -198,7 +219,18 @@ theorem lemma56_event_empty_at_two {n p D : ℕ}
     (u : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n)) :
     ∀ σ : Fin n → ZMod p, ¬ Lemma56Event σ b b' u πi := by
-  sorry
+  intro σ h
+  rcases h with ⟨x, hx, _π, _hπ, _hz⟩
+  have hmono := (Finset.mem_filter.1 hx).2.1
+  have hrange := (Finset.mem_filter.1 hx).2.2
+  let i0 : Fin D := ⟨0, by omega⟩
+  let i1 : Fin D := ⟨1, by omega⟩
+  have hx0 := hrange i0
+  have hx1 := hrange i1
+  have hlt := hmono (show i0 < i1 by simp [i0, i1, Fin.lt_def])
+  rw [Fin.lt_def] at hlt
+  simp only [paperPos] at hx0 hx1 hb
+  omega
 
 end
 

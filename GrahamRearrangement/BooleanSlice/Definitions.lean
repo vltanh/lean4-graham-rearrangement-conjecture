@@ -49,7 +49,12 @@ theorem balancedPrefix_succ {n m i : ℕ}
     (hm : 0 < m) (hi : i < m) :
     balancedPrefix n m (i + 1) - balancedPrefix n m i =
       balancedBlockSize n m ⟨i,hi⟩ := by
-  sorry
+  unfold balancedPrefix balancedBlockSize
+  dsimp only
+  rw [Nat.add_mul, one_mul]
+  generalize n / m = q
+  generalize n % m = r
+  split_ifs with h <;> omega
 
 theorem balancedPrefix_m {n m : ℕ} (hm : 0 < m) :
     balancedPrefix n m m = n := by
@@ -61,7 +66,12 @@ theorem balancedPrefix_m {n m : ℕ} (hm : 0 < m) :
 theorem balancedPrefix_mono {n m i j : ℕ}
     (hij : i ≤ j) :
     balancedPrefix n m i ≤ balancedPrefix n m j := by
-  sorry
+  unfold balancedPrefix
+  have h1 := Nat.mul_le_mul_right (n / m) hij
+  have h2 := min_le_min_right (n % m) hij
+  generalize n / m = q at *
+  generalize n % m = r at *
+  omega
 
 def balancedBlockIndex (n m j : ℕ) : ℕ :=
   if j < (n % m) * (n / m + 1) then
@@ -74,25 +84,70 @@ theorem balancedBlockIndex_lt
     (n m : ℕ) (hm : 0 < m) (hmn : m ≤ n)
     (j : ℕ) (hj : j < n) :
     balancedBlockIndex n m j < m := by
-  sorry
+  have hq : 0 < n / m := Nat.div_pos hmn hm
+  have hr : n % m < m := Nat.mod_lt n hm
+  have hn : m * (n / m) + n % m = n := Nat.div_add_mod n m
+  unfold balancedBlockIndex
+  set q := n / m with hqdef
+  set r := n % m with hrdef
+  clear_value q r
+  split_ifs with hfirst
+  · have hdiv : j / (q + 1) < r :=
+      (Nat.div_lt_iff_lt_mul (by omega)).2 hfirst
+    omega
+  · have hrq : r * q < m * q := Nat.mul_lt_mul_of_pos_right hr hq
+    have hj2 : j - r * (q + 1) < (m - r) * q := by
+      rw [Nat.sub_mul, mul_add_one]
+      rw [mul_add_one] at hfirst
+      omega
+    have hdiv : (j - r * (q + 1)) / q < m - r :=
+      (Nat.div_lt_iff_lt_mul hq).2 hj2
+    omega
 
 theorem balancedBlockIndex_range
     (n m : ℕ) (hm : 0 < m) (hmn : m ≤ n)
     (j : ℕ) (hj : j < n) :
     balancedPrefix n m (balancedBlockIndex n m j) ≤ j ∧
       j < balancedPrefix n m (balancedBlockIndex n m j + 1) := by
-  sorry
+  have hq : 0 < n / m := Nat.div_pos hmn hm
+  unfold balancedBlockIndex balancedPrefix
+  set q := n / m with hqdef
+  set r := n % m with hrdef
+  clear_value q r
+  split_ifs with hfirst
+  · have hi : j / (q + 1) < r := (Nat.div_lt_iff_lt_mul (by omega)).2 hfirst
+    have hdm := Nat.div_add_mod' j (q + 1)
+    have hmod := Nat.lt_div_mul_add (a := j) (b := q + 1) (by omega)
+    set i := j / (q + 1) with hi_def
+    clear_value i
+    rw [Nat.min_eq_left hi.le, Nat.min_eq_left (by omega : i + 1 ≤ r)]
+    rw [mul_add_one] at hdm hmod
+    rw [add_one_mul]
+    constructor <;> omega
+  · have hge : r * (q + 1) ≤ j := Nat.le_of_not_gt hfirst
+    have hdm := Nat.div_add_mod' (j - r * (q + 1)) q
+    have hmod := Nat.lt_div_mul_add (a := j - r * (q + 1)) hq
+    set t := j - r * (q + 1) with ht_def
+    set d := t / q with hd_def
+    clear_value d t
+    rw [Nat.min_eq_right (by omega : r ≤ r + d),
+      Nat.min_eq_right (by omega : r ≤ r + d + 1)]
+    rw [mul_add_one] at ht_def hge
+    simp only [add_mul, one_mul]
+    constructor <;> omega
 
 def finSegment (n a b : ℕ) (hb : b ≤ n) : Finset (Fin n) :=
   (Finset.Ico a b).attachFin (fun x hx => lt_of_lt_of_le (Finset.mem_Ico.1 hx).2 hb)
 
 theorem card_finSegment (n a b : ℕ) (hb : b ≤ n) :
     (finSegment n a b hb).card = b - a := by
-  sorry
+  unfold finSegment
+  rw [Finset.card_attachFin, Nat.card_Ico]
 
 theorem mem_finSegment {n a b : ℕ} {hb : b ≤ n} {i : Fin n} :
     i ∈ finSegment n a b hb ↔ a ≤ i.val ∧ i.val < b := by
-  sorry
+  unfold finSegment
+  rw [Finset.mem_attachFin, Finset.mem_Ico]
 
 /-- Ordered balanced partitions of `S` into `m` labelled blocks. -/
 def IsBalancedPartition {p m : ℕ} (S : Finset (ZMod p))
@@ -115,10 +170,60 @@ def canonicalBalancedPartition {p m : ℕ} [NeZero p]
       (le_trans (balancedPrefix_mono (show i.val + 1 ≤ m by omega))
         (by rw [balancedPrefix_m hm]))).image (fun j => (e j).1)
 
+/-- Any enumeration of `S`, cut into consecutive balanced segments, gives a
+balanced partition. -/
+theorem isBalancedPartition_image_finSegment {p m : ℕ}
+    (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card)
+    (e : Fin S.card ≃ {x // x ∈ S})
+    (hb : ∀ i : Fin m, balancedPrefix S.card m (i.val + 1) ≤ S.card) :
+    IsBalancedPartition S (fun i : Fin m =>
+      (finSegment S.card (balancedPrefix S.card m i.val)
+        (balancedPrefix S.card m (i.val + 1)) (hb i)).image
+          (fun j => (e j).1)) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro i x hx
+    obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp hx
+    exact (e j).2
+  · intro i j hij
+    rw [Finset.disjoint_left]
+    intro x hxi hxj
+    obtain ⟨a, ha, rfl⟩ := Finset.mem_image.mp hxi
+    obtain ⟨b, hb', hba⟩ := Finset.mem_image.mp hxj
+    have hab : b = a := e.injective (Subtype.ext hba)
+    subst hab
+    have h1 := mem_finSegment.mp ha
+    have h2 := mem_finSegment.mp hb'
+    rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hij) with h | h
+    · have := balancedPrefix_mono (n := S.card) (m := m)
+        (show i.val + 1 ≤ j.val by omega)
+      omega
+    · have := balancedPrefix_mono (n := S.card) (m := m)
+        (show j.val + 1 ≤ i.val by omega)
+      omega
+  · intro x
+    constructor
+    · intro hx
+      obtain ⟨j, hj⟩ := e.surjective ⟨x, hx⟩
+      have hi := balancedBlockIndex_lt S.card m hm hmS j.val j.isLt
+      refine ⟨⟨balancedBlockIndex S.card m j.val, hi⟩, ?_⟩
+      apply Finset.mem_image.mpr
+      refine ⟨j, ?_, by rw [hj]⟩
+      apply mem_finSegment.mpr
+      exact balancedBlockIndex_range S.card m hm hmS j.val j.isLt
+    · rintro ⟨i, hxi⟩
+      obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp hxi
+      exact (e j).2
+  · intro i
+    dsimp only
+    rw [Finset.card_image_of_injective _
+      (fun a b h => e.injective (Subtype.ext h)), card_finSegment]
+    exact balancedPrefix_succ hm i.isLt
+
 theorem canonicalBalancedPartition_spec {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card) :
     IsBalancedPartition S (canonicalBalancedPartition S hm hmS) := by
-  sorry
+  unfold canonicalBalancedPartition
+  exact isBalancedPartition_image_finSegment S hm hmS _ _
 
 /-- The finite sample space of ordered balanced partitions. -/
 def balancedPartitions {p m : ℕ} [NeZero p]
@@ -140,7 +245,10 @@ theorem mem_blockIndex {p m : ℕ} [NeZero p] (S : Finset (ZMod p))
     (P : Fin m → Finset (ZMod p)) (x : ZMod p)
     (hm : 0 < m) (hP : IsBalancedPartition S P) (hx : x ∈ S) :
     x ∈ P (blockIndex S P x) := by
-  sorry
+  classical
+  unfold blockIndex
+  rw [dite_eq_left ⟨hP, hx⟩]
+  exact Classical.choose_spec ((hP.2.2.1 x).1 hx)
 
 theorem blockIndex_eq_of_mem {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p))
@@ -178,7 +286,14 @@ theorem pointBlock_remainder_mem_powerset {p m : ℕ} [NeZero p]
     pointBlock S P x \ {x} ∈
       (S \ {x}).powersetCard
         (balancedBlockSize S.card m i - 1) := by
-  sorry
+  have hxBlock : x ∈ pointBlock S P x := mem_blockIndex S P x hm hP hxS
+  rw [Finset.mem_powersetCard]
+  constructor
+  · intro y hy
+    rw [Finset.mem_sdiff] at hy ⊢
+    exact ⟨hP.1 _ hy.1, hy.2⟩
+  · rw [Finset.sdiff_singleton_eq_erase, Finset.card_erase_of_mem hxBlock,
+      pointBlock_card S hm hP hxS, hi]
 
 /-- Conditional choices of one point from each block. -/
 def blockChoices {p m : ℕ} [NeZero p]
@@ -196,7 +311,8 @@ def choiceSum {p m : ℕ} (X : Fin m → ZMod p) : ZMod p :=
 theorem blockChoices_mem_iff {p m : ℕ} [NeZero p]
     {P : Fin m → Finset (ZMod p)} {X : Fin m → ZMod p} :
     X ∈ blockChoices P ↔ ∀ i, X i ∈ P i := by
-  sorry
+  unfold blockChoices
+  exact Fintype.mem_piFinset
 
 theorem choice_injective_of_partition {p m : ℕ} [NeZero p]
     {S : Finset (ZMod p)}
@@ -244,7 +360,8 @@ def balancedChoiceMultiplicity (n m : ℕ) : ℕ :=
 theorem blockChoices_card {p m : ℕ} [NeZero p]
     (P : Fin m → Finset (ZMod p)) :
     (blockChoices P).card = ∏ i, (P i).card := by
-  sorry
+  unfold blockChoices
+  exact Fintype.card_piFinset _
 
 theorem blockChoices_card_balanced {p m : ℕ} [NeZero p]
     {S : Finset (ZMod p)} {P : Fin m → Finset (ZMod p)}

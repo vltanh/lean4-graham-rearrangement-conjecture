@@ -18,6 +18,22 @@ the two constants used by Pham--Sauermann.
 
 noncomputable section
 
+/-- Monotonicity of finite uniform mass under implication of events. (Proved
+locally, so that this file is self-contained.) -/
+theorem uniformMass_le_of_imp {Ω : Type*} [DecidableEq Ω]
+    (space : Finset Ω) (E F : Ω → Prop)
+    [DecidablePred E] [DecidablePred F]
+    (hEF : ∀ ω, E ω → F ω) :
+    uniformMass space E ≤ uniformMass space F := by
+  unfold uniformMass
+  have hsub : space.filter E ⊆ space.filter F := by
+    intro ω hω
+    rcases Finset.mem_filter.mp hω with ⟨hωs, hωE⟩
+    exact Finset.mem_filter.mpr ⟨hωs, hEF ω hωE⟩
+  have hcard : ((space.filter E).card : ℝ) ≤ ((space.filter F).card : ℝ) := by
+    exact_mod_cast Finset.card_le_card hsub
+  gcongr
+
 theorem withoutReplacementMass_success_to_subset
     {α : Type*} [DecidableEq α]
     (U G : Finset α) (k : ℕ) (hk : k ≤ U.card)
@@ -94,7 +110,13 @@ theorem nat_lt_div_implies_real_lt_div
     {r k q : ℕ} (hq : 0 < q)
     (h : r < k / q) :
     (r : ℝ) < (k : ℝ) / q := by
-  sorry
+  have hqR : (0 : ℝ) < q := by exact_mod_cast hq
+  rw [lt_div_iff₀ hqR]
+  have h1 : (r + 1) * q ≤ k := (Nat.le_div_iff_mul_le hq).mp h
+  have h2 : r * q < k := by
+    have : r * q < (r + 1) * q := Nat.mul_lt_mul_of_pos_right (Nat.lt_succ_self r) hq
+    omega
+  exact_mod_cast h2
 
 /-- The density-1/4 specialization needed in Lemma 3.1. -/
 theorem hypergeom_quarter_lower_tail_proved
@@ -105,7 +127,40 @@ theorem hypergeom_quarter_lower_tail_proved
     uniformMass (U.powersetCard k)
       (fun T => (T ∩ G).card < k / 8) ≤
         Real.exp (-(k : ℝ) / 32) := by
-  sorry
+  by_cases hk0 : k = 0
+  · subst hk0
+    have hzero :
+        uniformMass (U.powersetCard 0)
+          (fun T => (T ∩ G).card < 0 / 8) = 0 := by
+      unfold uniformMass
+      simp
+    rw [hzero]
+    positivity
+  have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+  set d : ℝ := (k : ℝ) / 8 with hd_def
+  have hd : 0 ≤ d := by positivity
+  have hmean := quarter_mean_lower hGU hdensity hkpos hk
+  have hmono :
+      uniformMass (U.powersetCard k)
+          (fun T => (T ∩ G).card < k / 8) ≤
+        uniformMass (U.powersetCard k)
+          (fun T =>
+            ((T ∩ G).card : ℝ) ≤ hypergeomMean U G k - d) := by
+    apply uniformMass_le_of_imp
+    intro T hT
+    have hreal :=
+      nat_lt_div_implies_real_lt_div (q := 8) (by norm_num) hT
+    rw [Nat.cast_ofNat] at hreal
+    linarith
+  have htail := uniformSubset_hoeffding_lower_tail U G k hk d hd
+  rw [ite_eq_right hk0] at htail
+  have hexp : -2 * d ^ 2 / k = -(k : ℝ) / 32 := by
+    rw [hd_def]
+    have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk0
+    field_simp
+    ring
+  rw [hexp] at htail
+  exact hmono.trans htail
 
 /-- The density-3/4 specialization needed in Lemma 3.3.  Hoeffding gives the
 stronger exponent k/8; we weaken it to the paper's k/24. -/
@@ -117,7 +172,44 @@ theorem hypergeom_three_quarters_lower_tail_proved
     uniformMass (U.powersetCard k)
       (fun T => (T ∩ G).card < k / 2) ≤
         Real.exp (-(k : ℝ) / 24) := by
-  sorry
+  by_cases hk0 : k = 0
+  · subst hk0
+    have hzero :
+        uniformMass (U.powersetCard 0)
+          (fun T => (T ∩ G).card < 0 / 2) = 0 := by
+      unfold uniformMass
+      simp
+    rw [hzero]
+    positivity
+  have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+  set d : ℝ := (k : ℝ) / 4 with hd_def
+  have hd : 0 ≤ d := by positivity
+  have hmean := three_quarters_mean_lower hGU hdensity hkpos hk
+  have hmono :
+      uniformMass (U.powersetCard k)
+          (fun T => (T ∩ G).card < k / 2) ≤
+        uniformMass (U.powersetCard k)
+          (fun T =>
+            ((T ∩ G).card : ℝ) ≤ hypergeomMean U G k - d) := by
+    apply uniformMass_le_of_imp
+    intro T hT
+    have hreal :=
+      nat_lt_div_implies_real_lt_div (q := 2) (by norm_num) hT
+    rw [Nat.cast_ofNat] at hreal
+    linarith
+  have htail := uniformSubset_hoeffding_lower_tail U G k hk d hd
+  rw [ite_eq_right hk0] at htail
+  have hstrong : -2 * d ^ 2 / k = -(k : ℝ) / 8 := by
+    rw [hd_def]
+    have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk0
+    field_simp
+    ring
+  rw [hstrong] at htail
+  have hweak : Real.exp (-(k : ℝ) / 8) ≤ Real.exp (-(k : ℝ) / 24) := by
+    apply Real.exp_le_exp.mpr
+    have hkR : 0 < (k : ℝ) := by exact_mod_cast hkpos
+    linarith
+  exact hmono.trans (htail.trans hweak)
 
 end
 
