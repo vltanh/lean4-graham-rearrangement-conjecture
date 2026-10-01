@@ -84,11 +84,9 @@ theorem fixed_interval_sum_mass {p : ℕ} [NeZero p]
   intro σ _
   rw [indexSetSum_indexInterval]
 
-theorem endpoint_cor42_sum_bound {α : ℝ}
-    (hα0 : 0 < α) (hαh : α < 1 / 2)
-    (P : Section5Parameters α)
-    {p : ℕ} (hp : p.Prime)
-    (S : Finset (ZMod p)) (hreg : Section5Regime P p S)
+theorem endpoint_cor42_sum_bound
+    {p : ℕ}
+    (S : Finset (ZMod p))
     (b : Fin S.card) :
     ∑ a ∈ leftEndpointCandidates b,
       ((1 / (p : ℝ) +
@@ -174,7 +172,7 @@ theorem fixed_badEndpoint_mass_le_three {α : ℝ}
         4 * chainConstant 1 *
           Real.sqrt (Real.log (S.card : ℝ)) /
             Real.sqrt (S.card : ℝ) :=
-          endpoint_cor42_sum_bound hα0 hαh P hp S hreg b
+          endpoint_cor42_sum_bound S b
     _ ≤ 3 * (S.card : ℝ) ^ (-α) := by
           have hpBound := section5_card_over_p hα0 hαh hp hreg
           have hC :=

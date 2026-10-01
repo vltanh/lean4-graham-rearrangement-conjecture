@@ -26,13 +26,13 @@ theorem block_character_decay {p : ℕ} (hp : p.Prime)
         (1 / (T.card : ℝ) ^ 2) *
           ∑ x ∈ T, ∑ x' ∈ T,
             zmodNorm (χ * x - χ * x') ^ 2) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   set δ : ℝ :=
     (1 / (T.card : ℝ) ^ 2) *
       ∑ x ∈ T, ∑ x' ∈ T,
         zmodNorm (χ * x - χ * x') ^ 2 with hδdef
   have hsq :=
-    Auxiliary.zmod_character_average_norm_sq T hT χ
+    Auxiliary.zmod_character_average_norm_sq T χ
   -- Fact 2.5 applied to every pair `(x,x')`.
   have hdouble :
       (∑ x ∈ T, ∑ x' ∈ T,
@@ -44,7 +44,7 @@ theorem block_character_decay {p : ℕ} (hp : p.Prime)
       _ ≤ ∑ x ∈ T, ∑ x' ∈ T,
           (1 - 2 * zmodNorm (χ * x - χ * x') ^ 2) := by
             gcongr with x hx x' hx'
-            have h := fact2_5 hp (χ * x - χ * x')
+            have h := fact2_5 (χ * x - χ * x')
             rw [ep_eq_stdAddChar] at h
             exact h
       _ = (T.card : ℝ) ^ 2 -
@@ -97,8 +97,8 @@ theorem zmod_eq_indicator_fourier {p : ℕ} (hp : p.Prime)
     (((if a = 0 then 1 else 0 : ℝ) : ℂ)) =
       (1 / (p : ℂ)) *
         ∑ χ : ZMod p, ZMod.stdAddChar (χ * a) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
-  rw [Auxiliary.zmod_character_orthogonality hp a]
+  let : NeZero p := ⟨hp.ne_zero⟩
+  rw [Auxiliary.zmod_character_orthogonality a]
   by_cases ha : a = 0
   · simp [ha, hp.ne_zero]
   · simp [ha]
@@ -139,7 +139,7 @@ theorem conditional_sum_mass_fourier_eq {p m : ℕ}
             ∏ i : Fin m,
               ((∑ x ∈ P i, ZMod.stdAddChar (χ * x)) /
                 ((P i).card : ℂ)) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   have hcardP :
       (blockChoices P).card = ∏ i : Fin m, (P i).card :=
@@ -195,7 +195,7 @@ theorem conditional_sum_mass_fourier_bound {p m : ℕ}
           ∏ i,
             ‖((∑ x ∈ P i, ZMod.stdAddChar (χ * x)) /
               ((P i).card : ℂ))‖ := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have heq := conditional_sum_mass_fourier_eq hp P hne z
   have hnonneg : 0 ≤ conditionalSumMass P z :=
     uniformMass_nonneg _ _
@@ -244,7 +244,7 @@ theorem balancedPartition_block_nonempty {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card)
     {P : Fin m → Finset (ZMod p)} (hP : IsBalancedPartition S P)
     (i : Fin m) : (P i).Nonempty := by
-  have hb := Section3.balanced_block_size_bounds S hm hmS hP i
+  have hb := Section3.balanced_block_size_bounds S hP i
   have hdiv : 0 < S.card / m := Nat.div_pos hmS hm
   exact Finset.card_pos.mp (lt_of_lt_of_le hdiv hb.1)
 
@@ -256,7 +256,7 @@ theorem conditional_sum_mass_le_exp_psi {p m : ℕ} (hp : p.Prime)
     letI : NeZero p := ⟨hp.ne_zero⟩
     conditionalSumMass P z ≤
       (1 / (p : ℝ)) * ∑ χ : ZMod p, Real.exp (-psi P χ) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hne : ∀ i, (P i).Nonempty :=
     balancedPartition_block_nonempty S hm hmS hP
   have h31 := conditional_sum_mass_fourier_bound hp P hne z
@@ -299,7 +299,7 @@ theorem psi_lower_bound {p m : ℕ} [NeZero p]
   intro i _
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
   have hcard :=
-    Section3.balanced_block_sqrt_two_bound S hS hm4 hP i
+    Section3.balanced_block_sqrt_two_bound S hm4 hP i
   have hcardpos : 0 < ((P i).card : ℝ) := by
     exact_mod_cast (balancedPartition_block_nonempty S hm hmS hP i).card_pos
   have hSpos : 0 < (S.card : ℝ) := by
@@ -371,7 +371,6 @@ theorem dyadic_exp_sum_bound
     (f : α → ℝ) (A0 : Finset α) (At : ℕ → Finset α) (m : ℕ)
     (hnonneg : ∀ a, 0 ≤ f a)
     (hcover : ∀ a, a ∈ A0 ∨ ∃ l < Nat.log2 m + 1, a ∈ At (2 ^ l))
-    (hA0 : ∀ a ∈ A0, f a < 1)
     (hAt : ∀ l a, a ∈ At (2 ^ l) →
       (2 : ℝ) ^ l ≤ f a) :
     (∑ a : α, Real.exp (-f a)) ≤
@@ -444,7 +443,7 @@ theorem dyadic_exp_sum_bound
 
 /-- The dyadic decomposition bound before averaging over partitions. -/
 theorem dyadic_conditional_bound {p m : ℕ} (hp : p.Prime)
-    (S : Finset (ZMod p)) (hS : 2 ≤ S.card)
+    (S : Finset (ZMod p))
     (hm : 0 < m) (hm4 : m ≤ S.card / 4)
     {P : Fin m → Finset (ZMod p)} (hP : IsBalancedPartition S P)
     (z : ZMod p) :
@@ -454,7 +453,7 @@ theorem dyadic_conditional_bound {p m : ℕ} (hp : p.Prime)
       (1 / (p : ℝ)) *
         ∑ l ∈ Finset.range (Nat.log2 m + 1),
           (At P (2 ^ l)).card * Real.exp (-(2 : ℝ) ^ l) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
   have hbase := conditional_sum_mass_le_exp_psi hp S hm hmS hP z
@@ -474,16 +473,13 @@ theorem dyadic_conditional_bound {p m : ℕ} (hp : p.Prime)
       simp only [At, Finset.mem_filter, Finset.mem_univ, true_and]
       push_cast
       exact ⟨hlo, hhi⟩
-  have hA0 : ∀ a ∈ A0 P, psi P a < 1 := by
-    intro a ha
-    simpa [A0] using ha
   have hAt : ∀ l a, a ∈ At P (2 ^ l) →
       (2 : ℝ) ^ l ≤ psi P a := by
     intro l a ha
     simp only [At, Finset.mem_filter, Finset.mem_univ, true_and] at ha
     exact_mod_cast ha.1
   have hdy := dyadic_exp_sum_bound
-    (psi P) (A0 P) (At P) m (psi_nonneg P) hcover hA0 hAt
+    (psi P) (A0 P) (At P) m (psi_nonneg P) hcover hAt
   calc
     conditionalSumMass P z
       ≤ (1 / (p : ℝ)) * ∑ χ : ZMod p, Real.exp (-psi P χ) := hbase
@@ -503,7 +499,7 @@ theorem fourier_uniformExpectation_finset_sum {Ω ι : Type*} [DecidableEq Ω]
 
 /-- Equation (3.4): average the preceding inequality over the random partition. -/
 theorem equation_3_4 {p m : ℕ} (hp : p.Prime)
-    (S : Finset (ZMod p)) (hS : 2 ≤ S.card)
+    (S : Finset (ZMod p))
     (hm : 0 < m) (hm4 : m ≤ S.card / 4)
     (z : ZMod p) :
     letI : NeZero p := ⟨hp.ne_zero⟩
@@ -515,7 +511,7 @@ theorem equation_3_4 {p m : ℕ} (hp : p.Prime)
           partitionExpectation (m := m) S
             (fun P => ((At P (2 ^ l)).card : ℝ)) *
               Real.exp (-(2 : ℝ) ^ l) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
   rw [Section3.sliceMass_eq_partition_average hp S hm hmS z]
   have hmono :
@@ -530,7 +526,7 @@ theorem equation_3_4 {p m : ℕ} (hp : p.Prime)
     intro P hP
     have hP' : IsBalancedPartition S P := by
       simpa [balancedPartitions] using hP
-    exact dyadic_conditional_bound hp S hS hm hm4 hP' z
+    exact dyadic_conditional_bound hp S hm hm4 hP' z
   refine le_trans hmono (le_of_eq ?_)
   unfold partitionExpectation
   rw [uniformExpectation_add, uniformExpectation_smul, uniformExpectation_smul,

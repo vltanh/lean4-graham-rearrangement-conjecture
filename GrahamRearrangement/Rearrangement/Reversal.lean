@@ -56,7 +56,7 @@ theorem reverseTuple_head_to_tail {n D : ℕ}
   omega
 
 theorem reverse_indexInterval_image {n : ℕ}
-    (a b : Fin n) (hab : a.val ≤ b.val) :
+    (a b : Fin n) :
     (indexInterval a b).image (reverseIndex n) =
       indexInterval (reverseIndex n b) (reverseIndex n a) := by
   ext i
@@ -79,14 +79,14 @@ theorem reverse_indexInterval_image {n : ℕ}
 
 theorem reverse_indexedIntervalSum {n p : ℕ}
     (σ : Fin n → ZMod p) (a b : Fin n)
-    (hab : a.val ≤ b.val) :
+    :
     indexedIntervalSum
         (applyPositionPerm σ (reverseIndex n)) a b =
       indexedIntervalSum σ
         (reverseIndex n b) (reverseIndex n a) := by
   rw [← indexSetSum_indexInterval, ← indexSetSum_indexInterval]
   rw [indexSetSum_applyPositionPerm_image]
-  rw [reverse_indexInterval_image a b hab]
+  rw [reverse_indexInterval_image a b]
 
 theorem reverse_composed_ordering {n p : ℕ}
     (σ : Fin n → ZMod p)
@@ -106,7 +106,7 @@ theorem reverse_composed_ordering {n p : ℕ}
 theorem reverse_constraint_zero {n p : ℕ}
     (σ : Fin n → ZMod p)
     (π ρ : Equiv.Perm (Fin n))
-    (a b : Fin n) (hab : a.val ≤ b.val)
+    (a b : Fin n)
     (hzero :
       indexedIntervalSum
         (applyPositionPerm
@@ -124,7 +124,7 @@ theorem reverse_constraint_zero {n p : ℕ}
       (applyPositionPerm
         (applyPositionPerm σ (reverseConjugate π))
         (reverseConjugate ρ))
-      a b hab
+      a b
   rw [h] at hzero
   exact hzero
 
@@ -151,19 +151,14 @@ theorem reverse_gap {n D : ℕ}
 
 theorem lemma56_reversal_subset {p D : ℕ} [NeZero p]
     (S : Finset (ZMod p))
-    (b b' : Fin S.card)
-    (hgap : paperPos b' - paperPos b = 5 * D)
+    (b : Fin S.card)
     (u : Fin D → Fin S.card)
-    (hu : ∀ i,
-      paperPos b ≤ paperPos (u i) ∧
-        paperPos (u i) ≤ paperPos b')
     (πi : Fin D → Equiv.Perm (Fin S.card))
     (σ : Fin S.card → ZMod p) :
     Lemma56Event
         (applyPositionPerm σ (reverseIndex S.card))
-        b b' u πi →
+        b u πi →
       Lemma55Event σ
-        (reverseIndex S.card b')
         (reverseIndex S.card b)
         (reverseTuple u)
         (reversePermTuple πi) := by
@@ -175,50 +170,39 @@ theorem lemma56_reversal_subset {p D : ℕ} [NeZero p]
     rπ, Section5.reverseConjugate_admissible π hπadm, ?_⟩
   intro i
   let j := reverseIndex D i
-  have hxu :
-      (x j).val ≤ (u j).val := by
-    have hxhead := (Finset.mem_filter.1 hx).2.2 j
-    have huj := (hu j).1
-    simp [paperPos] at hxhead huj ⊢
-    omega
   have hz := hzero j
   have hr :=
     reverse_constraint_zero σ π (πi j)
-      (x j) (u j) hxu hz
+      (x j) (u j) hz
   simpa [rx, reverseTuple, reversePermTuple, rπ, j,
     reverseIndex_involutive] using hr
 
 theorem lemma56_mass_le_reversed {p D : ℕ} [NeZero p]
     (S : Finset (ZMod p))
-    (b b' : Fin S.card)
-    (hgap : paperPos b' - paperPos b = 5 * D)
+    (b : Fin S.card)
     (u : Fin D → Fin S.card)
-    (hu : ∀ i,
-      paperPos b ≤ paperPos (u i) ∧
-        paperPos (u i) ≤ paperPos b')
     (πi : Fin D → Equiv.Perm (Fin S.card)) :
     orderingEventMass S
-        (fun σ => Lemma56Event σ b b' u πi) ≤
+        (fun σ => Lemma56Event σ b u πi) ≤
       orderingEventMass S
         (fun σ =>
           Lemma55Event σ
-            (reverseIndex S.card b')
             (reverseIndex S.card b)
             (reverseTuple u)
             (reversePermTuple πi)) := by
   rw [Section5.ordering_perm_invariant
     S (reverseIndex S.card)
-    (fun σ => Lemma56Event σ b b' u πi)]
+    (fun σ => Lemma56Event σ b u πi)]
   apply uniformMass_mono
   intro σ h
-  exact lemma56_reversal_subset S b b' hgap u hu πi σ h
+  exact lemma56_reversal_subset S b u πi σ h
 
 theorem lemma56_event_empty_at_two {n p D : ℕ}
-    (hD2 : 2 ≤ D) (b b' : Fin n)
+    (hD2 : 2 ≤ D) (b : Fin n)
     (hb : paperPos b = 2)
     (u : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n)) :
-    ∀ σ : Fin n → ZMod p, ¬ Lemma56Event σ b b' u πi := by
+    ∀ σ : Fin n → ZMod p, ¬ Lemma56Event σ b u πi := by
   intro σ h
   rcases h with ⟨x, hx, _π, _hπ, _hz⟩
   have hmono := (Finset.mem_filter.1 hx).2.1

@@ -47,6 +47,7 @@ def IsOrdering (S : Finset G) (xs : List G) : Prop :=
 def IsValidOrdering (S : Finset G) (xs : List G) : Prop :=
   IsOrdering S xs ∧ (partialSums xs).Nodup
 
+omit [AddCommMonoid G] in
 theorem IsOrdering.length_eq_card {S : Finset G} {xs : List G}
     (h : IsOrdering S xs) : xs.length = S.card := by
   calc
@@ -70,7 +71,7 @@ def subsetSum {G : Type*} [AddCommMonoid G] (S : Finset G) : G :=
 theorem subsetSum_insert {G : Type*} [AddCommMonoid G] [DecidableEq G]
     (S : Finset G) (x : G) (hx : x ∉ S) :
     subsetSum (insert x S) = x + subsetSum S := by
-  simp [subsetSum, hx, add_comm]
+  simp [subsetSum, hx]
 
 theorem subsetSum_union_disjoint {G : Type*} [AddCommMonoid G] [DecidableEq G]
     {A B : Finset G} (h : Disjoint A B) :

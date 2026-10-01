@@ -38,7 +38,7 @@ theorem getElem_partialSums (xs : List G) (i : ℕ)
 
 /-- Sum on the slice [a,b] is the difference of the two relevant prefix sums. -/
 theorem listIntervalSum_eq_prefix_sub (xs : List G) (a b : ℕ)
-    (hab : a ≤ b) (hb : b < xs.length) :
+    (hab : a ≤ b) :
     listIntervalSum xs a b =
       listPrefixSum xs (b + 1) - listPrefixSum xs a := by
   have htake : xs.take (b + 1) = xs.take a ++ (xs.drop a).take (b + 1 - a) := by
@@ -50,10 +50,10 @@ theorem listIntervalSum_eq_prefix_sub (xs : List G) (a b : ℕ)
   abel
 
 theorem listPrefix_eq_iff_interval_zero (xs : List G)
-    (a b : ℕ) (hab : a ≤ b) (hb : b < xs.length) :
+    (a b : ℕ) (hab : a ≤ b) :
     listPrefixSum xs a = listPrefixSum xs (b + 1) ↔
       listIntervalSum xs a b = 0 := by
-  rw [listIntervalSum_eq_prefix_sub xs a b hab hb]
+  rw [listIntervalSum_eq_prefix_sub xs a b hab]
   exact eq_comm.trans sub_eq_zero.symm
 
 theorem partialSums_nodup_iff_prefix (xs : List G) :
@@ -94,9 +94,7 @@ theorem indexedIntervalSum_eq_prefix_sub {n p : ℕ}
       listPrefixSum (indexedToList σ) (b.val + 1) -
         listPrefixSum (indexedToList σ) a.val := by
   rw [indexedIntervalSum_eq_listIntervalSum σ a b hab]
-  apply listIntervalSum_eq_prefix_sub
-  · exact hab
-  · simp [indexedToList]
+  exact listIntervalSum_eq_prefix_sub _ _ _ hab
 
 theorem indexed_interval_zero_iff_prefix_eq {n p : ℕ}
     (σ : Fin n → ZMod p) (a b : Fin n)
@@ -172,7 +170,7 @@ theorem valid_iff_noZeroPaperSegments {p : ℕ}
 theorem indexedIntervalSum_after_perm
     {n p : ℕ} (σ : Fin n → ZMod p)
     (π : Equiv.Perm (Fin n)) (a b : Fin n)
-    (hab : a.val ≤ b.val) :
+    :
     indexedIntervalSum (applyPositionPerm σ π) a b =
       indexSetSum σ ((indexInterval a b).image π) := by
   rw [← indexSetSum_indexInterval]

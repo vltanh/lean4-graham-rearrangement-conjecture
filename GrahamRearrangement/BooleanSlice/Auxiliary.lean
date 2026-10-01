@@ -21,7 +21,7 @@ noncomputable section
 theorem balancedPartitions_nonempty {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card) :
     (balancedPartitions (p := p) (m := m) S).Nonempty := by
-  refine ⟨canonicalBalancedPartition S hm hmS, ?_⟩
+  refine ⟨canonicalBalancedPartition S hm, ?_⟩
   simp [balancedPartitions, canonicalBalancedPartition_spec S hm hmS]
 
 theorem mem_balancedPartitions {p m : ℕ} [NeZero p]
@@ -289,8 +289,7 @@ theorem sliceMass_eq_partition_average {p m : ℕ} (hp : p.Prime)
 
 /-- Every block in a valid balanced partition has the prescribed size. -/
 theorem balanced_block_size_bounds {p m : ℕ} [NeZero p]
-    (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card)
-    {P : Fin m → Finset (ZMod p)} (hP : IsBalancedPartition S P)
+    (S : Finset (ZMod p))     {P : Fin m → Finset (ZMod p)} (hP : IsBalancedPartition S P)
     (i : Fin m) :
     S.card / m ≤ (P i).card ∧
       (P i).card ≤ S.card / m + 1 := by
@@ -300,7 +299,7 @@ theorem balanced_block_size_bounds {p m : ℕ} [NeZero p]
 
 /-- The quantitative block-size estimate used in (3.3). -/
 theorem balanced_block_sqrt_two_bound {p m : ℕ} [NeZero p]
-    (S : Finset (ZMod p)) (hS : 2 ≤ S.card)
+    (S : Finset (ZMod p))
     (hm4 : m ≤ S.card / 4)
     {P : Fin m → Finset (ZMod p)} (hP : IsBalancedPartition S P)
     (i : Fin m) :
@@ -310,7 +309,7 @@ theorem balanced_block_sqrt_two_bound {p m : ℕ} [NeZero p]
   have h4m : m * 4 ≤ S.card := (Nat.le_div_iff_mul_le (by norm_num)).mp hm4
   have hmR : (0 : ℝ) < m := by exact_mod_cast hm
   have hcard : ((P i).card : ℝ) ≤ (S.card : ℝ) / m + 1 := by
-    have h1 := (balanced_block_size_bounds S hm hmS hP i).2
+    have h1 := (balanced_block_size_bounds S hP i).2
     have h2 : ((S.card / m : ℕ) : ℝ) ≤ (S.card : ℝ) / m := Nat.cast_div_le
     have h3 : ((P i).card : ℝ) ≤ ((S.card / m : ℕ) : ℝ) + 1 := by
       exact_mod_cast h1
@@ -336,7 +335,7 @@ theorem point_block_remainder_lower {p m : ℕ} [NeZero p]
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
   have hmem : x ∈ pointBlock S P x := mem_blockIndex S P x hm hP hx
   have hcardBlock : S.card / m ≤ (pointBlock S P x).card :=
-    (balanced_block_size_bounds S hm hmS hP (blockIndex S P x)).1
+    (balanced_block_size_bounds S hP (blockIndex S P x)).1
   rw [Finset.sdiff_singleton_eq_erase, Finset.card_erase_of_mem hmem]
   have h4m : m * 4 ≤ S.card := (Nat.le_div_iff_mul_le (by norm_num)).mp hm4
   have hq4 : 4 ≤ S.card / m := (Nat.le_div_iff_mul_le hm).2 (by omega)
@@ -413,7 +412,7 @@ theorem permute_mem_blockRemainderFiber {p m : ℕ} [NeZero p]
 theorem blockRemainder_fiber_equipotent
     {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (x : ZMod p)
-    (hm : 0 < m) (hmS : m ≤ S.card) (hxS : x ∈ S)
+    (hm : 0 < m) (hxS : x ∈ S)
     (i : Fin m)
     {A B : Finset (ZMod p)}
     (hA : A ∈ (S \ {x}).powersetCard
@@ -455,7 +454,7 @@ theorem blockRemainder_fiber_equipotent
 theorem blockRemainder_conditional_uniform
     {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (x : ZMod p)
-    (hm : 0 < m) (hmS : m ≤ S.card) (hxS : x ∈ S)
+    (hm : 0 < m) (hxS : x ∈ S)
     (i : Fin m)
     (hfiber : (blockIndexFiber S x i).Nonempty)
     (E : Finset (ZMod p) → Prop) [DecidablePred E] :
@@ -469,7 +468,7 @@ theorem blockRemainder_conditional_uniform
         (S \ {x}).powersetCard (balancedBlockSize S.card m i - 1) := by
     intro P hPF
     obtain ⟨hPmem, hidx⟩ := (mem_blockIndexFiber hm).mp hPF
-    exact pointBlock_remainder_mem_powerset S x hm hmS
+    exact pointBlock_remainder_mem_powerset S x hm
       (mem_balancedPartitions.mp hPmem) hxS i hidx
   obtain ⟨P₀, hP₀⟩ := hfiber
   exact uniformMass_statistic_of_pairwise_equal_fibers
@@ -477,7 +476,7 @@ theorem blockRemainder_conditional_uniform
     ((S \ {x}).powersetCard (balancedBlockSize S.card m i - 1))
     (fun P => pointBlock S P x \ {x})
     hmap ⟨_, hmap P₀ hP₀⟩ ⟨P₀, hP₀⟩
-    (fun _ hA _ hB => blockRemainder_fiber_equipotent S x hm hmS hxS i hA hB) E
+    (fun _ hA _ hB => blockRemainder_fiber_equipotent S x hm hxS i hA hB) E
 
 theorem point_block_remainder_lower_real {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (x : ZMod p)
@@ -489,7 +488,7 @@ theorem point_block_remainder_lower_real {p m : ℕ} [NeZero p]
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
   have hmem : x ∈ pointBlock S P x := mem_blockIndex S P x hm hP hx
   have hcardBlock : S.card / m ≤ (pointBlock S P x).card :=
-    (balanced_block_size_bounds S hm hmS hP (blockIndex S P x)).1
+    (balanced_block_size_bounds S hP (blockIndex S P x)).1
   rw [Finset.sdiff_singleton_eq_erase, Finset.card_erase_of_mem hmem]
   have h4m : m * 4 ≤ S.card := (Nat.le_div_iff_mul_le (by norm_num)).mp hm4
   have hq4 : 4 ≤ S.card / m := (Nat.le_div_iff_mul_le hm).2 (by omega)
@@ -516,7 +515,7 @@ model, valid for every attainable block index, transfers to the random
 balanced partition. -/
 theorem partitionMass_remainder_le {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (x : ZMod p) (hx : x ∈ S)
-    (hm : 0 < m) (hmS : m ≤ S.card)
+    (hm : 0 < m)
     (E : Finset (ZMod p) → Prop) [DecidablePred E] (q : ℝ) (hq : 0 ≤ q)
     (hfib : ∀ i : Fin m, (blockIndexFiber S x i).Nonempty →
       uniformMass ((S \ {x}).powersetCard
@@ -531,7 +530,7 @@ theorem partitionMass_remainder_le {p m : ℕ} [NeZero p]
       change uniformMass (blockIndexFiber S x i)
         (fun P => E (pointBlock S P x \ {x})) ≤ q
       by_cases hfiber : (blockIndexFiber S x i).Nonempty
-      · rw [blockRemainder_conditional_uniform S x hm hmS hx i hfiber E]
+      · rw [blockRemainder_conditional_uniform S x hm hx i hfiber E]
         exact hfib i hfiber
       · rw [Finset.not_nonempty_iff_eq_empty.mp hfiber]
         simpa [uniformMass] using hq)
@@ -551,13 +550,13 @@ theorem block_sparse_tail {p m : ℕ} [NeZero p]
         S.card / (16 * m)) ≤
       Real.exp (-(S.card : ℝ) / (64 * m)) := by
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
-  apply partitionMass_remainder_le S x hx hm hmS
+  apply partitionMass_remainder_le S x hx hm
     (fun T => (T ∩ G).card < S.card / (16 * m)) _ (Real.exp_pos _).le
   intro i hfiber
   obtain ⟨P, hPF⟩ := hfiber
   obtain ⟨hPmem, hidx⟩ := (mem_blockIndexFiber hm).mp hPF
   have hP := mem_balancedPartitions.mp hPmem
-  have hrem := pointBlock_remainder_mem_powerset S x hm hmS hP hx i hidx
+  have hrem := pointBlock_remainder_mem_powerset S x hm hP hx i hidx
   set k := balancedBlockSize S.card m i - 1 with hk_def
   have hkcard : (pointBlock S P x \ {x}).card = k :=
     (Finset.mem_powersetCard.mp hrem).2
@@ -609,13 +608,13 @@ theorem block_dense_tail {p m : ℕ} [NeZero p]
         S.card / (4 * m)) ≤
       Real.exp (-(S.card : ℝ) / (48 * m)) := by
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
-  apply partitionMass_remainder_le S x hx hm hmS
+  apply partitionMass_remainder_le S x hx hm
     (fun T => (T ∩ G).card < S.card / (4 * m)) _ (Real.exp_pos _).le
   intro i hfiber
   obtain ⟨P, hPF⟩ := hfiber
   obtain ⟨hPmem, hidx⟩ := (mem_blockIndexFiber hm).mp hPF
   have hP := mem_balancedPartitions.mp hPmem
-  have hrem := pointBlock_remainder_mem_powerset S x hm hmS hP hx i hidx
+  have hrem := pointBlock_remainder_mem_powerset S x hm hP hx i hidx
   set k := balancedBlockSize S.card m i - 1 with hk_def
   have hkcard : (pointBlock S P x \ {x}).card = k :=
     (Finset.mem_powersetCard.mp hrem).2
@@ -722,7 +721,7 @@ theorem partition_energy_lower_by_rows {α ι : Type*}
 
 /-- Pair-uniform expectation expands into the double average over `S×S`. -/
 theorem pair_uniform_expectation {α : Type*} [DecidableEq α]
-    (S : Finset α) (hS : S.Nonempty) (f : α → α → ℝ) :
+    (S : Finset α) (f : α → α → ℝ) :
     uniformExpectation (S.product S) (fun q => f q.1 q.2) =
       (1 / (S.card : ℝ) ^ 2) *
         ∑ x ∈ S, ∑ y ∈ S, f x y := by

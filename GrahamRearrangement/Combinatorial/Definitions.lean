@@ -498,7 +498,7 @@ theorem omitted_product_split {n k : ℕ} (w : ℕ → ℝ)
   rw [hL, hsplit, Finset.prod_union hdisj, hleft, hright]
 
 theorem extendedSize_at_succ {n k : ℕ}
-    {m : Fin k → ℕ} (hm : IsChainSizeTuple n m)
+    {m : Fin k → ℕ}
     (i : Fin k) :
     extendedSize n m (i.val + 1) = m i := by
   have hi := i.isLt
@@ -515,7 +515,7 @@ theorem chainGap_prefix_sum {n k : ℕ}
     (fun t => extendedSize n m (t + 1) - extendedSize n m t) (i.val + 1)
   unfold chainGap
   rw [h, Finset.sum_range_tsub (extendedSize_mono hm), extendedSize_zero,
-    extendedSize_at_succ hm i, Nat.sub_zero]
+    extendedSize_at_succ i, Nat.sub_zero]
 
 /-- The kernel appearing in Lemma 4.3. -/
 def lemma43Kernel (p n : ℕ) (C : ℝ) (d : ℕ) : ℝ :=

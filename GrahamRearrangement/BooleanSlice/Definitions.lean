@@ -46,7 +46,7 @@ theorem balancedPrefix_zero (n m : ℕ) :
   simp [balancedPrefix]
 
 theorem balancedPrefix_succ {n m i : ℕ}
-    (hm : 0 < m) (hi : i < m) :
+    (hi : i < m) :
     balancedPrefix n m (i + 1) - balancedPrefix n m i =
       balancedBlockSize n m ⟨i,hi⟩ := by
   unfold balancedPrefix balancedBlockSize
@@ -106,7 +106,7 @@ theorem balancedBlockIndex_lt
 
 theorem balancedBlockIndex_range
     (n m : ℕ) (hm : 0 < m) (hmn : m ≤ n)
-    (j : ℕ) (hj : j < n) :
+    (j : ℕ) :
     balancedPrefix n m (balancedBlockIndex n m j) ≤ j ∧
       j < balancedPrefix n m (balancedBlockIndex n m j + 1) := by
   have hq : 0 < n / m := Nat.div_pos hmn hm
@@ -137,7 +137,7 @@ theorem balancedBlockIndex_range
     constructor <;> omega
 
 def finSegment (n a b : ℕ) (hb : b ≤ n) : Finset (Fin n) :=
-  (Finset.Ico a b).attachFin (fun x hx => lt_of_lt_of_le (Finset.mem_Ico.1 hx).2 hb)
+  (Finset.Ico a b).attachFin (fun _ hx => lt_of_lt_of_le (Finset.mem_Ico.1 hx).2 hb)
 
 theorem card_finSegment (n a b : ℕ) (hb : b ≤ n) :
     (finSegment n a b hb).card = b - a := by
@@ -158,7 +158,7 @@ def IsBalancedPartition {p m : ℕ} (S : Finset (ZMod p))
   (∀ i, (P i).card = balancedBlockSize S.card m i)
 
 def canonicalBalancedPartition {p m : ℕ} [NeZero p]
-    (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card) :
+    (S : Finset (ZMod p)) (hm : 0 < m) :
     Fin m → Finset (ZMod p) := by
   classical
   let e : Fin S.card ≃ {x // x ∈ S} :=
@@ -209,7 +209,7 @@ theorem isBalancedPartition_image_finSegment {p m : ℕ}
       apply Finset.mem_image.mpr
       refine ⟨j, ?_, by rw [hj]⟩
       apply mem_finSegment.mpr
-      exact balancedBlockIndex_range S.card m hm hmS j.val j.isLt
+      exact balancedBlockIndex_range S.card m hm hmS j.val
     · rintro ⟨i, hxi⟩
       obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp hxi
       exact (e j).2
@@ -217,11 +217,11 @@ theorem isBalancedPartition_image_finSegment {p m : ℕ}
     dsimp only
     rw [Finset.card_image_of_injective _
       (fun a b h => e.injective (Subtype.ext h)), card_finSegment]
-    exact balancedPrefix_succ hm i.isLt
+    exact balancedPrefix_succ i.isLt
 
 theorem canonicalBalancedPartition_spec {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card) :
-    IsBalancedPartition S (canonicalBalancedPartition S hm hmS) := by
+    IsBalancedPartition S (canonicalBalancedPartition S hm) := by
   unfold canonicalBalancedPartition
   exact isBalancedPartition_image_finSegment S hm hmS _ _
 
@@ -272,14 +272,14 @@ theorem pointBlock_card {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p))
     {P : Fin m → Finset (ZMod p)}
     (hm : 0 < m) (hP : IsBalancedPartition S P)
-    {x : ZMod p} (hxS : x ∈ S) :
+    {x : ZMod p} :
     (pointBlock S P x).card =
       balancedBlockSize S.card m (blockIndex S P x) := by
   exact hP.2.2.2 (blockIndex S P x)
 
 theorem pointBlock_remainder_mem_powerset {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (x : ZMod p)
-    (hm : 0 < m) (hmS : m ≤ S.card)
+    (hm : 0 < m)
     {P : Fin m → Finset (ZMod p)}
     (hP : IsBalancedPartition S P) (hxS : x ∈ S)
     (i : Fin m) (hi : blockIndex S P x = i) :
@@ -293,7 +293,7 @@ theorem pointBlock_remainder_mem_powerset {p m : ℕ} [NeZero p]
     rw [Finset.mem_sdiff] at hy ⊢
     exact ⟨hP.1 _ hy.1, hy.2⟩
   · rw [Finset.sdiff_singleton_eq_erase, Finset.card_erase_of_mem hxBlock,
-      pointBlock_card S hm hP hxS, hi]
+      pointBlock_card S hm hP, hi]
 
 /-- Conditional choices of one point from each block. -/
 def blockChoices {p m : ℕ} [NeZero p]

@@ -14,7 +14,7 @@ Status of the formalization:
   paper uses without citation come from Mathlib or are proved here (Section 2).
 - `lake build` succeeds with no `sorry`, and the repository declares no `axiom`. The script
   [`scripts/Audit.lean`](scripts/Audit.lean) checks that every numbered result, the two results from prior work,
-  the three theorems of [`Solution.lean`](Solution.lean), and every one of the 1902 declarations of the library
+  the three theorems of [`Solution.lean`](Solution.lean), and every one of the 1896 declarations of the library
   depend only on Lean's standard axioms ([`propext`](https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#propext), [`Classical.choice`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Classical.choice), [`Quot.sound`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Quot.sound)).
 - Theorems 1.2, 1.3 and Corollary 1.4 are restated in [`Challenge.lean`](Challenge.lean) with Mathlib's vocabulary
   only, and `lake comparator` accepts [`Solution.lean`](Solution.lean) as their proof.
@@ -36,8 +36,9 @@ Status of the formalization:
 - **Missing hypotheses.** None in the statements of the paper's results. Several lemmas of
   Section 3 rely on the section's standing assumptions on `S` and `m`; the formalization
   states them as hypotheses (Section 4).
-- **Redundant hypotheses.** Primality is unused in Facts 2.3 and 2.5 and in Lemma 4.3, and
-  Lemma 4.3 holds for every constant `C > 0` (Section 5).
+- **Redundant hypotheses.** Several statements include hypotheses that their proofs do not
+  use, among them primality in Facts 2.3 and 2.5; Lemma 4.3 holds for every constant
+  `C > 0`. The Lean statements omit them (Section 5).
 - **Use of cited results.** The single cited result is used correctly (Section 2).
 
 ## 2. Results from prior work and how the paper uses them
@@ -119,7 +120,7 @@ and the next step bounds `(4|S ∩ J_{χ,t}|/|S|) · 265t/m` by `1024t/m`, which
 `4 · 256 = 1024`. The lemma would survive the typo,
 since `(2000 − 1060)/4 ≥ 200`. [`lemma3_2`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L314) is proved with 256. It holds for any choice of the
 centre `y_χ`: the hypothesis `χ ∈ D_t`, which the paper needs to define `y_χ`, is not used in
-the proof.
+the proof, and the Lean statement omits it.
 
 **E7. Lemma 3.6.** In the first display of the proof, the second factor
 `Σ_{χ' ∈ B_t} e_p(χx)` should be `Σ_{χ' ∈ B_t} e_p(χ'x)`.
@@ -138,7 +139,7 @@ means Theorem 1.3, which the proof then applies.
   not mention these cases; the bound `∏_{i ≠ j}` holds in both.
 
 The formalization exposes the blocks in an arbitrary order and counts directly
-([`chainMass_fixed_gap_product_bound`](GrahamRearrangement/Combinatorial/Corollary42.lean#L1386)), which covers every `j` uniformly.
+([`chainMass_fixed_gap_product_bound`](GrahamRearrangement/Combinatorial/Corollary42.lean#L1376)), which covers every `j` uniformly.
 
 **E10. Lemma 5.4.** The proof of (5.1) recalls "`|S|/p ≤ |S|^{1−α}`"; Section 5's setup
 established, and the computation uses, `|S|/p ≤ |S|^{−α}`.
@@ -176,16 +177,25 @@ each proof uses:
 
 ## 5. Redundant hypotheses
 
-- **Facts 2.3 and 2.5:** `p` need not be prime; both hold in `ℤ_n` for every `n ≥ 1`.
-  [`fact2_3`](GrahamRearrangement/Preliminaries.lean#L304) and [`fact2_5`](GrahamRearrangement/Preliminaries.lean#L456) keep the hypothesis, to match the paper, and do not use it;
-  [`fact2_3_general`](GrahamRearrangement/Preliminaries.lean#L296) drops it.
-- **Lemma 4.3:** the constant need not be the constant `C_k` of Corollary 4.2: the bound holds
-  for every `C > 0`, every `n ≥ 2` in place of `|S|`, and every `p ≥ 1`. [`lemma4_3`](GrahamRearrangement/Combinatorial/Lemma43.lean#L127) is stated for
-  every `C > 0` and keeps `p` prime; Section 5 applies it to the ground set
-  `S ∖ {σ(b), …, σ(b')}`, as the paper does.
-- **Lemma 3.2:** see E6; the hypothesis `χ ∈ D_t` only serves to define `y_χ`.
-- **Lemma 3.6** holds for every natural number `t`, not only positive ones; [`lemma3_6`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L899) has no
-  hypothesis on `t`.
+Hypotheses that the paper's statements include but its proofs do not use. The Lean
+statements omit them, so each Lean statement implies the paper's; the statements of
+Theorems 1.2, 1.3 and Corollary 1.4 in [`Challenge.lean`](Challenge.lean) are exactly the paper's.
+
+| Result | Hypothesis that is not needed | Lean |
+| --- | --- | --- |
+| Fact 2.3 | `p` prime: the fact holds in `ℤ_n` for every `n ≥ 1` | [`fact2_3`](GrahamRearrangement/Preliminaries.lean#L304) |
+| Fact 2.5 | `p` prime | [`fact2_5`](GrahamRearrangement/Preliminaries.lean#L456) |
+| (3.4) | `|S| ≥ 2` | [`equation_3_4`](GrahamRearrangement/BooleanSlice/Fourier.lean#L501) |
+| Lemma 3.1 | `t ≥ 1`: for `t = 0` the event `ψ(χ) < 0` is empty | [`lemma3_1`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L559) |
+| Lemma 3.2 | `χ ∈ D_t`, which the paper needs only to define `y_χ` (E6) | [`lemma3_2`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L314) |
+| Lemma 3.6 | `t ≥ 1` | [`lemma3_6`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L899) |
+| Lemma 3.7 | `δ > 0` | [`lemma3_7`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L1002) |
+| Lemma 4.3 | that the constant is the `C_k` of Corollary 4.2: every `C > 0` works, and every `n ≥ 2` in place of `|S|` | [`lemma4_3`](GrahamRearrangement/Combinatorial/Lemma43.lean#L127) (keeps `p` prime, of which the proof uses only `p > 0`) |
+| Lemma 5.5 | `b' ≤ |S| − 2`: `b ≥ 2` and `b' − b = 5D` suffice | [`lemma5_5`](GrahamRearrangement/Rearrangement/Lemma55.lean#L630) |
+
+In Lemma 3.2, `y_χ` is defined (as [`centerAt`](GrahamRearrangement/BooleanSlice/Definitions.lean#L520)) for every `χ`, and the bound holds for that
+centre whether or not `χ ∈ D_t`. Section 5 applies Lemma 4.3 to the ground set
+`S ∖ {σ(b), …, σ(b')}` of size `s`, as the paper does.
 
 ## 6. How the formalization reads the paper
 
@@ -193,9 +203,9 @@ each proof uses:
   probability is a proportion of a finite set ([`uniformMass`](GrahamRearrangement/Probability.lean#L22)); conditional
   probabilities and expectations are proportions and averages over finite sets.
 - **Valid orderings.** An ordering of `S` is a list of its elements, each appearing once,
-  and it is valid when its partial sums are pairwise distinct ([`HasValidOrdering`](GrahamRearrangement/Introduction.lean#L61)). Section 5
+  and it is valid when its partial sums are pairwise distinct ([`HasValidOrdering`](GrahamRearrangement/Introduction.lean#L62)). Section 5
   works with bijections `σ : {1, …, |S|} → S`, as the paper does; positions are `Fin |S|`,
-  and [`paperPos`](GrahamRearrangement/Rearrangement/Definitions.lean#L37) converts them to the paper's `1, …, |S|`. [`valid_iff_noZeroPaperSegments`](GrahamRearrangement/Rearrangement/IntervalLemmas.lean#L143)
+  and [`paperPos`](GrahamRearrangement/Rearrangement/Definitions.lean#L37) converts them to the paper's `1, …, |S|`. [`valid_iff_noZeroPaperSegments`](GrahamRearrangement/Rearrangement/IntervalLemmas.lean#L141)
   proves the paper's reformulation: for `0 ∉ S`, the ordering is valid if and only if
   `Σ(σ, [a, b]) ≠ 0` for all `2 ≤ a < b ≤ |S|`.
 - **Theorem 1.3 and Corollary 1.4.** "`max_z ℙ[Σ(R) = z] ≤ …`" is read as "for every `z`";
@@ -221,10 +231,12 @@ each proof uses:
   [`chainUpperBound`](GrahamRearrangement/Combinatorial/Definitions.lean#L54).
 - **Section 5.** The reduction to `α < 1/2` is part of [`theorem12_of_section5_bounds`](GrahamRearrangement/Main.lean#L57). The
   bad events `B_0, …, B_3` are [`BadEvent0`](GrahamRearrangement/Rearrangement/Definitions.lean#L872)–[`BadEvent3`](GrahamRearrangement/Rearrangement/Definitions.lean#L864), `B(σ)` is [`badRightEndpoints`](GrahamRearrangement/Rearrangement/Definitions.lean#L237), and admissible
-  permutations are [`IsAdmissiblePermutation`](GrahamRearrangement/Rearrangement/Definitions.lean#L493). Lemma 5.6, which the paper obtains "by flipping the
+  permutations are [`IsAdmissiblePermutation`](GrahamRearrangement/Rearrangement/Definitions.lean#L493). As in the paper, the event of Lemma 5.5 involves only the right end
+  `b'` of the window ([`Lemma55Event`](GrahamRearrangement/Rearrangement/Definitions.lean#L498)), and that of Lemma 5.6 only the left end `b` ([`Lemma56Event`](GrahamRearrangement/Rearrangement/Definitions.lean#L512)); the
+  other end enters through the hypotheses. Lemma 5.6, which the paper obtains "by flipping the
   ordering", is deduced from Lemma 5.5 by an explicit reversal of positions
   ([`GrahamRearrangement/Rearrangement/Reversal.lean`](GrahamRearrangement/Rearrangement/Reversal.lean)). The greedy construction of `y_1, …, y_ℓ` in the
-  proof of Theorem 1.2 is [`section5_local_repair`](GrahamRearrangement/Rearrangement/Repair.lean#L512).
+  proof of Theorem 1.2 is [`section5_local_repair`](GrahamRearrangement/Rearrangement/Repair.lean#L510).
 - **Constants.** Where the paper proves the existence of a constant, the formal proof
   sometimes uses a different explicit one; for Corollary 1.4 it is
   `4N³ + 2√C + 2C + 50C/ε²`, where `C = 2^24` and `N` is a size threshold, instead of the
@@ -239,7 +251,7 @@ through Lemmas 3.1 and 3.3; everything after Theorem 1.3 needs them through it.
 
 | Result | Lean | Results from prior work used |
 | --- | --- | --- |
-| Thm 1.2 | [`theorem12`](GrahamRearrangement/Main.lean#L88) | both |
+| Thm 1.2 | [`theorem12`](GrahamRearrangement/Main.lean#L87) | both |
 | Thm 1.3 | [`theorem13`](GrahamRearrangement/BooleanSlice/Theorem.lean#L455), [`theorem13_explicit`](GrahamRearrangement/BooleanSlice/Theorem.lean#L342) | both |
 | Cor 1.4 | [`corollary14`](GrahamRearrangement/Combinatorial/Corollary14.lean#L376) | both |
 | Fact 2.1 | [`fact2_1`](GrahamRearrangement/Preliminaries.lean#L95) | – |
@@ -249,7 +261,7 @@ through Lemmas 3.1 and 3.3; everything after Theorem 1.3 needs them through it.
 | Fact 2.5 | [`fact2_5`](GrahamRearrangement/Preliminaries.lean#L456) | – |
 | (3.1), (3.2) | [`conditional_sum_mass_le_exp_psi`](GrahamRearrangement/BooleanSlice/Fourier.lean#L252) | – |
 | (3.3) | [`psi_lower_bound`](GrahamRearrangement/BooleanSlice/Fourier.lean#L287) | – |
-| (3.4) | [`equation_3_4`](GrahamRearrangement/BooleanSlice/Fourier.lean#L505) | – |
+| (3.4) | [`equation_3_4`](GrahamRearrangement/BooleanSlice/Fourier.lean#L501) | – |
 | Lemma 3.1 | [`lemma3_1`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L559) | [`External.hypergeom_quarter_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L222) |
 | Lemma 3.2 | [`lemma3_2`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L314) | – |
 | Lemma 3.3 | [`lemma3_3`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L613) | [`External.hypergeom_three_quarters_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L233) |
@@ -258,24 +270,24 @@ through Lemmas 3.1 and 3.3; everything after Theorem 1.3 needs them through it.
 | Lemma 3.6 | [`lemma3_6`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L899) | – |
 | Lemma 3.7 | [`lemma3_7`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L1002) | – |
 | Lemma 4.1 | [`lemma4_1`](GrahamRearrangement/Combinatorial/Lemma41.lean#L43) | – |
-| Cor 4.2 | [`corollary42`](GrahamRearrangement/Combinatorial/Corollary42.lean#L1436), [`corollary42_one_bound`](GrahamRearrangement/Combinatorial/Corollary42.lean#L1543) (`k = 1`) | both |
+| Cor 4.2 | [`corollary42`](GrahamRearrangement/Combinatorial/Corollary42.lean#L1424), [`corollary42_one_bound`](GrahamRearrangement/Combinatorial/Corollary42.lean#L1531) (`k = 1`) | both |
 | Lemma 4.3 | [`lemma4_3`](GrahamRearrangement/Combinatorial/Lemma43.lean#L127) | – |
 | (4.1) | [`equation_4_1`](GrahamRearrangement/Combinatorial/Lemma43.lean#L78) | – |
-| Lemma 5.1 | [`lemma5_1`](GrahamRearrangement/Rearrangement/Lemma51.lean#L187) | both |
-| Lemma 5.2 | [`lemma5_2`](GrahamRearrangement/Rearrangement/Lemma52.lean#L497) | both |
-| Lemma 5.3 | [`lemma5_3`](GrahamRearrangement/Rearrangement/Lemma53.lean#L622) | both |
+| Lemma 5.1 | [`lemma5_1`](GrahamRearrangement/Rearrangement/Lemma51.lean#L185) | both |
+| Lemma 5.2 | [`lemma5_2`](GrahamRearrangement/Rearrangement/Lemma52.lean#L496) | both |
+| Lemma 5.3 | [`lemma5_3`](GrahamRearrangement/Rearrangement/Lemma53.lean#L621) | both |
 | Lemma 5.4 | [`lemma5_4`](GrahamRearrangement/Rearrangement/Lemma54.lean#L354) | both |
 | (5.1) | [`equation_5_1`](GrahamRearrangement/Rearrangement/Lemma54.lean#L221) | both |
-| Lemma 5.5 | [`lemma5_5`](GrahamRearrangement/Rearrangement/Lemma55.lean#L637) | both |
+| Lemma 5.5 | [`lemma5_5`](GrahamRearrangement/Rearrangement/Lemma55.lean#L630) | both |
 | Lemma 5.6 | [`lemma5_6`](GrahamRearrangement/Rearrangement/Lemma56.lean#L20) | both |
 | Lemmas 5.1–5.3 together | [`section5_bad_event_bounds`](GrahamRearrangement/Rearrangement/BadEvents.lean#L34) | both |
-| Repair step in the proof of Thm 1.2 | [`section5_local_repair`](GrahamRearrangement/Rearrangement/Repair.lean#L512) | – |
+| Repair step in the proof of Thm 1.2 | [`section5_local_repair`](GrahamRearrangement/Rearrangement/Repair.lean#L510) | – |
 
 ## 8. Not formalized
 
 - Conjecture 1.1 itself, and the paper's deduction of it for all sufficiently large primes
   from Theorem 1.2 together with the results of Bedert–Kravitz (small sets) and
   Bedert–Bucić–Kravitz–Montgomery–Müyesser (large sets). Those results are not formalized;
-  [`Conjecture11Statement`](GrahamRearrangement/Introduction.lean#L81) only records the conjecture.
+  [`Conjecture11Statement`](GrahamRearrangement/Introduction.lean#L82) only records the conjecture.
 - The survey of earlier work and the proof overview in §1, and the remark on Alspach's
   conjecture.

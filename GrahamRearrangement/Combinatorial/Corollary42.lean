@@ -76,7 +76,7 @@ theorem chainFactor_nonneg {p n gap : ℕ} (C : ℝ)
   unfold chainFactor
   positivity
 
-theorem chain_factor_from_cor14 {p k : ℕ} [NeZero p] (hp : p.Prime)
+theorem chain_factor_from_cor14 {p : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (hS : 2 ≤ S.card)
     (ε Cε : ℝ) (hε0 : 0 < ε) (hε1 : ε < 1)
     (hCε : 0 < Cε)
@@ -282,7 +282,7 @@ theorem subsetSum_sdiff {p : ℕ} [NeZero p]
   exact eq_sub_of_add_eq (Finset.sum_sdiff hAB)
 
 theorem chain_prefix_union_eq {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     {m : Fin k → ℕ} {R : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily S m) (i : Fin k) :
     (Finset.univ.filter fun j : Fin (k + 1) => j.val ≤ i.val).biUnion
@@ -305,7 +305,7 @@ theorem chain_prefix_union_eq {p k : ℕ} [NeZero p]
       exact hx
 
 theorem chain_all_increments_union_eq {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     {m : Fin k → ℕ} {R : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily S m) :
     Finset.univ.biUnion (chainIncrements S R) = S := by
@@ -325,7 +325,7 @@ theorem chain_all_increments_union_eq {p k : ℕ} [NeZero p]
     exact hx
 
 theorem chain_increment_subset {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     {m : Fin k → ℕ} {R : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily S m)
     (i : Fin (k + 1)) :
@@ -333,7 +333,7 @@ theorem chain_increment_subset {p k : ℕ} [NeZero p]
   Finset.sdiff_subset.trans (extendedChain_subset hR _)
 
 theorem chain_increment_disjoint_of_lt {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     {m : Fin k → ℕ} {R : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily S m)
     {i j : Fin (k + 1)} (hij : i.val < j.val) :
@@ -344,22 +344,22 @@ theorem chain_increment_disjoint_of_lt {p k : ℕ} [NeZero p]
   exact hxj.2 (extendedChain_mono hR (by omega : i.val + 1 ≤ j.val) hxi.1)
 
 theorem chainIncrements_mem {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     (m : Fin k → ℕ) {R : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily S m) :
     chainIncrements S R ∈ incrementPartitionFamily S m := by
   unfold incrementPartitionFamily
   rw [Finset.mem_filter]
-  refine ⟨Finset.mem_univ _, fun i => ⟨chain_increment_subset hk S hR i, ?_⟩, ?_, ?_⟩
+  refine ⟨Finset.mem_univ _, fun i => ⟨chain_increment_subset S hR i, ?_⟩, ?_, ?_⟩
   · unfold chainIncrements chainGap
     rw [Finset.card_sdiff_of_subset (extendedChain_mono hR (Nat.le_succ _)),
       card_extendedChain hR, card_extendedChain hR]
   · intro i j hij
     rcases Nat.lt_or_gt_of_ne (fun h => hij (Fin.ext h)) with h | h
-    · exact chain_increment_disjoint_of_lt hk S hR h
-    · exact (chain_increment_disjoint_of_lt hk S hR h).symm
+    · exact chain_increment_disjoint_of_lt S hR h
+    · exact (chain_increment_disjoint_of_lt S hR h).symm
   · intro x
-    have hU := chain_all_increments_union_eq hk S hR
+    have hU := chain_all_increments_union_eq S hR
     constructor
     · intro hx
       rw [← hU, Finset.mem_biUnion] at hx
@@ -415,21 +415,19 @@ theorem chainFamily_nonempty {p k : ℕ} [NeZero p]
   ⟨canonicalChain S m hm, canonicalChain_mem S m hm⟩
 
 theorem chain_eq_of_increments_eq {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     {m : Fin k → ℕ}
     {R R' : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily S m) (hR' : R' ∈ chainFamily S m)
     (hEq : chainIncrements S R = chainIncrements S R') :
     R = R' := by
   funext i
-  rw [← chain_prefix_union_eq hk S hR i,
-      ← chain_prefix_union_eq hk S hR' i]
+  rw [← chain_prefix_union_eq S hR i,
+      ← chain_prefix_union_eq S hR' i]
   simp [hEq]
 
 theorem increments_prefix_union_eq {p k : ℕ} [NeZero p]
-    (S : Finset (ZMod p)) (m : Fin k → ℕ)
-    {Δ : Fin (k + 1) → Finset (ZMod p)}
-    (hΔ : Δ ∈ incrementPartitionFamily S m)
+        {Δ : Fin (k + 1) → Finset (ZMod p)}
     (i : Fin k) :
     incrementsToChain Δ i =
       (Finset.univ.filter fun j : Fin (k + 1) => j.val ≤ i.val).biUnion Δ := rfl
@@ -469,8 +467,7 @@ private theorem extendedChain_incrementsToChain {p k : ℕ} [NeZero p]
         exact ⟨i, hi⟩
 
 theorem increments_chain_inverse {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p)) (m : Fin k → ℕ)
-    (hm : IsChainSizeTuple S.card m)
+    (S : Finset (ZMod p)) (m : Fin k → ℕ)
     {Δ : Fin (k + 1) → Finset (ZMod p)}
     (hΔ : Δ ∈ incrementPartitionFamily S m) :
     chainIncrements S (incrementsToChain Δ) = Δ := by
@@ -494,12 +491,12 @@ theorem increments_chain_inverse {p k : ℕ} [NeZero p]
     exact Finset.disjoint_left.mp (hdisj b i hne) hxb hx
 
 theorem incrementPartitionFamily_nonempty {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     (m : Fin k → ℕ) (hm : IsChainSizeTuple S.card m) :
     (incrementPartitionFamily S m).Nonempty := by
   let R := canonicalChain S m hm
   exact ⟨chainIncrements S R,
-    chainIncrements_mem hk S m (canonicalChain_mem S m hm)⟩
+    chainIncrements_mem S m (canonicalChain_mem S m hm)⟩
 
 /-- If an increment partition exists, then the extended sizes are monotone: the
 truncated gaps add up to `|S|`, which forces every gap to be a genuine difference. -/
@@ -543,7 +540,7 @@ private theorem extendedSize_step_le_of_partition {p k : ℕ} [NeZero p]
   omega
 
 theorem incrementsToChain_mem {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     (m : Fin k → ℕ)
     {Δ : Fin (k + 1) → Finset (ZMod p)}
     (hΔ : Δ ∈ incrementPartitionFamily S m) :
@@ -604,20 +601,20 @@ theorem incrementsToChain_mem {p k : ℕ} [NeZero p]
     exact ⟨a, le_trans ha (Fin.le_def.mp hij), hxa⟩
 
 theorem chain_increment_bijection {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
-    (m : Fin k → ℕ) (hm : IsChainSizeTuple S.card m) :
+    (S : Finset (ZMod p))
+    (m : Fin k → ℕ) :
     (chainFamily S m).card = (incrementPartitionFamily S m).card := by
   classical
   apply Finset.card_bij
     (fun R _ => chainIncrements S R)
   · intro R hR
-    exact chainIncrements_mem hk S m hR
+    exact chainIncrements_mem S m hR
   · intro R hR R' hR' hEq
-    exact chain_eq_of_increments_eq hk S hR hR' hEq
+    exact chain_eq_of_increments_eq S hR hR' hEq
   · intro Δ hΔ
     refine ⟨incrementsToChain Δ,
-      incrementsToChain_mem hk S m hΔ, ?_⟩
-    exact increments_chain_inverse hk S m hm hΔ
+      incrementsToChain_mem S m hΔ, ?_⟩
+    exact increments_chain_inverse S m hΔ
 
 theorem subsetSum_union_of_disjoint {p : ℕ} [NeZero p]
     {A B : Finset (ZMod p)} (h : Disjoint A B) :
@@ -649,18 +646,18 @@ theorem subsetSum_biUnion_pairwise_disjoint
       simp [hi]
 
 theorem subsetSum_eq_sum_chain_increments {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     {m : Fin k → ℕ} {R : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily S m) (i : Fin k) :
     subsetSum (R i) =
       ∑ j ∈ Finset.univ.filter (fun j : Fin (k + 1) => j.val ≤ i.val),
         subsetSum (chainIncrements S R j) := by
-  rw [← chain_prefix_union_eq hk S hR i]
+  rw [← chain_prefix_union_eq S hR i]
   apply subsetSum_biUnion_pairwise_disjoint
   intro a ha b hb hab
   by_cases hlt : a.val < b.val
-  · exact chain_increment_disjoint_of_lt hk S hR hlt
-  · exact (chain_increment_disjoint_of_lt hk S hR (by omega)).symm
+  · exact chain_increment_disjoint_of_lt S hR hlt
+  · exact (chain_increment_disjoint_of_lt S hR (by omega)).symm
 
 /-- The targets `0 = z₀, z₁, …, zₖ, zₖ₊₁ = Σ(S)`, indexed by `0, …, k + 1`. -/
 def extendedTarget {p k : ℕ}
@@ -711,7 +708,7 @@ private theorem sum_filter_le_eq_sum_range {M : Type*} [AddCommMonoid M] {k : �
   rfl
 
 theorem chainGapTarget_prefix_telescopes {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     (z : Fin k → ZMod p) (i : Fin k) :
     ∑ j ∈ Finset.univ.filter (fun j : Fin (k + 1) => j.val ≤ i.val),
       chainGapTarget S z j = z i := by
@@ -723,7 +720,7 @@ theorem chainGapTarget_prefix_telescopes {p k : ℕ} [NeZero p]
     sub_zero, extendedTarget_at_succ_lt S z i.isLt]
 
 theorem chain_sum_event_iff_increment_targets {p k : ℕ} [NeZero p]
-    (hk : 0 < k) (S : Finset (ZMod p))
+    (S : Finset (ZMod p))
     {m : Fin k → ℕ} (R : Fin k → Finset (ZMod p))
     (hR : R ∈ chainFamily S m)
     (z : Fin k → ZMod p) :
@@ -750,9 +747,9 @@ theorem chain_sum_event_iff_increment_targets {p k : ℕ} [NeZero p]
       extendedTarget S z (i.val + 1) - extendedTarget S z i.val
     rw [subsetSum_sdiff (extendedChain_mono hR (Nat.le_succ _)), hall, hall]
   · intro hΔ i
-    rw [subsetSum_eq_sum_chain_increments hk S hR i,
+    rw [subsetSum_eq_sum_chain_increments S hR i,
       Finset.sum_congr rfl (fun j _ => hΔ j)]
-    exact chainGapTarget_prefix_telescopes hk S z i
+    exact chainGapTarget_prefix_telescopes S z i
 
 def exposureOrder {k : ℕ} (j : Fin (k + 1)) :
     List (Fin (k + 1)) :=
@@ -953,9 +950,8 @@ theorem exposed_subset_S {p k : ℕ} [NeZero p]
   exact ((Finset.mem_filter.mp hΔ).2.1 i).1 hxi
 
 theorem exposed_not_remaining {p k : ℕ} [NeZero p]
-    (S : Finset (ZMod p)) (m : Fin k → ℕ)
+    (S : Finset (ZMod p))
     {Δ : Fin (k + 1) → Finset (ZMod p)}
-    (hΔ : Δ ∈ incrementPartitionFamily S m)
     (L : Finset (Fin (k + 1)))
     {x : ZMod p} (hx : x ∈ exposedUnion L Δ) :
     x ∉ remainingAfter S L Δ := by
@@ -964,19 +960,18 @@ theorem exposed_not_remaining {p k : ℕ} [NeZero p]
 
 theorem perm_fix_exposed_of_fix_outside_remaining
     {p k : ℕ} [NeZero p]
-    (S : Finset (ZMod p)) (m : Fin k → ℕ)
+    (S : Finset (ZMod p))
     (L : Finset (Fin (k + 1)))
     {Δ : Fin (k + 1) → Finset (ZMod p)}
-    (hΔ : Δ ∈ incrementPartitionFamily S m)
     (π : Equiv.Perm (ZMod p))
     (hfix : ∀ x ∉ remainingAfter S L Δ, π x = x) :
     ∀ x ∈ exposedUnion L Δ, π x = x := by
   intro x hx
-  exact hfix x (exposed_not_remaining S m hΔ L hx)
+  exact hfix x (exposed_not_remaining S L hx)
 
 theorem perm_fix_outside_S_of_fix_outside_remaining
     {p k : ℕ} [NeZero p]
-    (S : Finset (ZMod p)) (m : Fin k → ℕ)
+    (S : Finset (ZMod p))
     (L : Finset (Fin (k + 1)))
     {Δ : Fin (k + 1) → Finset (ZMod p)}
     (π : Equiv.Perm (ZMod p))
@@ -991,10 +986,8 @@ theorem component_fiber_equipotent
     {p k : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (m : Fin k → ℕ)
     (L : Finset (Fin (k + 1))) (i : Fin (k + 1))
-    (hi : i ∉ L)
     (H : Fin (k + 1) → Option (Finset (ZMod p)))
     (Δ₀ : Fin (k + 1) → Finset (ZMod p))
-    (hΔ₀ : Δ₀ ∈ incrementPartitionFamily S m)
     (hH : historyKey L Δ₀ = H)
     (A B : Finset (ZMod p))
     (hA : A ∈ (remainingAfter S L Δ₀).powersetCard
@@ -1083,7 +1076,7 @@ private theorem increment_fiber_card_eq
         historyKey L Δ = H ∧ Δ i = Δ₀ i).card := by
     intro A hA
     rw [Finset.filter_filter]
-    exact component_fiber_equipotent S m L i hi H Δ₀ hΔ₀ hH A (Δ₀ i) hA hΔ₀C
+    exact component_fiber_equipotent S m L i H Δ₀ hH A (Δ₀ i) hA hΔ₀C
   have hcpos : 0 < ((incrementPartitionFamily S m).filter fun Δ =>
       historyKey L Δ = H ∧ Δ i = Δ₀ i).card :=
     Finset.card_pos.mpr ⟨Δ₀, Finset.mem_filter.mpr ⟨hΔ₀, hH, rfl⟩⟩
@@ -1135,7 +1128,6 @@ private theorem increment_fiber_card_eq
 theorem increment_conditional_uniform_given_history
     {p k : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (m : Fin k → ℕ)
-    (hm : IsChainSizeTuple S.card m)
     (L : Finset (Fin (k + 1))) (i : Fin (k + 1))
     (hi : i ∉ L)
     (H : Fin (k + 1) → Option (Finset (ZMod p)))
@@ -1321,7 +1313,6 @@ private theorem increment_event_finset_card_bound
 theorem increment_event_list_bound
     {p k : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (m : Fin k → ℕ)
-    (hm : IsChainSizeTuple S.card m)
     (j : Fin (k + 1))
     (target : Fin (k + 1) → ZMod p)
     (b : Fin (k + 1) → ℝ) (hb : ∀ i, 0 ≤ b i)
@@ -1356,7 +1347,6 @@ theorem increment_event_list_bound
 /-- Sequential exposure of all increments except j. -/
 theorem incrementPartition_product_bound {p k : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (m : Fin k → ℕ)
-    (hm : IsChainSizeTuple S.card m)
     (j : Fin (k + 1))
     (b : Fin (k + 1) → ℝ) (hb : ∀ i, 0 ≤ b i)
     (hstep :
@@ -1384,9 +1374,7 @@ theorem incrementPartition_product_bound {p k : ℕ} [NeZero p]
     (Finset.prod_nonneg fun i _ => hb i) hcard
 
 theorem chainMass_fixed_gap_product_bound {p k : ℕ} [NeZero p]
-    (hk : 0 < k)
     (S : Finset (ZMod p)) (m : Fin k → ℕ)
-    (hm : IsChainSizeTuple S.card m)
     (j : Fin (k + 1))
     (b : Fin (k + 1) → ℝ) (hb : ∀ i, 0 ≤ b i)
     (hstep :
@@ -1409,15 +1397,15 @@ theorem chainMass_fixed_gap_product_bound {p k : ℕ} [NeZero p]
       (chainFamily S m) (incrementPartitionFamily S m)
       (fun R => chainIncrements S R)
     · intro R hR
-      exact chainIncrements_mem hk S m hR
+      exact chainIncrements_mem S m hR
     · intro R hR R' hR' hEq
-      exact chain_eq_of_increments_eq hk S hR hR' hEq
+      exact chain_eq_of_increments_eq S hR hR' hEq
     · intro Δ hΔ
       exact ⟨incrementsToChain Δ,
-        incrementsToChain_mem hk S m hΔ,
-        increments_chain_inverse hk S m hm hΔ⟩
+        incrementsToChain_mem S m hΔ,
+        increments_chain_inverse S m hΔ⟩
     · intro R hR
-      exact chain_sum_event_iff_increment_targets hk S R hR z
+      exact chain_sum_event_iff_increment_targets S R hR z
   rw [hmass]
   have hmono :
       uniformMass (incrementPartitionFamily S m)
@@ -1429,7 +1417,7 @@ theorem chainMass_fixed_gap_product_bound {p k : ℕ} [NeZero p]
     intro Δ hΔ hall i hij
     exact hall i
   exact le_trans hmono
-    (incrementPartition_product_bound S m hm j b hb hstep
+    (incrementPartition_product_bound S m j b hb hstep
       (chainGapTarget S z))
 
 /-- Corollary 4.2. -/
@@ -1455,7 +1443,7 @@ theorem corollary42 : Corollary42Statement := by
       chainMass S m z ≤
         ∏ i ∈ Finset.univ.erase j,
           chainFactor p S.card (Cε / (1 / (k + 1 : ℝ))) (chainGap S.card m i) := by
-    apply chainMass_fixed_gap_product_bound hk S m hm j
+    apply chainMass_fixed_gap_product_bound S m j
       (fun i => chainFactor p S.card (Cε / (1 / (k + 1 : ℝ))) (chainGap S.card m i))
       (fun i => chainFactor_nonneg _ hCk.le)
     intro i hij T hTS hsum q
@@ -1469,7 +1457,7 @@ theorem corollary42 : Corollary42Statement := by
       have hscaled : 1 / (k + 1 : ℝ) * T.card ≤ 1 / (k + 1 : ℝ) * S.card :=
         mul_le_mul_of_nonneg_left hTle hε0.le
       nlinarith
-    exact chain_factor_from_cor14 (k := k) hp S hS (1 / (k + 1 : ℝ)) Cε hε0 hε1 hCε
+    exact chain_factor_from_cor14 S hS (1 / (k + 1 : ℝ)) Cε hε0 hε1 hCε
       (fun U hU r hr hrf q' => hCor p hp U hU r hr hrf q') T hTS hTlower
       (chainGap S.card m i) hgap hfrac q
   calc chainMass S m z

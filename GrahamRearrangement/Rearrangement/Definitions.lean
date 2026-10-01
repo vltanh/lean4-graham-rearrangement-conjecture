@@ -81,7 +81,7 @@ def indexOpenClosed {n : ℕ} (a b : Fin n) : Finset (Fin n) :=
   Finset.univ.filter fun i => a.val < i.val ∧ i.val ≤ b.val
 
 theorem card_indexOpenClosed {n : ℕ} (a b : Fin n)
-    (hab : a.val ≤ b.val) :
+    :
     (indexOpenClosed a b).card = b.val - a.val := by
   have h : indexOpenClosed a b = Finset.Ioc a b := by
     ext i
@@ -94,7 +94,7 @@ def indexHalfOpen {n : ℕ} (a b : Fin n) : Finset (Fin n) :=
   Finset.univ.filter fun i => a.val ≤ i.val ∧ i.val < b.val
 
 theorem card_indexHalfOpen {n : ℕ} (a b : Fin n)
-    (hab : a.val ≤ b.val) :
+    :
     (indexHalfOpen a b).card = b.val - a.val := by
   have h : indexHalfOpen a b = Finset.Ico a b := by
     ext i
@@ -497,7 +497,7 @@ def IsAdmissiblePermutation {n : ℕ} (D : ℕ)
 
 def Lemma55Event {n p D : ℕ}
     (σ : Fin n → ZMod p)
-    (b b' : Fin n)
+    (b' : Fin n)
     (u : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n)) : Prop :=
   ∃ x ∈ tailTuples b' D,
@@ -511,7 +511,7 @@ def Lemma55Event {n p D : ℕ}
 
 def Lemma56Event {n p D : ℕ}
     (σ : Fin n → ZMod p)
-    (b b' : Fin n)
+    (b : Fin n)
     (u : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n)) : Prop :=
   ∃ x ∈ headTuples b D,
@@ -830,7 +830,7 @@ def RightRepairEvent {n p : ℕ} (D : ℕ)
       (∀ i,
         paperPos b < paperPos (u i) ∧
           paperPos (u i) ≤ paperPos b') ∧
-      Lemma55Event σ b b' u
+      Lemma55Event σ b' u
         (fun i => Equiv.swap b (y i))
 
 /-- Left-extending witness event used in the proof of Lemma 5.3. -/
@@ -847,7 +847,7 @@ def LeftRepairEvent {n p : ℕ} (D : ℕ)
       (∀ i,
         paperPos b ≤ paperPos (u i) ∧
           paperPos (u i) < paperPos b') ∧
-      Lemma56Event σ b b' u
+      Lemma56Event σ b u
         (fun i => Equiv.swap b (y i))
 
 /-- Bad event B₁, exactly as in Lemma 5.1. -/
@@ -905,14 +905,14 @@ noncomputable instance {n p D : ℕ} : DecidablePred (RightRepairEvent (n := n) 
 noncomputable instance {n p D : ℕ} : DecidablePred (LeftRepairEvent (n := n) (p := p) D) :=
   Classical.decPred _
 
-noncomputable instance {n p D : ℕ} (b b' : Fin n) (u : Fin D → Fin n)
+noncomputable instance {n p D : ℕ} (b' : Fin n) (u : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n)) :
-    DecidablePred fun σ : Fin n → ZMod p => Lemma55Event σ b b' u πi :=
+    DecidablePred fun σ : Fin n → ZMod p => Lemma55Event σ b' u πi :=
   Classical.decPred _
 
-noncomputable instance {n p D : ℕ} (b b' : Fin n) (u : Fin D → Fin n)
+noncomputable instance {n p D : ℕ} (b : Fin n) (u : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n)) :
-    DecidablePred fun σ : Fin n → ZMod p => Lemma56Event σ b b' u πi :=
+    DecidablePred fun σ : Fin n → ZMod p => Lemma56Event σ b u πi :=
   Classical.decPred _
 
 /-- All indexed orderings of S: the finite sample space for the random bijection σ. -/

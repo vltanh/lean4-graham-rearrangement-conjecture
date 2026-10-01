@@ -18,7 +18,7 @@ distributions, is proved as well, in [`GrahamRearrangement/External/`](GrahamRea
 
 `lake build` succeeds with no `sorry`, and the repository declares no `axiom`: every theorem
 depends only on Lean's standard axioms [`propext`](https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#propext), [`Classical.choice`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Classical.choice) and [`Quot.sound`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Quot.sound). The script
-[`scripts/Audit.lean`](scripts/Audit.lean) checks this for all 1902 declarations of the library, and lists which
+[`scripts/Audit.lean`](scripts/Audit.lean) checks this for all 1896 declarations of the library, and lists which
 results from prior work each result of the paper uses; run it with
 `lake env lean scripts/Audit.lean`.
 
@@ -105,10 +105,12 @@ proved here. The slips, in decreasing order of substance:
 **Missing hypotheses.** None in the statements of the paper's results. The formalization
 makes the standing assumptions of each section explicit (§4 of the report).
 
-**Redundant hypotheses.** Primality is not used in Facts 2.3 and 2.5, nor in Lemma 4.3,
-which also holds for every constant `C > 0`, not only the constant `C_k` of Corollary 4.2.
-The Lean statements of Facts 2.3 and 2.5 keep `p` prime, to match the paper; Lemma 4.3 is
-stated for every `C > 0` ([`REPORT.md`](REPORT.md), §5).
+**Redundant hypotheses.** Several statements include hypotheses that their proofs do not
+use: primality in Facts 2.3 and 2.5, `|S| ≥ 2` in (3.4), `t ≥ 1` in Lemmas 3.1 and 3.6,
+`χ ∈ D_t` in Lemma 3.2, `δ > 0` in Lemma 3.7, and `b' ≤ |S| − 2` in Lemma 5.5. Lemma 4.3
+holds for every constant `C > 0`, not only the constant `C_k` of Corollary 4.2. The Lean
+statements omit these hypotheses, so each implies the paper's statement
+([`REPORT.md`](REPORT.md), §5).
 
 **Use of cited results.** The proofs cite one result, the Chernoff bound for hypergeometric
 distributions (Janson–Łuczak–Ruciński, *Random Graphs*, Theorem 2.10 and Eq. (2.6)), in

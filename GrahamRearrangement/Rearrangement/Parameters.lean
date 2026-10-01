@@ -64,14 +64,14 @@ structure Section5Parameters (α : ℝ) where
 
 theorem exists_section5Parameters {α : ℝ}
     (hα0 : 0 < α) (hαh : α < 1 / 2) :
-    ∃ P : Section5Parameters α, True := by
+    Nonempty (Section5Parameters α) := by
   let D := section5D α
   have hD7 : 7 ≤ D := section5D_ge_seven hα0 hαh
   have hK : 0 ≤ 4 * max (chainConstant D) (chainConstant 1) :=
     mul_nonneg (by norm_num) (le_max_of_le_left (chainConstant_pos D).le)
   obtain ⟨N, -, hNasym⟩ :=
     Auxiliary.exists_sqrt_log_power_threshold
-      (α := α) (K := 4 * max (chainConstant D) (chainConstant 1)) hα0 hαh hK
+      (α := α) (K := 4 * max (chainConstant D) (chainConstant 1)) hαh hK
   let A : ℝ := ((10 ^ 4 : ℝ) * (2 : ℝ) ^ (40 * D)) ^ (1 / α)
   let B : ℝ := (D + 1 : ℝ) * (2 : ℝ) ^ D * (D : ℝ) ^ (14 * D ^ 2)
   let Cα : ℝ := max A (max B (max (50 * D : ℝ) N))
@@ -93,7 +93,7 @@ theorem exists_section5Parameters {α : ℝ}
     Cα_fiftyD := hC50
     second_ge_100 := hB100
     hundred_ge_40 := h10040
-    asymptotic := ?_ }, trivial⟩
+    asymptotic := ?_ }⟩
   intro n hn
   apply hNasym n
   exact_mod_cast le_trans hCN hn

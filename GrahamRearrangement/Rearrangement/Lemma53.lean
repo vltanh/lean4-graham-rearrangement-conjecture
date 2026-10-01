@@ -135,7 +135,7 @@ def RightBlockedWitness {n p D : ℕ}
       (applyPositionPerm (applyPositionPerm σ π) (Equiv.swap b y))
       s t = 0
 
-def LeftBlockedWitness {n p D : ℕ}
+def LeftBlockedWitness {n p : ℕ}
     (σ : Fin n → ZMod p) (b : Fin n)
     (π : Equiv.Perm (Fin n)) (y : Fin n) : Prop :=
   ∃ s t : Fin n,
@@ -179,7 +179,7 @@ theorem blocked_witness_has_side
     (hfix : FixedBelow b π)
     {y : Fin n} (hy : y ∈ blockedCandidates D σ b π) :
     RightBlockedWitness (D := D) σ b π y ∨
-      LeftBlockedWitness (D := D) σ b π y := by
+      LeftBlockedWitness σ b π y := by
   classical
   have hblocked : IsBlockedAt D σ b π y := (Finset.mem_filter.1 hy).2
   rcases hblocked with ⟨hby, hy5, s, t, hs2, hst, hzero, hcross⟩
@@ -218,7 +218,7 @@ theorem lemma53_exists_injective_tuple {n D : ℕ}
 distinct. Distinctness of the far endpoints is proved separately below, just
 as in the paper. -/
 theorem blocked_family_side_split
-    {n p D : ℕ} (hD : 0 < D)
+    {n p D : ℕ}
     (σ : Fin n → ZMod p) (b : Fin n)
     (hb : b ∈ badRightEndpoints σ)
     (hbfar : paperPos b + 30 * D ≤ n)
@@ -235,14 +235,14 @@ theorem blocked_family_side_split
     (∃ y : Fin D → Fin n,
       Function.Injective y ∧
       ∀ i, y i ∈ blockedCandidates D σ b π ∧
-        LeftBlockedWitness (D := D) σ b π (y i)) := by
+        LeftBlockedWitness σ b π (y i)) := by
   classical
   have hcover :
       blockedCandidates D σ b π ⊆
         (blockedCandidates D σ b π).filter
             (RightBlockedWitness (D := D) σ b π) ∪
           (blockedCandidates D σ b π).filter
-            (LeftBlockedWitness (D := D) σ b π) := by
+            (LeftBlockedWitness σ b π) := by
     intro y hy
     rcases blocked_witness_has_side σ b hb hbfar h0 π hadm hfix hy with h | h
     · exact Finset.mem_union_left _ (Finset.mem_filter.2 ⟨hy, h⟩)
@@ -257,7 +257,7 @@ theorem blocked_family_side_split
   · right
     obtain ⟨y, hyinj, hy⟩ := lemma53_exists_injective_tuple (D := D)
       ((blockedCandidates D σ b π).filter
-        (LeftBlockedWitness (D := D) σ b π)) (by omega)
+        (LeftBlockedWitness σ b π)) (by omega)
     exact ⟨y, hyinj, fun i => Finset.mem_filter.1 (hy i)⟩
 
 /-- The distinctness argument for the right endpoints t_i in E₁, exactly as
@@ -458,7 +458,7 @@ theorem badEvent3_core_side_reduction
     intro y hy
     have h := (Finset.mem_filter.1 hy).2
     exact ⟨h.1, h.2.1⟩
-  rcases blocked_family_side_split hD σ b hb hbfar h0 π hπadm hπfix hblocked with
+  rcases blocked_family_side_split σ b hb hbfar h0 π hπadm hπfix hblocked with
     ⟨y, hyinj, hyw⟩ | ⟨y, hyinj, hyw⟩
   · choose s t hs using fun i => (hyw i).2
     have hw : ∀ i,
@@ -514,12 +514,12 @@ theorem badEvent3_core_side_reduction
 
 def rightRepairAtom {n p D : ℕ}
     (θ : RepairParams n D) (σ : Fin n → ZMod p) : Prop :=
-  Lemma55Event σ θ.b θ.b' θ.u
+  Lemma55Event σ θ.b' θ.u
     (fun i => Equiv.swap θ.b (θ.y i))
 
 def leftRepairAtom {n p D : ℕ}
     (θ : RepairParams n D) (σ : Fin n → ZMod p) : Prop :=
-  Lemma56Event σ θ.b θ.b' θ.u
+  Lemma56Event σ θ.b θ.u
     (fun i => Equiv.swap θ.b (θ.y i))
 
 /-- The final arithmetic shared by the bounds for E₁ and E₂. -/
@@ -558,7 +558,7 @@ theorem rightRepairEvent_mass
     letI : NeZero p := ⟨hp.ne_zero⟩
     orderingEventMass S (RightRepairEvent P.D) ≤
       (1 / 100 : ℝ) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hD := section5Parameters_D_pos hα0 hαh P
   have hmass :
       orderingEventMass S (RightRepairEvent P.D) ≤
@@ -568,7 +568,7 @@ theorem rightRepairEvent_mass
     apply Section5.witness_union_bound
       (indexedOrderings S) (rightRepairParameters S.card P.D)
       (RightRepairEvent P.D)
-      (fun θ σ => Lemma55Event σ θ.b θ.b' θ.u
+      (fun θ σ => Lemma55Event σ θ.b' θ.u
         (fun i => Equiv.swap θ.b (θ.y i)))
     · intro σ _ h
       rcases h with ⟨b, b', hb2, hbfar, hgap, y, u, hy, hu, hev⟩
@@ -576,8 +576,7 @@ theorem rightRepairEvent_mass
         mem_rightRepairParameters.2 ⟨hb2, hbfar, hgap, hy, hu⟩, hev⟩
     · intro θ hθ
       obtain ⟨hb2, hbfar, hgap, hy, hu⟩ := mem_rightRepairParameters.1 hθ
-      have hb'le : paperPos θ.b' ≤ S.card - 2 := by omega
-      exact lemma5_5 hα0 hαh P hp S hreg θ.b θ.b' hb2 hb'le hgap θ.u
+      exact lemma5_5 hα0 hαh P hp S hreg θ.b θ.b' hb2 hgap θ.u
         (fun i => ⟨(hu i).1.le, (hu i).2⟩)
         (fun i => Equiv.swap θ.b (θ.y i))
         (fun i => swap_fixedOutside θ.b θ.b' (θ.y i) (hy i).1 (hy i).2)
@@ -592,7 +591,7 @@ theorem leftRepairEvent_mass
     letI : NeZero p := ⟨hp.ne_zero⟩
     orderingEventMass S (LeftRepairEvent P.D) ≤
       (1 / 100 : ℝ) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hD := section5Parameters_D_pos hα0 hαh P
   have hmass :
       orderingEventMass S (LeftRepairEvent P.D) ≤
@@ -602,7 +601,7 @@ theorem leftRepairEvent_mass
     apply Section5.witness_union_bound
       (indexedOrderings S) (leftRepairParameters S.card P.D)
       (LeftRepairEvent P.D)
-      (fun θ σ => Lemma56Event σ θ.b θ.b' θ.u
+      (fun θ σ => Lemma56Event σ θ.b θ.u
         (fun i => Equiv.swap θ.b (θ.y i)))
     · intro σ _ h
       rcases h with ⟨b, b', hb2, hbfar, hgap, y, u, hy, hu, hev⟩
@@ -627,7 +626,7 @@ theorem lemma5_3
     letI : NeZero p := ⟨hp.ne_zero⟩
     orderingEventMass S (BadEvent3 P.D) ≤
       (1 / 25 : ℝ) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hD := section5Parameters_D_pos hα0 hαh P
   have hcore :
       uniformMass (indexedOrderings S)

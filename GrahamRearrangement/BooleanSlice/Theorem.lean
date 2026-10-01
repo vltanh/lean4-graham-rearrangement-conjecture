@@ -77,7 +77,7 @@ theorem expected_lowPsi_bound {p m t : ℕ} (hp : p.Prime)
         (fun P => ((lowPsiNonzero P t).card : ℝ)) ≤
       (10 ^ 4 : ℝ) * p * Real.sqrt t /
         ((S.card : ℝ) * Real.sqrt m) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   obtain ⟨hm, hm4, hbig⟩ :=
     section3_basic_bounds S.card m hS hmLower hmUpper
@@ -91,7 +91,7 @@ theorem expected_lowPsi_bound {p m t : ℕ} (hp : p.Prime)
     intro χ hχ
     have hχ0 : χ ≠ 0 := (Finset.mem_erase.1 (Finset.mem_sdiff.1 hχ).1).1
     have hχD : χ ∉ Dset S m t := (Finset.mem_sdiff.1 hχ).2
-    exact lemma3_1 hp S hS hmLower hmUpper ht χ hχ0 hχD
+    exact lemma3_1 hp S hS hmLower hmUpper χ hχ0 hχD
   have h2 : ∀ χ ∈ T₂,
       partitionMass (m := m) S (fun P => psi P χ < 2 * t) ≤
         1 / (S.card : ℝ) ^ 9 := by
@@ -230,7 +230,7 @@ theorem expected_A0_bound {p m : ℕ} (hp : p.Prime)
     partitionExpectation (m := m) S (fun P => ((A0 P).card : ℝ)) ≤
       1 + (10 ^ 4 : ℝ) * p /
         ((S.card : ℝ) * Real.sqrt m) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   obtain ⟨hm, hm4, _hbig⟩ :=
     section3_basic_bounds S.card m hS hmLower hmUpper
@@ -290,7 +290,7 @@ theorem expected_At_bound {p m t : ℕ} (hp : p.Prime)
     partitionExpectation (m := m) S (fun P => ((At P t).card : ℝ)) ≤
       (10 ^ 4 : ℝ) * p * Real.sqrt t /
         ((S.card : ℝ) * Real.sqrt m) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   have h2000 : 2000 ^ 2 ≤ 2 ^ 22 := by norm_num
   have hsmall' : t ≤ m / (2000 ^ 2) :=
@@ -353,12 +353,12 @@ theorem theorem13_explicit :
               (2 ^ 24 : ℝ) /
                 ((S.card : ℝ) * Real.sqrt (m : ℝ)) := by
   intro p hp
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   intro S hS m hmLower hmUpper z
   obtain ⟨hm, hm4, _hbig⟩ :=
     section3_basic_bounds S.card m hS hmLower hmUpper
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
-  have h34 := equation_3_4 hp S hS hm hm4 z
+  have h34 := equation_3_4 hp S hm hm4 z
   have hA0 := expected_A0_bound hp S hS hmLower hmUpper
   have hpR : (0 : ℝ) < p := by exact_mod_cast hp.pos
   have hSpos : (0 : ℝ) < S.card := by
@@ -455,7 +455,7 @@ theorem theorem13_explicit :
 theorem theorem13 : Theorem13Statement := by
   refine ⟨(2 ^ 24 : ℝ), by norm_num, ?_⟩
   intro p hp
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   intro S hS m hmLower hmUpper z
   exact theorem13_explicit p hp S hS m hmLower hmUpper z
 

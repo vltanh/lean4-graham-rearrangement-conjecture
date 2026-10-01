@@ -212,9 +212,8 @@ theorem usedSeconds_near_card_le
     _ ≤ D := hlocal b
 
 theorem badEndpoints_in_repairWindow_le
-    {n p D : ℕ} {σ : Fin n → ZMod p}
+    {n D : ℕ}
     (B : Finset (Fin n))
-    (hB : B = badRightEndpoints σ)
     (hlocal : ∀ z : Fin n,
       (B ∩ symmetricWindow z (10 * D)).card ≤ D)
     (b : Fin n) :
@@ -330,7 +329,6 @@ theorem extend_admissible_collection
 theorem collectionPerm_insert
     {n D : ℕ}
     {P : Finset (Fin n × Fin n)}
-    (hP : IsAdmissibleCollection D P)
     {b y : Fin n}
     (hnew : IsAdmissibleCollection D (insert (b,y) P))
     (hnotmem : (b,y) ∉ P) :
@@ -345,7 +343,7 @@ theorem collectionPerm_insert
   rfl
 
 theorem repair_state_step
-    {n p D : ℕ} (hD : 0 < D)
+    {n p D : ℕ}
     (σ : Fin n → ZMod p)
     (B R : Finset (Fin n))
     (P : Finset (Fin n × Fin n))
@@ -381,7 +379,7 @@ theorem repair_state_step
   have hblockedCard := hblocked b hbB (collectionPerm P) hπadm hfix
   have hCcard : (repairWindow b D).card = 5 * D := card_repairWindow b hbfar
   have h₁ := blocked_in_repairWindow_le σ b (collectionPerm P) hblockedCard
-  have h₂ := badEndpoints_in_repairWindow_le B hB hlocal b
+  have h₂ := badEndpoints_in_repairWindow_le B hlocal b
   have h₃ := usedSeconds_near_card_le hstate hlocal hbR
   -- At most 2D + D + D < 5D choices are forbidden.
   obtain ⟨y, hyC, hyBl, hyB, hyU⟩ :
@@ -438,7 +436,7 @@ theorem repair_state_step
     extend_admissible_collection hstate.admissible hyw.1 (by omega)
       hbfirst hbsecond hyfirst hysecond
   have hnotmem : (b,y) ∉ P := fun h => hbfirst (b,y) h rfl
-  have hperm := collectionPerm_insert hstate.admissible hnewAdm hnotmem
+  have hperm := collectionPerm_insert hnewAdm hnotmem
   refine ⟨b, hbR, y, hyC, hyNotBad, hyU, hnotBlocked, ?_⟩
   refine ⟨hnewAdm, ?_, ?_, ?_, ?_⟩
   · exact fun r hr => hstate.remaining_subset (Finset.mem_of_mem_erase hr)
@@ -470,7 +468,7 @@ theorem repair_state_step
 
 /-- The complete induction on the number of unprocessed bad endpoints. -/
 theorem repair_all_bad_endpoints
-    {n p D : ℕ} (hD : 0 < D)
+    {n p D : ℕ}
     (σ : Fin n → ZMod p)
     (B R : Finset (Fin n))
     (P : Finset (Fin n × Fin n))
@@ -498,7 +496,7 @@ theorem repair_all_bad_endpoints
     intro R P hcard hstate
     by_cases hR : R.Nonempty
     · obtain ⟨b, hbR, y, _, _, _, _, hstep⟩ :=
-        repair_state_step hD σ B R P hB hstate hfar hlocal hblocked hR
+        repair_state_step σ B R P hB hstate hfar hlocal hblocked hR
       have hlt : (R.erase b).card < k := by
         rw [Finset.card_erase_of_mem hbR, ← hcard]
         have := Finset.card_pos.2 hR
@@ -510,7 +508,7 @@ theorem repair_all_bad_endpoints
 
 /-- The deterministic local-repair step from the proof of Theorem 1.2. -/
 theorem section5_local_repair
-    {n p D : ℕ} (hD : 0 < D)
+    {n p D : ℕ}
     (σ : Fin n → ZMod p)
     (hgood : Section5Good D σ) :
     ∃ π : Equiv.Perm (Fin n),
@@ -521,7 +519,7 @@ theorem section5_local_repair
   have hinit : RepairState D σ (badRightEndpoints σ) (badRightEndpoints σ) ∅ :=
     empty_repair_state σ _ rfl
   obtain ⟨P, hPadm, hzero⟩ :=
-    repair_all_bad_endpoints hD σ (badRightEndpoints σ) (badRightEndpoints σ)
+    repair_all_bad_endpoints σ (badRightEndpoints σ) (badRightEndpoints σ)
       ∅ rfl hinit (not_badEvent1_far h1) (not_badEvent2_local h2)
       (not_badEvent3_blocked h3)
   refine ⟨collectionPerm P, ⟨P, hPadm, rfl⟩, ?_⟩

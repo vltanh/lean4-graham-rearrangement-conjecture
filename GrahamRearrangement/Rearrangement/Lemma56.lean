@@ -34,9 +34,9 @@ theorem lemma5_6
     (hfix : ∀ i, FixedOutside b b' (πi i)) :
     letI : NeZero p := ⟨hp.ne_zero⟩
     orderingEventMass S
-      (fun σ => Lemma56Event σ b b' u πi) ≤
+      (fun σ => Lemma56Event σ b u πi) ≤
         1 / (S.card : ℝ) ^ 2 := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hD7 : 7 ≤ P.D := by
     rw [P.D_eq]
     exact section5D_ge_seven hα0 hαh
@@ -44,10 +44,10 @@ theorem lemma5_6
   · have hempty :=
       lemma56_event_empty_at_two
         (n := S.card) (p := p) (D := P.D)
-        (by omega) b b' hbEq u πi
+        (by omega) b hbEq u πi
     have hzeroMass :
         orderingEventMass S
-          (fun σ => Lemma56Event σ b b' u πi) = 0 := by
+          (fun σ => Lemma56Event σ b u πi) = 0 := by
       unfold orderingEventMass
       apply uniformMass_empty_of_forall_not
       intro σ
@@ -62,10 +62,6 @@ theorem lemma5_6
       reversePermTuple πi
     have hrb2 : 2 ≤ paperPos rb := by
       dsimp [rb]
-      rw [paperPos_reverseIndex]
-      omega
-    have hrb' : paperPos rb' ≤ S.card - 2 := by
-      dsimp [rb']
       rw [paperPos_reverseIndex]
       omega
     have hrgap : paperPos rb' - paperPos rb = 5 * P.D := by
@@ -87,10 +83,10 @@ theorem lemma5_6
         b b' (πi (reverseIndex P.D i))
         (hfix (reverseIndex P.D i))
     have hmass :=
-      lemma56_mass_le_reversed S b b' hgap u hu πi
+      lemma56_mass_le_reversed S b u πi
     exact le_trans hmass
       (lemma5_5 hα0 hαh P hp S hreg
-        rb rb' hrb2 hrb' hrgap ru hru rπi hrfix)
+        rb rb' hrb2 hrgap ru hru rπi hrfix)
 
 end
 

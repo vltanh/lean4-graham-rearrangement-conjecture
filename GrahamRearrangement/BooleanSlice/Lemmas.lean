@@ -56,7 +56,7 @@ the radius-8 ball. -/
 theorem farSet_quarter {p m t : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (χ : ZMod p)
     (hχ0 : χ ≠ 0) (hχD : χ ∉ Dset S m t)
-    {x' : ZMod p} (hx' : x' ∈ S) :
+    {x' : ZMod p} :
     S.card ≤ 4 * (farSet S m t χ x').card := by
   classical
   by_contra h
@@ -182,7 +182,7 @@ theorem psi_ge_energy_div_sq {p m : ℕ} [NeZero p]
   apply Finset.sum_le_sum
   intro i _
   apply mul_le_mul_of_nonneg_right _ (by positivity)
-  have hb := Section3.balanced_block_size_bounds S hm hmS hP i
+  have hb := Section3.balanced_block_size_bounds S hP i
   have hdiv : 0 < S.card / m := Nat.div_pos hmS hm
   have hcpos : (0 : ℝ) < (P i).card := by
     exact_mod_cast lt_of_lt_of_le hdiv hb.1
@@ -313,7 +313,7 @@ theorem psi_ge_two_of_far_rows {p m t : ℕ} [NeZero p]
 /-- Lemma 3.2. -/
 theorem lemma3_2 {p m t : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (hm : 0 < m) (ht : 0 < t)
-    (χ : ZMod p) (hχD : χ ∈ Dset S m t)
+    (χ : ZMod p)
     (hχB : χ ∉ Bset S m (2000 * t)) :
     (200 : ℝ) * t / m * S.card ≤
       ∑ x ∈ S \ Jset S m t χ,
@@ -434,7 +434,7 @@ theorem psi_ge_five_of_dense_rows {p m t : ℕ} [NeZero p]
   set a : ℕ := S.card / m with ha
   have hmpos : (0 : ℝ) < m := by exact_mod_cast hm
   have htpos : (0 : ℝ) < t := by exact_mod_cast ht
-  have hL32 := lemma3_2 S hm ht χ hχD hχB
+  have hL32 := lemma3_2 S hm ht χ hχB
   have hsq : (Real.sqrt ((t : ℝ) / m)) ^ 2 = (t : ℝ) / m :=
     Real.sq_sqrt (by positivity)
   -- A point outside `J` and a point of the dense interval are far apart.
@@ -561,7 +561,7 @@ theorem lemma3_1 {p m t : ℕ} [NeZero p] (hp : p.Prime)
     (hmLower : (2 ^ 24 : ℝ) * Real.log (S.card : ℝ) ≤ m)
     (hmUpper : (m : ℝ) ≤
       (1 / 1000 : ℝ) * S.card / Real.log (S.card : ℝ))
-    (ht : 0 < t) (χ : ZMod p) (hχ0 : χ ≠ 0)
+    (χ : ZMod p) (hχ0 : χ ≠ 0)
     (hχD : χ ∉ Dset S m t) :
     letI : NeZero p := ⟨hp.ne_zero⟩
     partitionMass (m := m) S (fun P => psi P χ < 2 * t) ≤
@@ -595,7 +595,7 @@ theorem lemma3_1 {p m t : ℕ} [NeZero p] (hp : p.Prime)
     _ ≤ ∑ _x' ∈ S, Real.exp (-(S.card : ℝ) / (64 * m)) := by
           apply Finset.sum_le_sum
           intro x' hx'
-          have hfar := farSet_quarter (m := m) (t := t) S χ hχ0 hχD hx'
+          have hfar := farSet_quarter (m := m) (t := t) (x' := x') S χ hχ0 hχD
           have hx'G : x' ∉ farSet S m t χ x' := by
             intro hmem
             have h := (Finset.mem_filter.1 hmem).2
@@ -714,7 +714,7 @@ theorem lemma3_5 {p m t : ℕ} [NeZero p]
   -- `E[X] ≤ |B| t/m` for `X(Y,Y') = ∑_{χ∈B} ‖χY-χY'‖²`.
   have hEX : uniformExpectation (S.product S) (fun q => f q.1 q.2) ≤
       (B.card : ℝ) * ((t : ℝ) / m) := by
-    rw [Section3.pair_uniform_expectation S hS]
+    rw [Section3.pair_uniform_expectation S]
     have hswap :
         ∑ x ∈ S, ∑ y ∈ S, f x y =
           ∑ χ ∈ B, ∑ x ∈ S, ∑ y ∈ S, zmodNorm (χ * x - χ * y) ^ 2 := by
@@ -827,13 +827,13 @@ theorem character_sum_real_of_neg_symmetric
 
 theorem symmetric_character_square_sum
     {p : ℕ} (hp : p.Prime)
-    (B : Finset (ZMod p)) (hzero : 0 ∈ B)
+    (B : Finset (ZMod p))
     (hsymm : ∀ χ ∈ B, -χ ∈ B) :
     letI : NeZero p := ⟨hp.ne_zero⟩
     ∑ x : ZMod p,
       ((∑ χ ∈ B, ZMod.stdAddChar (χ * x)).re) ^ 2 =
         (p : ℝ) * B.card := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   have hreal : ∀ x : ZMod p,
       ((∑ χ ∈ B, ZMod.stdAddChar (χ * x)) : ℂ).im = 0 :=
@@ -872,7 +872,7 @@ theorem symmetric_character_square_sum
             intro χ _
             apply Finset.sum_congr rfl
             intro χ' _
-            exact Auxiliary.zmod_character_orthogonality hp (χ + χ')
+            exact Auxiliary.zmod_character_orthogonality (χ + χ')
       _ = ∑ _χ ∈ B, (p : ℂ) := by
             apply Finset.sum_congr rfl
             intro χ hχ
@@ -901,12 +901,12 @@ theorem lemma3_6 {p m t : ℕ} (hp : p.Prime)
     letI : NeZero p := ⟨hp.ne_zero⟩
     ((Qset S m t (1 / 200)).card : ℝ) ≤
       (5 : ℝ) / 4 * p / (Bset S m t).card := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   set B := Bset S m t with hBdef
   set Q := Qset S m t (1 / 200) with hQdef
   obtain ⟨hzero, hsymm⟩ := Bset_zero_neg (m := m) (t := t) S
-  have horth := symmetric_character_square_sum hp B hzero hsymm
+  have horth := symmetric_character_square_sum hp B hsymm
   have hBpos : (0 : ℝ) < B.card := by
     exact_mod_cast Finset.card_pos.mpr ⟨0, hzero⟩
   have hpoint : ∀ x ∈ Q,
@@ -1001,7 +1001,7 @@ theorem list_map_sum_lt_length_mul {α : Type*} (g : α → ℝ) (c : ℝ) :
 /-- Lemma 3.7. -/
 theorem lemma3_7 {p m t k : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (δ : ℝ)
-    (hk : 0 < k) (hδ : 0 < δ) :
+    (hk : 0 < k) :
     kfoldSumset (Qset S m t δ) k ⊆
       Qset S m t ((k : ℝ) ^ 2 * δ) := by
   classical
@@ -1053,7 +1053,7 @@ theorem lemma3_4 {p m t : ℕ} (hp : p.Prime)
     ((Bset S m t).card : ℝ) ≤
       1 + 200 * p * Real.sqrt t /
         ((S.card : ℝ) * Real.sqrt m) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   classical
   set B := Bset S m t with hBdef
   have hpR : (0 : ℝ) < p := by exact_mod_cast hp.pos
@@ -1110,7 +1110,7 @@ theorem lemma3_4 {p m t : ℕ} (hp : p.Prime)
       kfoldSumset (Qset S m t (10 * t / m)) k ⊆ Qset S m t (1 / 200) := by
     intro y hy
     exact Qset_mono_delta S hkδ
-      (lemma3_7 S (10 * t / m) (by omega) (by positivity) hy)
+      (lemma3_7 S (10 * t / m) (by omega) hy)
   have hproper :
       kfoldSumset (Qset S m t (10 * t / m)) k ≠ Finset.univ := by
     intro h

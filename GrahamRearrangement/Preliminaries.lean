@@ -269,7 +269,7 @@ theorem representative_sum_shift {p : ℕ} [NeZero p]
     induction xs with
     | nil => simp
     | cons x xs ih =>
-        simp [ih]
+        simp
   exact (ZMod.intCast_eq_iff p
     ((xs.map fun x => (x.val : ℤ)).sum) xs.sum).1 hcast
 
@@ -301,7 +301,7 @@ theorem fact2_3_general {p : ℕ} [NeZero p] (xs : List (ZMod p)) :
   exact h
 
 /-- Fact 2.3. -/
-theorem fact2_3 {p : ℕ} [NeZero p] (hp : p.Prime) (xs : List (ZMod p)) :
+theorem fact2_3 {p : ℕ} [NeZero p] (xs : List (ZMod p)) :
     zmodNorm xs.sum ^ 2 ≤
       (xs.length : ℝ) * (xs.map fun x => zmodNorm x ^ 2).sum :=
   fact2_3_general xs
@@ -453,7 +453,7 @@ theorem stdAddChar_re_eq_cos {p : ℕ} [NeZero p] (x : ZMod p) :
   ring
 
 /-- Fact 2.5. -/
-theorem fact2_5 {p : ℕ} [NeZero p] (hp : p.Prime) (x : ZMod p) :
+theorem fact2_5 {p : ℕ} [NeZero p] (x : ZMod p) :
     (ep p x).re ≤ 1 - 2 * zmodNorm x ^ 2 := by
   rw [ep_eq_stdAddChar, stdAddChar_re_eq_cos]
   exact (fact2_2 _).2

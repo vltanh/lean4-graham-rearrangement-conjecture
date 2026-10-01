@@ -157,17 +157,17 @@ theorem conditional_badEndpoint_mass_le_four
     · intro a ha a' ha' h
       rw [Finset.mem_coe, l54_mem_leftEndpointCandidates] at ha ha'
       simp only [I] at h
-      rw [card_indexHalfOpen a b (by omega), card_indexHalfOpen a' b (by omega)] at h
+      rw [card_indexHalfOpen a b, card_indexHalfOpen a' b] at h
       exact Fin.ext (by omega)
     · intro r hr
       rcases Finset.mem_image.1 hr with ⟨a, ha, rfl⟩
       rw [l54_mem_leftEndpointCandidates] at ha
       simp only [I]
-      rw [card_indexHalfOpen a b (by omega), Finset.mem_Icc]
+      rw [card_indexHalfOpen a b, Finset.mem_Icc]
       omega
     · intro a ha
       rw [l54_mem_leftEndpointCandidates] at ha
-      have hcard : (I a).card = b.val - a.val := card_indexHalfOpen a b (by omega)
+      have hcard : (I a).card = b.val - a.val := card_indexHalfOpen a b
       have hr : 0 < (I a).card := by rw [hcard]; omega
       have hrT : (I a).card < T.card := by rw [hcard, hTcard]; omega
       exact corollary42_one_bound hp T hT2 hr hrT (z a)

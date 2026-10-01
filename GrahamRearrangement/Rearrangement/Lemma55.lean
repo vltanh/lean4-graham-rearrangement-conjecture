@@ -39,7 +39,7 @@ theorem card_interestingLeftSupport_le
 theorem permuted_interval_sum_eq
     {n p : ℕ} (σ : Fin n → ZMod p)
     (π ρ : Equiv.Perm (Fin n)) (a b : Fin n)
-    (hab : a.val ≤ b.val) :
+    :
     indexedIntervalSum
         (applyPositionPerm (applyPositionPerm σ π) ρ) a b =
       indexSetSum σ
@@ -57,7 +57,6 @@ theorem permuted_interval_sum_eq
 theorem lemma55_reduce_to_interesting
     {n p D : ℕ}
     (σ : Fin n → ZMod p)
-    (b b' : Fin n)
     (u x : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n))
     (hπ :
@@ -104,9 +103,6 @@ theorem lemma55_reduce_to_interesting
 theorem constraintSet_mem_above_window {n D : ℕ}
     (b b' : Fin n)
     (u x : Fin D → Fin n)
-    (hu : ∀ i,
-      paperPos b ≤ paperPos (u i) ∧
-        paperPos (u i) ≤ paperPos b')
     (πi : Fin D → Equiv.Perm (Fin n))
     (hfix : ∀ i, FixedOutside b b' (πi i))
     (i : Fin D) (z : Fin n)
@@ -186,9 +182,9 @@ theorem interesting_crossing_forces_tail_start
       (by simp only [paperPos]; omega)
     unfold SwapCrosses at hcross
     tauto
-  · have m1 := constraintSet_mem_above_window b b' u x hu πi hfix i q.1
+  · have m1 := constraintSet_mem_above_window b b' u x πi hfix i q.1
       (by simp only [paperPos]; omega)
-    have m2 := constraintSet_mem_above_window b b' u x hu πi hfix i q.2
+    have m2 := constraintSet_mem_above_window b b' u x πi hfix i q.2
       (by simp only [paperPos]; omega)
     have hui := (hu i).2
     simp only [paperPos] at hui
@@ -439,7 +435,7 @@ theorem lemma55TailSet_card {n D : ℕ}
     simp [paperPos] at hxi
     omega
   simpa [lemma55TailSet,tailSizes] using
-    card_indexOpenClosed b' (x i) hle
+    card_indexOpenClosed b' (x i)
 
 theorem lemma55HeadTail_disjoint {n D : ℕ}
     (b b' : Fin n)
@@ -471,9 +467,6 @@ theorem lemma55_fixed_tail_conditional_bound
     (πi : Fin D → Equiv.Perm (Fin S.card))
     (hfix : ∀ i, FixedOutside b b' (πi i))
     (C : ℝ)
-    (hm : IsChainSizeTuple
-      (S \ indexImageSet τ (indexInterval b b')).card
-      (tailSizes b' x))
     (hchain :
       ∀ z : Fin D → ZMod p,
         chainMass (S \ indexImageSet τ (indexInterval b b'))
@@ -564,7 +557,7 @@ theorem lemma55_fixed_x_pi_mass_le
             (u i) (x i) = 0) ≤
       chainUpperBound p (S.card - (5 * P.D + 1))
         (chainConstant P.D) (tailSizes b' x) := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hD := section5Parameters_D_pos hα0 hαh P
   have hbb' : b'.val = b.val + 5 * P.D := by
     simp only [paperPos] at hgap
@@ -600,7 +593,7 @@ theorem lemma55_fixed_x_pi_mass_le
             (chainConstant P.D) (tailSizes b' x) :=
     fun z => chainConstant_spec P.D hD p hp _ hT2 _ htuple z
   have hbound := lemma55_fixed_tail_conditional_bound S τ hτ b b' u x hu hx
-    πi hfix (chainConstant P.D) htuple hchain
+    πi hfix (chainConstant P.D) hchain
   rwa [hTcard] at hbound
 
 theorem lemma55_chainUpperBound_nonneg {k p n : ℕ} {C : ℝ} (hC : 0 ≤ C)
@@ -641,7 +634,6 @@ theorem lemma5_5
     (S : Finset (ZMod p)) (hreg : Section5Regime P p S)
     (b b' : Fin S.card)
     (hb2 : 2 ≤ paperPos b)
-    (hb' : paperPos b' ≤ S.card - 2)
     (hgap : paperPos b' - paperPos b = 5 * P.D)
     (u : Fin P.D → Fin S.card)
     (hu : ∀ i,
@@ -651,9 +643,9 @@ theorem lemma5_5
     (hfix : ∀ i, FixedOutside b b' (πi i)) :
     letI : NeZero p := ⟨hp.ne_zero⟩
     orderingEventMass S
-      (fun σ => Lemma55Event σ b b' u πi) ≤
+      (fun σ => Lemma55Event σ b' u πi) ≤
         1 / (S.card : ℝ) ^ 2 := by
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   have hD7 : 7 ≤ P.D := by
     rw [P.D_eq]
     exact section5D_ge_seven hα0 hαh
@@ -662,7 +654,7 @@ theorem lemma5_5
   have hCpos := chainConstant_pos P.D
   obtain ⟨s, hs⟩ : ∃ s, s = S.card - (5 * P.D + 1) := ⟨_, rfl⟩
   have hunion :
-      orderingEventMass S (fun σ => Lemma55Event σ b b' u πi) ≤
+      orderingEventMass S (fun σ => Lemma55Event σ b' u πi) ≤
         ((P.D ^ (14 * P.D ^ 2) : ℕ) : ℝ) *
           lemma43LHS p s P.D (chainConstant P.D) := by
     unfold orderingEventMass
@@ -670,7 +662,7 @@ theorem lemma5_5
       (indexedOrderings S) (tailTuples b' P.D)
       (fun x => interestingPermutations P.D
         (fun i => constraintSet u x πi i))
-      (fun σ => Lemma55Event σ b b' u πi)
+      (fun σ => Lemma55Event σ b' u πi)
       (fun x π σ =>
         ∀ i,
           indexedIntervalSum
@@ -682,7 +674,7 @@ theorem lemma5_5
     · intro σ _ h
       rcases h with ⟨x, hx, π, hπ, hz⟩
       obtain ⟨π', hπ', hz'⟩ :=
-        lemma55_reduce_to_interesting σ b b' u x πi ⟨π, hπ, hz⟩
+        lemma55_reduce_to_interesting σ u x πi ⟨π, hπ, hz⟩
       exact ⟨x, hx, π', hπ', hz'⟩
     · intro x _
       exact interestingPermutations_card_le hD7 b b' hgap u x hu πi hfix
@@ -723,7 +715,7 @@ theorem lemma5_5
   have hpow :=
     Section5.two_neg_alpha_pow_le_cube
       (n := S.card) (D := P.D) (α := α)
-      (by omega) hα0
+      (by omega)
       (section5Parameters_alphaD hα0 P)
   have hnpos : (0 : ℝ) < S.card := by
     have : (0 : ℕ) < S.card := by omega
@@ -732,7 +724,7 @@ theorem lemma5_5
   have hnC := hreg.2.1
   have hM : (0 : ℝ) ≤ ((P.D ^ (14 * P.D ^ 2) : ℕ) : ℝ) := by positivity
   calc
-    orderingEventMass S (fun σ => Lemma55Event σ b b' u πi)
+    orderingEventMass S (fun σ => Lemma55Event σ b' u πi)
       ≤ ((P.D ^ (14 * P.D ^ 2) : ℕ) : ℝ) *
           lemma43LHS p s P.D (chainConstant P.D) := hunion
     _ ≤ ((P.D ^ (14 * P.D ^ 2) : ℕ) : ℝ) *

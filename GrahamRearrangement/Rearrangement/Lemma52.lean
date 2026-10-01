@@ -243,7 +243,7 @@ theorem lemma52PrefixSizes_valid {n k : ℕ}
     omega
   have hsize : ∀ i, lemma52PrefixSizes b₀ a i = b₀.val - (a (reverseIndex k i)).val := by
     intro i
-    exact card_indexHalfOpen _ _ (le_of_lt (hlt i))
+    exact card_indexHalfOpen _ _
   constructor
   · intro i j hij
     rw [hsize, hsize]
@@ -299,12 +299,12 @@ theorem lemma52PrefixSizes_injective {n k : ℕ}
       lemma52PrefixSizes b₀ a r = b₀.val - (a i).val := by
     simpa [lemma52PrefixSizes,lemma52PrefixIntervals,r,
       reverseIndex_involutive] using
-      card_indexHalfOpen (a i) b₀ hle
+      card_indexHalfOpen (a i) b₀
   have hri' :
       lemma52PrefixSizes b₀ a' r = b₀.val - (a' i).val := by
     simpa [lemma52PrefixSizes,lemma52PrefixIntervals,r,
       reverseIndex_involutive] using
-      card_indexHalfOpen (a' i) b₀ hle'
+      card_indexHalfOpen (a' i) b₀
   rw [hri,hri'] at hr
   exact Fin.ext (by omega)
 
@@ -369,7 +369,6 @@ theorem lemma52_fixed_parameter_mass_le
     {p : ℕ} (hp : p.Prime)
     (S : Finset (ZMod p)) (hreg : Section5Regime P p S)
     (θ : Fin S.card × (Fin P.D → Fin S.card))
-    (hθ : θ ∈ lemma52Parameters S.card P.D)
     (hbfit : paperPos θ.1 + 30 * P.D ≤ S.card) :
     letI : NeZero p := ⟨hp.ne_zero⟩
     orderingEventMass S
@@ -474,7 +473,7 @@ theorem lemma52_fixed_parameter_mass_le
       unfold lemma43Base
       positivity
     have hpow : (2 * (S.card : ℝ) ^ (-α)) ^ P.D ≤ (2 : ℝ) ^ P.D / (S.card : ℝ) ^ 3 :=
-      Section5.two_neg_alpha_pow_le_cube (by omega) hα0
+      Section5.two_neg_alpha_pow_le_cube (by omega)
         (section5Parameters_alphaD hα0 P)
     have hDnn : (0 : ℝ) ≤ (P.D : ℝ) + 1 := by positivity
     calc orderingConditionalMass S
@@ -515,7 +514,7 @@ theorem lemma5_2
         (P.D + 1 : ℝ) * (2 : ℝ) ^ P.D / (S.card : ℝ) ^ 3 := by
     intro θ hθ
     have hb : paperPos θ.1 + 30 * P.D ≤ S.card := (mem_lemma52Parameters.mp hθ).1
-    exact lemma52_fixed_parameter_mass_le hα0 hαh P hp S hreg θ hθ hb
+    exact lemma52_fixed_parameter_mass_le hα0 hαh P hp S hreg θ hb
   have hCore := Section5.witness_union_bound (indexedOrderings S)
     (lemma52Parameters S.card P.D)
     (fun σ => BadEvent2 P.D σ ∧ ¬ BadEvent0 P.D σ ∧ ¬ BadEvent1 P.D σ)

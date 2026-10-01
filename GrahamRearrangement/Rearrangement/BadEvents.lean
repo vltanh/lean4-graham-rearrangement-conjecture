@@ -34,11 +34,11 @@ def Section5BadEventBoundsStatement : Prop :=
 theorem section5_bad_event_bounds :
     Section5BadEventBoundsStatement := by
   intro α hα0 hαh
-  obtain ⟨P, _⟩ :=
+  obtain ⟨P⟩ :=
     exists_section5Parameters hα0 hαh
   refine ⟨P.Cα, P.Cα_pos, ?_⟩
   intro p hp
-  letI : NeZero p := ⟨hp.ne_zero⟩
+  let : NeZero p := ⟨hp.ne_zero⟩
   intro S hzero hC hupper
   have hreg : Section5Regime P p S :=
     ⟨hzero, hC, hupper⟩

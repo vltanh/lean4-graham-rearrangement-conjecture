@@ -37,7 +37,7 @@ noncomputable section
 -- ---------------------------------------------------------------------------
 
 /-- Orthogonality of the additive characters of Z/pZ. -/
-theorem zmod_character_orthogonality {p : ℕ} [NeZero p] (hp : p.Prime) (a : ZMod p) :
+theorem zmod_character_orthogonality {p : ℕ} [NeZero p] (a : ZMod p) :
     (∑ χ : ZMod p, ZMod.stdAddChar (χ * a)) =
       if a = 0 then (p : ℂ) else 0 := by
   have h := AddChar.sum_mulShift (ψ := (ZMod.stdAddChar : AddChar (ZMod p) ℂ)) a
@@ -47,7 +47,7 @@ theorem zmod_character_orthogonality {p : ℕ} [NeZero p] (hp : p.Prime) (a : ZM
 
 /-- Character-average norm-square identity, obtained by expanding the square. -/
 theorem zmod_character_average_norm_sq {p : ℕ} [NeZero p]
-    (T : Finset (ZMod p)) (hT : T.Nonempty) (χ : ZMod p) :
+    (T : Finset (ZMod p)) (χ : ZMod p) :
     ‖((∑ x ∈ T, ZMod.stdAddChar (χ * x)) / (T.card : ℂ))‖ ^ 2 =
       (1 / (T.card : ℝ) ^ 2) *
         ∑ x ∈ T, ∑ x' ∈ T,
@@ -577,7 +577,7 @@ theorem exists_log_sq_threshold (A : ℝ) :
 
 /-- n^{-1/2} sqrt(log n) is eventually below n^{-α} for α < 1/2. -/
 theorem exists_sqrt_log_power_threshold {α K : ℝ}
-    (hα0 : 0 < α) (hαh : α < 1 / 2) (hK : 0 ≤ K) :
+    (hαh : α < 1 / 2) (hK : 0 ≤ K) :
     ∃ N : ℕ, 2 ≤ N ∧
       ∀ n : ℕ, N ≤ n →
         K * Real.sqrt (Real.log (n : ℝ)) / Real.sqrt (n : ℝ) ≤

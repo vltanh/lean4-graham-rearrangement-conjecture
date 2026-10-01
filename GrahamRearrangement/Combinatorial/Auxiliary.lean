@@ -58,7 +58,7 @@ theorem extendPairMap_mem {α : Type*} [DecidableEq α]
 
 /-- Every m-subset has exactly m extension-pair representations. -/
 theorem extendPair_fiber_card {α : Type*} [DecidableEq α]
-    (S : Finset α) {m : ℕ} (hm : 0 < m)
+    (S : Finset α) {m : ℕ}
     {T : Finset α} (hT : T ∈ S.powersetCard m) :
     ((extendPairSpace S m).filter fun q => extendPairMap q = T).card = m := by
   rcases Finset.mem_powersetCard.mp hT with ⟨hTS, hTcard⟩
@@ -98,7 +98,7 @@ theorem extendPair_event_card {α : Type*} [DecidableEq α]
     rw [Finset.mem_filter] at hT
     rw [Finset.filter_filter]
     rw [Finset.filter_congr (q := fun q => extendPairMap q = T)]
-    · exact extendPair_fiber_card S hm hT.1
+    · exact extendPair_fiber_card S hT.1
     · intro q _
       constructor
       · exact And.right

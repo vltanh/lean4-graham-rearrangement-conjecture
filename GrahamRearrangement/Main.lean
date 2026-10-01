@@ -72,13 +72,12 @@ theorem theorem12_of_section5_bounds
   have hpow : (p : ℝ) ^ (1 - α) ≤ (p : ℝ) ^ (1 - β) :=
     Auxiliary.rpow_exponent_mono_of_one_le hpone (by linarith)
   have hb := hbounds p hp S hzero hC (le_trans hsize hpow)
-  have hDpos : 0 < Nat.ceil (3 / β) := section5D_pos hβ0 hβh
   obtain ⟨σ, hσmem, hgood⟩ :=
     exists_section5_good_ordering (D := Nat.ceil (3 / β)) S hb.1 hb.2.1 hb.2.2
   have hσ : IsIndexedOrdering S σ := by
     simpa only [indexedOrderings, Finset.mem_filter, Finset.mem_univ, true_and]
       using hσmem
-  obtain ⟨π, -, hnozero⟩ := section5_local_repair hDpos σ hgood
+  obtain ⟨π, -, hnozero⟩ := section5_local_repair σ hgood
   have hσ' : IsIndexedOrdering S (applyPositionPerm σ π) :=
     applyPositionPerm_isIndexedOrdering hσ π
   exact ⟨indexedToList (applyPositionPerm σ π),

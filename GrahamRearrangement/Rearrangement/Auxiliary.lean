@@ -142,7 +142,6 @@ theorem exposed_image_card {p : ℕ} [NeZero p]
 theorem unexposed_indexImage_subset_remaining
     {p : ℕ} [NeZero p] (S : Finset (ZMod p))
     (τ σ : Fin S.card → ZMod p)
-    (hτ : IsIndexedOrdering S τ)
     (hσ : IsIndexedOrdering S σ)
     (F J : Finset (Fin S.card))
     (hagr : AgreesOn F σ τ) (hdisj : Disjoint F J) :
@@ -233,7 +232,7 @@ theorem conditional_fixedIndexSet_image_uniform
     have hσ' := Finset.mem_filter.mp hσ
     have hσord : IsIndexedOrdering S σ := mem_indexedOrderings_iff.mp hσ'.1
     apply Finset.mem_powersetCard.mpr
-    exact ⟨unexposed_indexImage_subset_remaining S τ σ hτ hσord F J hσ'.2 hdisj,
+    exact ⟨unexposed_indexImage_subset_remaining S τ σ hσord F J hσ'.2 hdisj,
       Finset.card_image_of_injective _ hσord.1⟩
   have heq : ∀ R ∈ T.powersetCard J.card, ∀ R' ∈ T.powersetCard J.card,
       (Ω.filter fun σ => indexImageSet σ J = R).card =
@@ -459,10 +458,9 @@ theorem conditional_index_family_sumMass_le_zmod
 
 theorem partition_member_unique
     {α : Type*} [DecidableEq α] {k : ℕ}
-    (T : Finset α) (Δ : Fin (k + 1) → Finset α)
+    (Δ : Fin (k + 1) → Finset α)
     (hdisj : ∀ i j, i ≠ j → Disjoint (Δ i) (Δ j))
-    (hcover : ∀ x, x ∈ T ↔ ∃ i, x ∈ Δ i)
-    {x : α} (hxT : x ∈ T)
+    {x : α}
     {i j : Fin (k + 1)} (hxi : x ∈ Δ i) (hxj : x ∈ Δ j) :
     i = j := by
   by_contra hij
@@ -472,7 +470,7 @@ theorem partition_member_unique
 another by a permutation of the ground set, obtained by matching the disjoint
 increment layers. -/
 theorem exists_value_perm_maps_chain
-    {p k : ℕ} [NeZero p] (hk : 0 < k)
+    {p k : ℕ} [NeZero p]
     (T : Finset (ZMod p)) (m : Fin k → ℕ)
     {R R' : Fin k → Finset (ZMod p)}
     (hR : R ∈ chainFamily T m) (hR' : R' ∈ chainFamily T m) :
@@ -518,7 +516,7 @@ theorem conditional_nested_images_chainMass {p k : ℕ} [NeZero p]
     unfold chainFamily
     refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, fun i => ⟨?_, ?_⟩,
       fun i j hij => ?_⟩
-    · exact unexposed_indexImage_subset_remaining S τ σ hτ hσord F (I i) hσ'.2
+    · exact unexposed_indexImage_subset_remaining S τ σ hσord F (I i) hσ'.2
         (hdisj i)
     · rw [← hcard i]
       exact Finset.card_image_of_injective _ hσord.1
@@ -921,7 +919,6 @@ theorem swapsPermList_pair_action
     (P : Finset (α × α))
     (hPpair : (↑P : Set (α × α)).Pairwise fun q r =>
       q.1 ≠ r.1 ∧ q.1 ≠ r.2 ∧ q.2 ≠ r.1 ∧ q.2 ≠ r.2)
-    (hord : ∀ q ∈ P, q.1 < q.2)
     {q : α × α} (hq : q ∈ P) :
     swapsPermList P.toList q.1 = q.2 ∧
       swapsPermList P.toList q.2 = q.1 := by
@@ -975,15 +972,15 @@ theorem disjoint_swaps_reconstruct_subset
   intro q hq
   have hmoveQ : swapsPermList Q.toList q.1 = q.2 := by
     rw [← hperm]
-    exact (swapsPermList_pair_action P hPpair hPord hq).1
+    exact (swapsPermList_pair_action P hPpair hq).1
   have hqlt := hPord q hq
   obtain ⟨r, hr, hr1 | hr2⟩ := exists_pair_of_swapsPermList_ne Q
     (x := q.1) (by rw [hmoveQ]; exact ne_of_gt hqlt)
-  · have hactQ := (swapsPermList_pair_action Q hQpair hQord hr).1
+  · have hactQ := (swapsPermList_pair_action Q hQpair hr).1
     rw [← hr1, hmoveQ] at hactQ
     have heq : q = r := Prod.ext hr1 hactQ
     exact heq ▸ hr
-  · have hactQ := (swapsPermList_pair_action Q hQpair hQord hr).2
+  · have hactQ := (swapsPermList_pair_action Q hQpair hr).2
     rw [← hr2, hmoveQ] at hactQ
     have hrlt := hQord r hr
     rw [← hactQ, ← hr2] at hrlt
@@ -1243,7 +1240,7 @@ theorem half_ground_lemma43Base_le
 /-- The exponent comparison αD≥3 used in the D-fold chain bounds. -/
 theorem two_neg_alpha_pow_le_cube
     {n D : ℕ} {α : ℝ}
-    (hn : 1 ≤ n) (hα0 : 0 < α)
+    (hn : 1 ≤ n)
     (hαD : 3 ≤ α * D) :
     (2 * (n : ℝ) ^ (-α)) ^ D ≤
       (2 : ℝ) ^ D / (n : ℝ) ^ 3 := by
@@ -1383,7 +1380,6 @@ theorem collectionPartner_mem_allowed
     {n D : ℕ} {P : Finset (Fin n × Fin n)}
     (hP : IsAdmissibleCollection D P)
     {Q : Finset (Fin n)}
-    (hsupp : ∀ r ∈ P, r.1 ∈ Q)
     (q : {x // x ∈ Q}) :
     collectionPartner P q.1 ∈
       insert none ((shortPartners (D := D) q.1).image some) := by
@@ -1405,7 +1401,7 @@ theorem collectionPartner_mem_allowed
         · omega
       exact Finset.mem_insert_of_mem (Finset.mem_image_of_mem some hmem)
 
-def supportedCollectionCode {n D : ℕ}
+def supportedCollectionCode {n : ℕ}
     (Q : Finset (Fin n))
     (P : Finset (Fin n × Fin n)) :
     {q // q ∈ Q} → Option (Fin n) :=
@@ -1416,8 +1412,8 @@ theorem mem_of_supportedCollectionCode_eq {n D : ℕ}
     {Q : Finset (Fin n)} {P P' : Finset (Fin n × Fin n)}
     (hP : P ∈ supportedAdmissibleCollections D Q)
     (hP' : P' ∈ supportedAdmissibleCollections D Q)
-    (hcode : supportedCollectionCode (D := D) Q P =
-      supportedCollectionCode (D := D) Q P')
+    (hcode : supportedCollectionCode Q P =
+      supportedCollectionCode Q P')
     {r : Fin n × Fin n} (hr : r ∈ P) : r ∈ P' := by
   classical
   have hPm := (Finset.mem_filter.mp hP).2
@@ -1429,7 +1425,7 @@ theorem mem_of_supportedCollectionCode_eq {n D : ℕ}
 
 theorem supportedCollectionCode_injective {n D : ℕ}
     (Q : Finset (Fin n)) :
-    Set.InjOn (supportedCollectionCode (D := D) Q)
+    Set.InjOn (supportedCollectionCode Q)
       (supportedAdmissibleCollections D Q :
         Set (Finset (Fin n × Fin n))) := by
   intro P hP P' hP' hcode
@@ -1449,7 +1445,7 @@ theorem supportedAdmissibleCollections_card_le {n D : ℕ}
   classical
   calc (supportedAdmissibleCollections D Q).card
       = ((supportedAdmissibleCollections D Q).image
-          (supportedCollectionCode (D := D) Q)).card :=
+          (supportedCollectionCode Q)).card :=
         (Finset.card_image_of_injOn (supportedCollectionCode_injective Q)).symm
     _ ≤ (supportedCollectionCodes (D := D) Q).card := by
         apply Finset.card_le_card
@@ -1457,7 +1453,7 @@ theorem supportedAdmissibleCollections_card_le {n D : ℕ}
         rcases Finset.mem_image.mp hc with ⟨P, hP, rfl⟩
         have hPm := (Finset.mem_filter.mp hP).2
         exact Fintype.mem_piFinset.mpr
-          (fun q => collectionPartner_mem_allowed hPm.1 hPm.2 q)
+          (fun q => collectionPartner_mem_allowed hPm.1 q)
     _ = ∏ q : {q // q ∈ Q},
           (insert none ((shortPartners (D := D) q.1).image some)).card :=
         Fintype.card_piFinset _

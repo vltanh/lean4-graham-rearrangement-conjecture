@@ -70,7 +70,7 @@ theorem small_ground_trivial_bound {p m N : ℕ} [NeZero p]
 
 /-- Consequences of the large-ground-set threshold used in Corollary 1.4. -/
 theorem cor14_threshold_bounds (ε : ℝ) (hε0 : 0 < ε) (hε1 : ε < 1)
-    (n N : ℕ) (hN : N ≤ n)
+    (n : ℕ)
     (hthreshold :
       (4000 * section3Constant / ε) * (Real.log (n : ℝ)) ^ 2 ≤ n)
     (hn : 2 ≤ n) :
@@ -400,7 +400,7 @@ theorem corollary14 : Corollary14Statement := by
       (le_add_of_nonneg_left hp0)
   · push Not at hSN
     have hthr := hN S.card hSN
-    obtain ⟨hHalf, -⟩ := cor14_threshold_bounds ε hε0 hε1 S.card N hSN hthr hS
+    obtain ⟨hHalf, -⟩ := cor14_threshold_bounds ε hε0 hε1 S.card hthr hS
     by_cases hsmall : (m : ℝ) ≤ section3Constant * Real.log (S.card : ℝ)
     · apply cor14_relax hx hy (C' := 2 * Real.sqrt section3Constant) (by linarith)
       exact (cor14_small_m hp S hS hm hsmall hHalf z).trans (le_add_of_nonneg_left hp0)
