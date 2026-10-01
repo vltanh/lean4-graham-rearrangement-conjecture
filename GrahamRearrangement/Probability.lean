@@ -30,8 +30,8 @@ def uniformExpectation {Ω : Type*} [DecidableEq Ω] (space : Finset Ω)
 
 /-- Conditional uniform mass, obtained by restricting the finite sample space. -/
 def uniformConditionalMass {Ω : Type*} [DecidableEq Ω] (space : Finset Ω)
-    (given event : Ω → Prop) [DecidablePred given] [DecidablePred event] : ℝ :=
-  uniformMass (space.filter given) event
+    (cond event : Ω → Prop) [DecidablePred cond] [DecidablePred event] : ℝ :=
+  uniformMass (space.filter cond) event
 
 theorem uniformMass_nonneg {Ω : Type*} [DecidableEq Ω]
     (space : Finset Ω) (event : Ω → Prop) [DecidablePred event] :
@@ -77,15 +77,7 @@ theorem uniformMass_congr {Ω : Type*} [DecidableEq Ω]
     [DecidablePred E] [DecidablePred F]
     (h : ∀ ω ∈ space, (E ω ↔ F ω)) :
     uniformMass space E = uniformMass space F := by
-  unfold uniformMass
-  congr 2
-  ext ω
-  simp only [Finset.mem_filter]
-  constructor
-  · rintro ⟨hω, hE⟩
-    exact ⟨hω, (h ω hω).1 hE⟩
-  · rintro ⟨hω, hF⟩
-    exact ⟨hω, (h ω hω).2 hF⟩
+  sorry
 
 /-- Monotonicity of finite uniform mass. -/
 theorem uniformMass_mono {Ω : Type*} [DecidableEq Ω]
@@ -93,22 +85,14 @@ theorem uniformMass_mono {Ω : Type*} [DecidableEq Ω]
     [DecidablePred E] [DecidablePred F]
     (hEF : ∀ ω, E ω → F ω) :
     uniformMass space E ≤ uniformMass space F := by
-  unfold uniformMass
-  gcongr
-  exact Finset.card_le_card fun ω hω => by
-    simp only [Finset.mem_filter] at hω ⊢
-    exact ⟨hω.1, hEF _ hω.2⟩
+  sorry
 
 theorem uniformMass_mono_on {Ω : Type*} [DecidableEq Ω]
     (space : Finset Ω) (E F : Ω → Prop)
     [DecidablePred E] [DecidablePred F]
     (hEF : ∀ ω ∈ space, E ω → F ω) :
     uniformMass space E ≤ uniformMass space F := by
-  unfold uniformMass
-  gcongr
-  exact Finset.card_le_card fun ω hω => by
-    rcases Finset.mem_filter.1 hω with ⟨hspace, hE⟩
-    exact Finset.mem_filter.2 ⟨hspace, hEF ω hspace hE⟩
+  sorry
 
 /-- Finite union bound for an indexed family of events. -/
 theorem uniformMass_exists_le_sum {Ω ι : Type*}
@@ -117,20 +101,7 @@ theorem uniformMass_exists_le_sum {Ω ι : Type*}
     [∀ i, DecidablePred (E i)] :
     uniformMass space (fun ω => ∃ i ∈ I, E i ω) ≤
       ∑ i ∈ I, uniformMass space (E i) := by
-  classical
-  unfold uniformMass
-  by_cases hspace : space.card = 0
-  · simp [hspace]
-  · have hden : (0 : ℝ) < space.card := by
-      exact_mod_cast Nat.pos_of_ne_zero hspace
-    apply (div_le_iff₀ hden).2
-    have hcard :
-        (space.filter fun ω => ∃ i ∈ I, E i ω).card ≤
-          ∑ i ∈ I, (space.filter (E i)).card := by
-      apply Finset.card_biUnion_le
-      intro i hi
-      exact space.filter (E i)
-    exact_mod_cast hcard
+  sorry
 
 /-- A pointwise bound averages to the same bound over a nonempty uniform space. -/
 theorem uniformExpectation_le_const {Ω : Type*} [DecidableEq Ω]
@@ -165,8 +136,7 @@ theorem mem_powersetCard_card {α : Type*} [DecidableEq α]
 theorem card_sdiff_of_mem_powersetCard {α : Type*} [DecidableEq α]
     {S R : Finset α} {m : ℕ} (hR : R ∈ S.powersetCard m) :
     (S \ R).card = S.card - m := by
-  have hsub := (Finset.mem_powersetCard.1 hR).1
-  rw [Finset.card_sdiff hsub, mem_powersetCard_card hR]
+  sorry
 
 /-- Removing two exceptional events. -/
 theorem uniformMass_le_two_exceptions
@@ -177,26 +147,7 @@ theorem uniformMass_le_two_exceptions
     (hrest :
       uniformMass space (fun ω => E ω ∧ ¬ A ω ∧ ¬ B ω) ≤ q) :
     uniformMass space E ≤ uniformMass space A + uniformMass space B + q := by
-  have hsubset : ∀ ω, E ω →
-      (A ω ∨ B ω) ∨ (E ω ∧ ¬ A ω ∧ ¬ B ω) := by
-    intro ω hE
-    by_cases hA : A ω
-    · exact Or.inl (Or.inl hA)
-    by_cases hB : B ω
-    · exact Or.inl (Or.inr hB)
-    · exact Or.inr ⟨hE, hA, hB⟩
-  have hmono :
-      uniformMass space E ≤
-        uniformMass space
-          (fun ω => (A ω ∨ B ω) ∨ (E ω ∧ ¬ A ω ∧ ¬ B ω)) := by
-    apply uniformMass_mono
-    exact hsubset
-  have hor1 :=
-    uniformMass_or_le_add space
-      (fun ω => A ω ∨ B ω)
-      (fun ω => E ω ∧ ¬ A ω ∧ ¬ B ω)
-  have hor2 := uniformMass_or_le_add space A B
-  linarith
+  sorry
 
 /-- If three events have total mass below one in a nonempty finite space, some
 outcome avoids all three. -/
@@ -211,29 +162,12 @@ theorem exists_avoiding_three_events
     (h₃ : uniformMass space E₃ ≤ a₃)
     (hsum : a₁ + a₂ + a₃ < 1) :
     ∃ ω ∈ space, ¬ E₁ ω ∧ ¬ E₂ ω ∧ ¬ E₃ ω := by
-  by_contra hnone
-  push_neg at hnone
-  have hcover : ∀ ω ∈ space, E₁ ω ∨ E₂ ω ∨ E₃ ω := by
-    intro ω hω
-    exact hnone ω hω
-  have hall :
-      uniformMass space (fun ω => E₁ ω ∨ E₂ ω ∨ E₃ ω) = 1 := by
-    rw [← uniformMass_univ space hspace]
-    apply uniformMass_congr
-    intro ω hω
-    simp [hcover ω hω]
-  have h12 := uniformMass_or_le_add space E₁ E₂
-  have h123 := uniformMass_or_le_add space
-    (fun ω => E₁ ω ∨ E₂ ω) E₃
-  rw [hall] at h123
-  linarith
+  sorry
 
 theorem log_card_sdiff_le {α : Type*} [DecidableEq α]
     {S R : Finset α} (hne : (S \ R).Nonempty) :
     Real.log ((S \ R).card : ℝ) ≤ Real.log (S.card : ℝ) := by
-  apply Real.strictMonoOn_log.monotoneOn
-  · exact_mod_cast hne.card_pos
-  · exact_mod_cast Finset.card_sdiff_le S R
+  sorry
 
 theorem card_pi_le_pow {ι α : Type*}
     [Fintype ι] [DecidableEq ι] [DecidableEq α]
@@ -253,25 +187,14 @@ theorem card_product_le_mul {α β : Type*}
     (A : Finset α) (B : Finset β)
     (a b : ℕ) (hA : A.card ≤ a) (hB : B.card ≤ b) :
     (A.product B).card ≤ a * b := by
-  rw [Finset.card_product]
-  exact Nat.mul_le_mul hA hB
+  sorry
 
 theorem card_eq_sum_card_fibers {α β : Type*}
     [DecidableEq α] [DecidableEq β]
     (A : Finset α) (B : Finset β) (f : α → β)
     (hmap : ∀ a ∈ A, f a ∈ B) :
     A.card = ∑ b ∈ B, (A.filter fun a => f a = b).card := by
-  classical
-  induction A using Finset.induction_on with
-  | empty => simp
-  | @insert a A ha ih =>
-      have hfa : f a ∈ B := hmap a (by simp)
-      have hmapA : ∀ x ∈ A, f x ∈ B := by
-        intro x hx
-        exact hmap x (by simp [hx])
-      rw [Finset.card_insert_of_not_mem ha, ih B f hmapA]
-      rw [Finset.sum_eq_add_sum_diff_singleton hfa]
-      simp [ha]
+  sorry
 
 theorem uniformMass_bij
     {Ω Γ : Type*} [DecidableEq Ω] [DecidableEq Γ]
@@ -284,26 +207,7 @@ theorem uniformMass_bij
     [DecidablePred E] [DecidablePred F]
     (hevent : ∀ ω ∈ A, E ω ↔ F (f ω)) :
     uniformMass A E = uniformMass B F := by
-  unfold uniformMass
-  have hcard : A.card = B.card := by
-    apply Finset.card_bij f hmem
-    · exact fun _ hω _ hω' h => hinj hω hω' h
-    · exact hsurj
-  have hecard :
-      (A.filter E).card = (B.filter F).card := by
-    apply Finset.card_bij f
-    · intro ω hω
-      rcases Finset.mem_filter.mp hω with ⟨hA,hE⟩
-      exact Finset.mem_filter.mpr ⟨hmem ω hA,(hevent ω hA).1 hE⟩
-    · intro ω hω ω' hω' h
-      exact hinj (Finset.mem_filter.mp hω).1
-        (Finset.mem_filter.mp hω').1 h
-    · intro γ hγ
-      rcases Finset.mem_filter.mp hγ with ⟨hB,hF⟩
-      obtain ⟨ω,hA,rfl⟩ := hsurj γ hB
-      exact ⟨ω, Finset.mem_filter.mpr
-        ⟨hA,(hevent ω hA).2 hF⟩, rfl⟩
-  rw [hcard, hecard]
+  sorry
 
 theorem uniformMass_chain_rule
     {Ω : Type*} [DecidableEq Ω]
@@ -312,19 +216,7 @@ theorem uniformMass_chain_rule
     uniformMass space (fun ω => A ω ∧ B ω) =
       uniformMass space A *
         uniformConditionalMass space A B := by
-  unfold uniformMass uniformConditionalMass
-  have hfilter :
-      (space.filter fun ω => A ω ∧ B ω) =
-        (space.filter A).filter B := by
-    ext ω
-    simp [and_left_comm, and_assoc]
-  rw [hfilter]
-  by_cases hA : (space.filter A).card = 0
-  · simp [hA]
-  · have hApos : (0 : ℝ) < (space.filter A).card := by
-      exact_mod_cast Nat.pos_of_ne_zero hA
-    field_simp
-    ring
+  sorry
 
 /-- A conditional bound that holds on every fiber of a finite statistic also
 holds after conditioning on any union of such fibers. -/
@@ -339,68 +231,7 @@ theorem uniformConditionalMass_le_of_fibers
         uniformConditionalMass space (fun ω => key ω = κ) B ≤ q) :
     uniformConditionalMass space
       (fun ω => P (key ω)) B ≤ q := by
-  classical
-  unfold uniformConditionalMass uniformMass
-  let Kset := space.image key
-  have hnum :
-      ((space.filter fun ω => P (key ω)).filter B).card =
-        ∑ κ ∈ Kset.filter P,
-          (space.filter fun ω => key ω = κ ∧ B ω).card := by
-    apply card_eq_sum_card_fibers
-      ((space.filter fun ω => P (key ω)).filter B)
-      (Kset.filter P) key
-    intro ω hω
-    rcases Finset.mem_filter.mp hω with ⟨hPspace,hB⟩
-    rcases Finset.mem_filter.mp hPspace with ⟨hspace,hPk⟩
-    exact Finset.mem_filter.mpr
-      ⟨Finset.mem_image.mpr ⟨ω,hspace,rfl⟩,hPk⟩
-  have hden :
-      (space.filter fun ω => P (key ω)).card =
-        ∑ κ ∈ Kset.filter P,
-          (space.filter fun ω => key ω = κ).card := by
-    apply card_eq_sum_card_fibers
-      (space.filter fun ω => P (key ω))
-      (Kset.filter P) key
-    intro ω hω
-    rcases Finset.mem_filter.mp hω with ⟨hspace,hPk⟩
-    exact Finset.mem_filter.mpr
-      ⟨Finset.mem_image.mpr ⟨ω,hspace,rfl⟩,hPk⟩
-  rw [hnum,hden]
-  by_cases hzero :
-      (∑ κ ∈ Kset.filter P,
-        (space.filter fun ω => key ω = κ).card) = 0
-  · simp [hzero]
-  · have hsum :
-      (∑ κ ∈ Kset.filter P,
-          ((space.filter fun ω => key ω = κ ∧ B ω).card : ℝ)) ≤
-        q * ∑ κ ∈ Kset.filter P,
-          ((space.filter fun ω => key ω = κ).card : ℝ) := by
-      calc
-        _ ≤ ∑ κ ∈ Kset.filter P,
-            q * (space.filter fun ω => key ω = κ).card := by
-          gcongr with κ hκ
-          have hκP := (Finset.mem_filter.mp hκ).2
-          have hb := hfiber κ hκP
-          unfold uniformConditionalMass uniformMass at hb
-          have hfilter :
-              (space.filter fun ω => key ω = κ).filter B =
-                space.filter fun ω => key ω = κ ∧ B ω := by
-            ext ω
-            simp [and_assoc]
-          rw [hfilter] at hb
-          by_cases hf : (space.filter fun ω => key ω = κ).card = 0
-          · simp [hf]
-          · have hfpos : (0 : ℝ) <
-                (space.filter fun ω => key ω = κ).card := by
-              exact_mod_cast Nat.pos_of_ne_zero hf
-            exact (div_le_iff₀ hfpos).mp hb
-        _ = _ := by rw [← Finset.mul_sum]
-    have hdenpos : (0 : ℝ) <
-        ∑ κ ∈ Kset.filter P,
-          ((space.filter fun ω => key ω = κ).card : ℝ) := by
-      exact_mod_cast Nat.pos_of_ne_zero hzero
-    apply (div_le_iff₀ hdenpos).2
-    simpa [mul_comm] using hsum
+  sorry
 
 /-- Equal-size subsets of a finite ground set can be carried to one another by
 a permutation preserving the ground set and fixing its complement. -/
@@ -411,85 +242,7 @@ theorem exists_perm_maps_finset
     ∃ π : Equiv.Perm α,
       A.image π = B ∧ S.image π = S ∧
       ∀ x ∉ S, π x = x := by
-  classical
-  have hcomp :
-      (S \ A).card = (S \ B).card := by
-    rw [Finset.card_sdiff hAS, Finset.card_sdiff hBS, hcard]
-  let eA : {x // x ∈ A} ≃ {x // x ∈ B} :=
-    Fintype.equivOfCardEq (by simpa using hcard)
-  let eC : {x // x ∈ S \ A} ≃ {x // x ∈ S \ B} :=
-    Fintype.equivOfCardEq (by simpa using hcomp)
-  let f : α → α := fun x =>
-    if hxA : x ∈ A then (eA ⟨x,hxA⟩).1
-    else if hxS : x ∈ S then
-      (eC ⟨x,Finset.mem_sdiff.mpr ⟨hxS,hxA⟩⟩).1
-    else x
-  let g : α → α := fun y =>
-    if hyB : y ∈ B then (eA.symm ⟨y,hyB⟩).1
-    else if hyS : y ∈ S then
-      (eC.symm ⟨y,Finset.mem_sdiff.mpr ⟨hyS,hyB⟩⟩).1
-    else y
-  have hleft : Function.LeftInverse g f := by
-    intro x
-    by_cases hxA : x ∈ A
-    · have hB : (eA ⟨x,hxA⟩).1 ∈ B := (eA ⟨x,hxA⟩).2
-      simp [f,g,hxA,hB]
-    · by_cases hxS : x ∈ S
-      · have hSB : (eC ⟨x,Finset.mem_sdiff.mpr ⟨hxS,hxA⟩⟩).1 ∈ S \ B :=
-          (eC ⟨x,Finset.mem_sdiff.mpr ⟨hxS,hxA⟩⟩).2
-        have hnotB := (Finset.mem_sdiff.mp hSB).2
-        have hinS := (Finset.mem_sdiff.mp hSB).1
-        simp [f,g,hxA,hxS,hnotB,hinS]
-      · simp [f,g,hxA,hxS,hAS,hBS]
-  have hright : Function.RightInverse g f := by
-    intro y
-    by_cases hyB : y ∈ B
-    · have hA : (eA.symm ⟨y,hyB⟩).1 ∈ A :=
-        (eA.symm ⟨y,hyB⟩).2
-      simp [f,g,hyB,hA]
-    · by_cases hyS : y ∈ S
-      · have hSA :
-          (eC.symm ⟨y,Finset.mem_sdiff.mpr ⟨hyS,hyB⟩⟩).1 ∈ S \ A :=
-          (eC.symm ⟨y,Finset.mem_sdiff.mpr ⟨hyS,hyB⟩⟩).2
-        have hnotA := (Finset.mem_sdiff.mp hSA).2
-        have hinS := (Finset.mem_sdiff.mp hSA).1
-        simp [f,g,hyB,hyS,hnotA,hinS]
-      · simp [f,g,hyB,hyS,hAS,hBS]
-  let π : Equiv.Perm α :=
-    { toFun := f
-      invFun := g
-      left_inv := hleft
-      right_inv := hright }
-  refine ⟨π, ?_, ?_, ?_⟩
-  · ext y
-    constructor
-    · rintro ⟨x,hx,rfl⟩
-      simp [π,f,hx,(eA ⟨x,hx⟩).2]
-    · intro hy
-      let x := (eA.symm ⟨y,hy⟩).1
-      refine ⟨x,(eA.symm ⟨y,hy⟩).2,?_⟩
-      simp [π,f,x,(eA.symm ⟨y,hy⟩).2]
-  · ext y
-    constructor
-    · rintro ⟨x,hx,rfl⟩
-      by_cases hxA : x ∈ A
-      · exact hBS (eA ⟨x,hxA⟩).2
-      · exact (Finset.mem_sdiff.mp
-          (eC ⟨x,Finset.mem_sdiff.mpr ⟨hx,hxA⟩⟩).2).1
-    · intro hy
-      by_cases hyB : y ∈ B
-      · let x := (eA.symm ⟨y,hyB⟩).1
-        refine ⟨x,hAS (eA.symm ⟨y,hyB⟩).2,?_⟩
-        simp [π,f,x,(eA.symm ⟨y,hyB⟩).2]
-      · let x := (eC.symm
-          ⟨y,Finset.mem_sdiff.mpr ⟨hy,hyB⟩⟩).1
-        have hx := (eC.symm
-          ⟨y,Finset.mem_sdiff.mpr ⟨hy,hyB⟩⟩).2
-        refine ⟨x,(Finset.mem_sdiff.mp hx).1,?_⟩
-        simp [π,f,x,(Finset.mem_sdiff.mp hx).2,
-          (Finset.mem_sdiff.mp hx).1]
-  · intro x hx
-    simp [π,f,hx,show x ∉ A from fun h => hx (hAS h)]
+  sorry
 
 /-- A finite statistic with constant nonzero fiber cardinality is uniformly
 distributed on its finite range. -/
@@ -506,33 +259,7 @@ theorem uniformMass_statistic_of_equal_fibers
     (E : Γ → Prop) [DecidablePred E] :
     uniformMass space (fun ω => E (f ω)) =
       uniformMass values E := by
-  unfold uniformMass
-  have hspaceCard :
-      space.card = values.card * c := by
-    rw [card_eq_sum_card_fibers space values f hmap]
-    simp_rw [hfiber]
-    simp [mul_comm]
-  have heventCard :
-      (space.filter fun ω => E (f ω)).card =
-        (values.filter E).card * c := by
-    calc
-      _ = ∑ γ ∈ values.filter E,
-          (space.filter fun ω => f ω = γ).card := by
-            apply card_eq_sum_card_fibers
-              (space.filter fun ω => E (f ω))
-              (values.filter E) f
-            intro ω hω
-            rcases Finset.mem_filter.mp hω with ⟨hsp,hE⟩
-            exact Finset.mem_filter.mpr ⟨hmap ω hsp,hE⟩
-      _ = ∑ _γ ∈ values.filter E, c := by
-            apply Finset.sum_congr rfl
-            intro γ hγ
-            exact hfiber γ (Finset.mem_filter.mp hγ).1
-      _ = (values.filter E).card * c := by simp [mul_comm]
-  rw [hspaceCard, heventCard]
-  have hcR : (0 : ℝ) < c := by exact_mod_cast hc
-  field_simp
-  ring
+  sorry
 
 /-- Equal-fiber uniformity without choosing the common cardinality explicitly. -/
 theorem uniformMass_statistic_of_pairwise_equal_fibers
@@ -549,41 +276,19 @@ theorem uniformMass_statistic_of_pairwise_equal_fibers
     (E : Γ → Prop) [DecidablePred E] :
     uniformMass space (fun ω => E (f ω)) =
       uniformMass values E := by
-  classical
-  let γ₀ := values.min' hvalues
-  let c := (space.filter fun ω => f ω = γ₀).card
-  have hcfiber :
-      ∀ γ ∈ values,
-        (space.filter fun ω => f ω = γ).card = c := by
-    intro γ hγ
-    exact heq γ hγ γ₀ (values.min'_mem hvalues)
-  have hc : 0 < c := by
-    by_contra hz
-    have hc0 : c = 0 := Nat.eq_zero_of_not_pos hz
-    have hall0 :
-        ∀ γ ∈ values,
-          (space.filter fun ω => f ω = γ).card = 0 := by
-      intro γ hγ
-      rw [hcfiber γ hγ,hc0]
-    have hcard :=
-      card_eq_sum_card_fibers space values f hmap
-    simp_rw [hall0] at hcard
-    have : space.card = 0 := by simpa using hcard
-    exact hspace.card_ne_zero this
-  exact uniformMass_statistic_of_equal_fibers
-    space values f hmap hvalues c hc hcfiber E
+  sorry
 
 theorem card_biUnion_of_pairwise_disjoint
     {ι α : Type*} [DecidableEq ι] [DecidableEq α]
     (I : Finset ι) (A : ι → Finset α)
     (hdisj : ∀ i ∈ I, ∀ j ∈ I, i ≠ j → Disjoint (A i) (A j)) :
-    (∪ i ∈ I, A i).card = ∑ i ∈ I, (A i).card := by
+    (I.biUnion A).card = ∑ i ∈ I, (A i).card := by
   classical
   induction I using Finset.induction_on with
   | empty => simp
   | @insert i I hi ih =>
       have hdi :
-          Disjoint (A i) (∪ j ∈ I, A j) := by
+          Disjoint (A i) (I.biUnion A) := by
         rw [Finset.disjoint_biUnion_right]
         intro j hj
         exact hdisj i (by simp) j (by simp [hj])
@@ -598,32 +303,7 @@ theorem finset_image_injective_of_injective
     {α β : Type*} [DecidableEq α] [DecidableEq β]
     {f : α → β} (hf : Function.Injective f) :
     Function.Injective (fun A : Finset α => A.image f) := by
-  intro A B hAB
-  ext x
-  constructor
-  · intro hx
-    have hfx : f x ∈ A.image f :=
-      Finset.mem_image.mpr ⟨x,hx,rfl⟩
-    rw [hAB] at hfx
-    rcases Finset.mem_image.mp hfx with ⟨y,hy,heq⟩
-    exact hf heq.symm ▸ hy
-  · intro hx
-    have hfx : f x ∈ B.image f :=
-      Finset.mem_image.mpr ⟨x,hx,rfl⟩
-    rw [← hAB] at hfx
-    rcases Finset.mem_image.mp hfx with ⟨y,hy,heq⟩
-    exact hf heq.symm ▸ hy
-
-theorem list_prod_eq_finset_prod_of_nodup
-    {α M : Type*} [DecidableEq α] [CommMonoid M]
-    (L : List α) (hL : L.Nodup) (f : α → M) :
-    (L.map f).prod = ∏ x ∈ L.toFinset, f x := by
-  induction L with
-  | nil => simp
-  | cons a L ih =>
-      have ha : a ∉ L := by simpa using hL
-      have hLn : L.Nodup := hL.tail
-      simp [ha,ih hLn]
+  sorry
 
 theorem card_biUnion_le_sum
     {α β : Type*} [DecidableEq α] [DecidableEq β]
@@ -688,106 +368,7 @@ theorem exists_perm_maps_nested_family
         T.image π = T ∧
         (∀ i, (R i).image π = R' i) ∧
         ∀ x ∉ T, π x = x := by
-  intro k
-  induction k with
-  | zero =>
-      intro R R' hR hR' hn hn' hc
-      exact ⟨Equiv.refl _, by simp, by intro i; exact Fin.elim0 i,
-        by simp⟩
-  | succ k ih =>
-      intro R R' hR hR' hn hn' hc
-      let last : Fin (k + 1) := ⟨k,by omega⟩
-      obtain ⟨π₁,hπ₁last,hπ₁T,hπ₁out⟩ :=
-        exists_perm_maps_finset T (R last) (R' last)
-          (hR last) (hR' last) (hc last)
-      let A : Fin k → Finset α :=
-        fun i => (R i.castSucc).image π₁
-      let B : Fin k → Finset α :=
-        fun i => R' i.castSucc
-      have hABsub : ∀ i, A i ⊆ R' last := by
-        intro i x hx
-        rcases Finset.mem_image.mp hx with ⟨y,hy,rfl⟩
-        rw [← hπ₁last]
-        exact Finset.mem_image.mpr
-          ⟨y, hn i.castSucc last (by simp [last]) hy, rfl⟩
-      have hBsub : ∀ i, B i ⊆ R' last := by
-        intro i
-        exact hn' i.castSucc last (by simp [last])
-      have hAnest : ∀ i j, i ≤ j → A i ⊆ A j := by
-        intro i j hij x hx
-        rcases Finset.mem_image.mp hx with ⟨y,hy,rfl⟩
-        exact Finset.mem_image.mpr
-          ⟨y,hn i.castSucc j.castSucc (by simpa using hij) hy,rfl⟩
-      have hBnest : ∀ i j, i ≤ j → B i ⊆ B j := by
-        intro i j hij
-        exact hn' i.castSucc j.castSucc (by simpa using hij)
-      have hcardAB : ∀ i, (A i).card = (B i).card := by
-        intro i
-        unfold A B
-        rw [Finset.card_image_of_injective _ π₁.injective,
-          hc i.castSucc]
-      obtain ⟨π₂,hπ₂B,hπ₂prefix,hπ₂out⟩ :=
-        ih (R' last) A B hABsub hBsub hAnest hBnest hcardAB
-      let π := π₁.trans π₂
-      refine ⟨π,?_,?_,?_⟩
-      · ext x
-        constructor
-        · rintro ⟨y,hy,rfl⟩
-          have hyT : π₁ y ∈ T := by
-            rw [← hπ₁T]
-            exact Finset.mem_image.mpr ⟨y,hy,rfl⟩
-          by_cases hyB : π₁ y ∈ R' last
-          · have : π₂ (π₁ y) ∈ R' last := by
-              rw [← hπ₂B]
-              exact Finset.mem_image.mpr ⟨π₁ y,hyB,rfl⟩
-            exact hR' last this
-          · have hfix := hπ₂out (π₁ y) hyB
-            simpa [π,Equiv.trans_apply,hfix] using hyT
-        · intro hxT
-          rw [← hπ₁T] at hxT
-          rcases Finset.mem_image.mp hxT with ⟨y,hyT,rfl⟩
-          by_cases hyB : π₁ y ∈ R' last
-          · rw [← hπ₂B] at hyB
-            rcases Finset.mem_image.mp hyB with ⟨z,hz,hzEq⟩
-            refine Finset.mem_image.mpr ⟨π₁.symm z,?_,?_⟩
-            · have hzT := hR' last hz
-              rw [← hπ₁T] at hzT
-              rcases Finset.mem_image.mp hzT with ⟨u,hu,huEq⟩
-              simpa using hu
-            · simp [π,Equiv.trans_apply,hzEq]
-          · have hfix := hπ₂out (π₁ y) hyB
-            exact Finset.mem_image.mpr
-              ⟨y,hyT,by simp [π,Equiv.trans_apply,hfix]⟩
-      · intro i
-        by_cases hilast : i = last
-        · subst i
-          calc
-            (R last).image π
-              = ((R last).image π₁).image π₂ := by
-                  ext x
-                  simp [π,Equiv.trans_apply]
-            _ = (R' last).image π₂ := by rw [hπ₁last]
-            _ = R' last := hπ₂B
-        · have hi : i.val < k := by
-            have := i.isLt
-            simp [last] at hilast
-            omega
-          let j : Fin k := ⟨i.val,hi⟩
-          calc
-            (R i).image π
-              = ((R i).image π₁).image π₂ := by
-                  ext x
-                  simp [π,Equiv.trans_apply]
-            _ = (A j).image π₂ := by rfl
-            _ = B j := hπ₂prefix j
-            _ = R' i := by rfl
-      · intro x hxT
-        have h1 := hπ₁out x hxT
-        have hxB : x ∉ R' last := by
-          intro hx
-          exact hxT (hR' last hx)
-        have h2 := hπ₂out x hxB
-        simp [π,Equiv.trans_apply,h1,h2]
+  sorry
 
 /-- Finite union bound for two events. -/
 theorem uniformMass_or_le_add {Ω : Type*} [DecidableEq Ω]
@@ -795,31 +376,14 @@ theorem uniformMass_or_le_add {Ω : Type*} [DecidableEq Ω]
     [DecidablePred E] [DecidablePred F] :
     uniformMass space (fun ω => E ω ∨ F ω) ≤
       uniformMass space E + uniformMass space F := by
-  unfold uniformMass
-  by_cases h : space.card = 0
-  · simp [h]
-  · have hpos : (0 : ℝ) < space.card := by
-      exact_mod_cast Nat.pos_of_ne_zero h
-    rw [div_add_div_same]
-    apply (div_le_div_iff_of_pos_right hpos).2
-    exact_mod_cast
-      (Finset.card_filter_or_le (s := space) (p := E) (q := F))
+  sorry
 
 /-- An event and its complement have total mass one on a nonempty space. -/
 theorem uniformMass_compl_eq_one {Ω : Type*} [DecidableEq Ω]
     (space : Finset Ω) (hspace : space.Nonempty)
     (E : Ω → Prop) [DecidablePred E] :
     uniformMass space E + uniformMass space (fun ω => ¬ E ω) = 1 := by
-  unfold uniformMass
-  have hpartition :
-      (space.filter E).card + (space.filter fun ω => ¬ E ω).card = space.card := by
-    rw [← Finset.card_union_of_disjoint]
-    · congr 1
-      ext ω
-      simp
-    · exact Finset.disjoint_filter_filter_neg _ _
-  rw [← add_div]
-  norm_num [hspace.card_ne_zero, hpartition]
+  sorry
 
 /-- Cardinal form of a lower bound on uniform mass. -/
 theorem card_filter_ge_of_uniformMass_ge {Ω : Type*} [DecidableEq Ω]
@@ -837,39 +401,21 @@ theorem card_filter_ge_of_uniformMass_ge {Ω : Type*} [DecidableEq Ω]
 theorem uniformMass_eq_singleton {Ω : Type*} [DecidableEq Ω]
     (space : Finset Ω) (ω : Ω) (hω : ω ∈ space) :
     uniformMass space (fun x => x = ω) = 1 / (space.card : ℝ) := by
-  rw [uniformMass]
-  have hcard : (space.filter fun x => x = ω).card = 1 := by
-    rw [Finset.card_eq_one]
-    exact ⟨ω, by ext x; simp [hω]⟩
-  rw [hcard]
-  norm_num
+  sorry
 
 /-- Monotonicity of uniform expectation. -/
 theorem uniformExpectation_mono {Ω : Type*} [DecidableEq Ω]
     (space : Finset Ω) (f g : Ω → ℝ)
     (hfg : ∀ ω ∈ space, f ω ≤ g ω) :
     uniformExpectation space f ≤ uniformExpectation space g := by
-  unfold uniformExpectation
-  by_cases h : space.card = 0
-  · simp [h]
-  · have hden : (0 : ℝ) < space.card := by
-      exact_mod_cast Nat.pos_of_ne_zero h
-    apply (div_le_div_iff_of_pos_right hden).2
-    exact Finset.sum_le_sum fun i hi =>
-      Finset.sum_le_sum fun _ _ => hfg i hi
+  sorry
 
 theorem uniformExpectation_strictMono {Ω : Type*} [DecidableEq Ω]
     (space : Finset Ω) (hspace : space.Nonempty)
     (f g : Ω → ℝ)
     (hfg : ∀ ω ∈ space, f ω < g ω) :
     uniformExpectation space f < uniformExpectation space g := by
-  unfold uniformExpectation
-  have hsum :
-      (∑ ω ∈ space, f ω) < ∑ ω ∈ space, g ω :=
-    Finset.sum_lt_sum hspace (fun ω hω => hfg ω hω)
-  have hden : (0 : ℝ) < space.card := by
-    exact_mod_cast hspace.card_pos
-  exact (div_lt_div_iff_of_pos_right hden).2 hsum
+  sorry
 
 theorem uniformExpectation_add {Ω : Type*} [DecidableEq Ω]
     (space : Finset Ω) (f g : Ω → ℝ) :

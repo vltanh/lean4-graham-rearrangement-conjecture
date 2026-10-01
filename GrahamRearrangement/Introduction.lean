@@ -17,7 +17,7 @@ This module contains the introduction-level definitions used throughout the form
 
 section Orderings
 
-variable {G : Type*} [AddCommMonoid G] [DecidableEq G]
+variable {G : Type*} [AddCommMonoid G]
 
 /-- The nonempty partial sums of a list:
 `[x₁, x₁+x₂, ..., x₁+...+xₙ]`. -/
@@ -35,6 +35,8 @@ def partialSums : List G → List G
   induction xs with
   | nil => rfl
   | cons x xs ih => simp [partialSums, ih]
+
+variable [DecidableEq G]
 
 /-- A list is an ordering of a finite set when it has no duplicates and contains
 exactly that set. -/

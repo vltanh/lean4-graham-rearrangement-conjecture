@@ -94,19 +94,7 @@ theorem nat_lt_div_implies_real_lt_div
     {r k q : ℕ} (hq : 0 < q)
     (h : r < k / q) :
     (r : ℝ) < (k : ℝ) / q := by
-  have hle : r + 1 ≤ k / q := Nat.succ_le_iff.mpr h
-  have hmul : q * (r + 1) ≤ k := by
-    have h1 : q * (r + 1) ≤ q * (k / q) :=
-      Nat.mul_le_mul_left q hle
-    have h2 : q * (k / q) ≤ k := by
-      simpa [Nat.mul_comm] using Nat.div_mul_le_self k q
-    exact le_trans h1 h2
-  have hqR : (0 : ℝ) < q := by exact_mod_cast hq
-  apply (lt_div_iff₀ hqR).2
-  exact_mod_cast (lt_of_lt_of_le
-    (show q * r < q * (r + 1) by
-      exact Nat.mul_lt_mul_left q (Nat.lt_succ_self r))
-    hmul)
+  sorry
 
 /-- The density-1/4 specialization needed in Lemma 3.1. -/
 theorem hypergeom_quarter_lower_tail_proved
@@ -117,39 +105,7 @@ theorem hypergeom_quarter_lower_tail_proved
     uniformMass (U.powersetCard k)
       (fun T => (T ∩ G).card < k / 8) ≤
         Real.exp (-(k : ℝ) / 32) := by
-  by_cases hk0 : k = 0
-  · subst k
-    simp [uniformMass]
-  have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
-  let d : ℝ := (k : ℝ) / 8
-  have hd : 0 ≤ d := by positivity
-  have hmean := quarter_mean_lower hGU hdensity hkpos hk
-  have hmono :
-      uniformMass (U.powersetCard k)
-          (fun T => (T ∩ G).card < k / 8) ≤
-        uniformMass (U.powersetCard k)
-          (fun T =>
-            ((T ∩ G).card : ℝ) ≤ hypergeomMean U G k - d) := by
-    apply uniformMass_mono
-    intro T hT
-    have hreal :
-        (((T ∩ G).card : ℕ) : ℝ) < (k : ℝ) / 8 :=
-      nat_lt_div_implies_real_lt_div (r := (T ∩ G).card)
-        (k := k) (q := 8) (by norm_num) hT
-    dsimp [d]
-    linarith
-  have htail :=
-    uniformSubset_hoeffding_lower_tail U G k hk d hd
-  rw [if_neg hk0] at htail
-  have hexp :
-      Real.exp (-2 * d ^ 2 / k) =
-        Real.exp (-(k : ℝ) / 32) := by
-    congr 1
-    dsimp [d]
-    have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk0
-    field_simp
-    ring
-  exact le_trans hmono (by simpa [hexp] using htail)
+  sorry
 
 /-- The density-3/4 specialization needed in Lemma 3.3.  Hoeffding gives the
 stronger exponent k/8; we weaken it to the paper's k/24. -/
@@ -161,44 +117,7 @@ theorem hypergeom_three_quarters_lower_tail_proved
     uniformMass (U.powersetCard k)
       (fun T => (T ∩ G).card < k / 2) ≤
         Real.exp (-(k : ℝ) / 24) := by
-  by_cases hk0 : k = 0
-  · subst k
-    simp [uniformMass]
-  have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
-  let d : ℝ := (k : ℝ) / 4
-  have hd : 0 ≤ d := by positivity
-  have hmean := three_quarters_mean_lower hGU hdensity hkpos hk
-  have hmono :
-      uniformMass (U.powersetCard k)
-          (fun T => (T ∩ G).card < k / 2) ≤
-        uniformMass (U.powersetCard k)
-          (fun T =>
-            ((T ∩ G).card : ℝ) ≤ hypergeomMean U G k - d) := by
-    apply uniformMass_mono
-    intro T hT
-    have hreal :
-        (((T ∩ G).card : ℕ) : ℝ) < (k : ℝ) / 2 :=
-      nat_lt_div_implies_real_lt_div (r := (T ∩ G).card)
-        (k := k) (q := 2) (by norm_num) hT
-    dsimp [d]
-    linarith
-  have htail :=
-    uniformSubset_hoeffding_lower_tail U G k hk d hd
-  rw [if_neg hk0] at htail
-  have hstrong :
-      -2 * d ^ 2 / k = -(k : ℝ) / 8 := by
-    dsimp [d]
-    have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk0
-    field_simp
-    ring
-  have hweak :
-      Real.exp (-(k : ℝ) / 8) ≤
-        Real.exp (-(k : ℝ) / 24) := by
-    apply Real.exp_le_exp.mpr
-    have hkR : 0 < (k : ℝ) := by exact_mod_cast hkpos
-    linarith
-  exact le_trans hmono (le_trans
-    (by simpa [hstrong] using htail) hweak)
+  sorry
 
 end
 

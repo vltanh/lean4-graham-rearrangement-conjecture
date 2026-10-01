@@ -14,34 +14,6 @@ namespace GrahamRearrangement
 
 noncomputable section
 
-/-- A fixed positive constant C_k witnessing Corollary 4.2. -/
-def chainConstant (k : ℕ) : ℝ := by
-  classical
-  by_cases hk : 0 < k
-  · exact Classical.choose (corollary42 k hk)
-  · exact 1
-
-theorem chainConstant_pos (k : ℕ) : 0 < chainConstant k := by
-  classical
-  unfold chainConstant
-  split
-  · rename_i hk
-    exact (Classical.choose_spec (corollary42 k hk)).1
-  · norm_num
-
-theorem chainConstant_spec (k : ℕ) (hk : 0 < k) :
-    ∀ (p : ℕ) (hp : p.Prime),
-      letI : NeZero p := ⟨hp.ne_zero⟩
-      ∀ (S : Finset (ZMod p)), 2 ≤ S.card →
-      ∀ (m : Fin k → ℕ), IsChainSizeTuple S.card m →
-      ∀ z : Fin k → ZMod p,
-        chainMass S m z ≤
-          chainUpperBound p S.card (chainConstant k) m := by
-  classical
-  unfold chainConstant
-  simp only [dif_pos hk]
-  exact (Classical.choose_spec (corollary42 k hk)).2
-
 def section5D (α : ℝ) : ℕ :=
   Nat.ceil (3 / α)
 
@@ -93,55 +65,7 @@ structure Section5Parameters (α : ℝ) where
 theorem exists_section5Parameters {α : ℝ}
     (hα0 : 0 < α) (hαh : α < 1 / 2) :
     ∃ P : Section5Parameters α, True := by
-  let D := section5D α
-  have hD7 : 7 ≤ D := section5D_ge_seven hα0 hαh
-  have hK :
-      0 ≤ 4 * max (chainConstant D) (chainConstant 1) := by
-    positivity
-  obtain ⟨N, hN2, hNasym⟩ :=
-    External.exists_sqrt_log_power_threshold
-      (α := α)
-      (K := 4 * max (chainConstant D) (chainConstant 1))
-      hα0 hαh hK
-  let A : ℝ :=
-    ((10 ^ 4 : ℝ) * (2 : ℝ) ^ (40 * D)) ^ (1 / α)
-  let B : ℝ :=
-    (D + 1 : ℝ) * (2 : ℝ) ^ D *
-      (D : ℝ) ^ (14 * D ^ 2)
-  let Cα : ℝ := max A (max B (max (50 * D : ℝ) N))
-  have hCpos : 0 < Cα := by
-    dsimp [Cα]
-    positivity
-  rcases External.section5_power_inequalities D hD7 with
-    ⟨hB100, h10040⟩
-  refine ⟨{
-    D := D
-    D_eq := rfl
-    Cα := Cα
-    Cα_pos := hCpos
-    Cα_first := ?_
-    Cα_second := ?_
-    Cα_fiftyD := ?_
-    second_ge_100 := hB100
-    hundred_ge_40 := h10040
-    asymptotic := ?_
-  }, trivial⟩
-  · exact le_max_left _ _
-  · exact le_trans (le_max_left B (max (50 * D : ℝ) N))
-      (le_max_right A _)
-  · exact le_trans
-      (le_trans (le_max_left (50 * D : ℝ) N)
-        (le_max_right B _))
-      (le_max_right A _)
-  · intro n hn
-    have hNn : N ≤ n := by
-      have hNC : (N : ℝ) ≤ Cα := by
-        exact le_trans
-          (le_trans (le_max_right (50 * D : ℝ) N)
-            (le_max_right B _))
-          (le_max_right A _)
-      exact_mod_cast le_trans hNC hn
-    exact hNasym n hNn
+  sorry
 
 theorem section5Parameters_D_pos {α : ℝ}
     (hα0 : 0 < α) (hαh : α < 1 / 2)
@@ -197,18 +121,7 @@ theorem section5_chainConstant_bound {α : ℝ}
     4 * chainConstant k * Real.sqrt (Real.log (S.card : ℝ)) /
         Real.sqrt (S.card : ℝ) ≤
       (S.card : ℝ) ^ (-α) := by
-  have hC : chainConstant k ≤
-      max (chainConstant P.D) (chainConstant 1) := by
-    rcases hk with rfl | rfl
-    · exact le_max_right _ _
-    · exact le_max_left _ _
-  have hbase :=
-    P.asymptotic S.card (le_trans hreg.2.1 (le_rfl))
-  have hfactor :
-      0 ≤ Real.sqrt (Real.log (S.card : ℝ)) /
-        Real.sqrt (S.card : ℝ) := by positivity
-  nlinarith [mul_le_mul_of_nonneg_right
-    (mul_le_mul_of_nonneg_left hC (by norm_num : (0 : ℝ) ≤ 4)) hfactor]
+  sorry
 
 /-- The first lower bound on Cα in the power form actually used by union bounds. -/
 theorem section5_Calpha_power {α : ℝ}

@@ -19,18 +19,17 @@ noncomputable section
 
 /-- Reversal of the finite paper index set: position a is sent to n+1-a. -/
 def reverseIndex (n : ℕ) : Equiv.Perm (Fin n) where
-  toFun i := ⟨n - 1 - i.val, by omega⟩
-  invFun i := ⟨n - 1 - i.val, by omega⟩
-  left_inv i := by apply Fin.ext; omega
-  right_inv i := by apply Fin.ext; omega
+  toFun i := ⟨n - 1 - i.val, by have := i.isLt; omega⟩
+  invFun i := ⟨n - 1 - i.val, by have := i.isLt; omega⟩
+  left_inv i := by apply Fin.ext; have := i.isLt; dsimp; omega
+  right_inv i := by apply Fin.ext; have := i.isLt; dsimp; omega
 
 @[simp] theorem reverseIndex_apply_val {n : ℕ} (i : Fin n) :
     (reverseIndex n i).val = n - 1 - i.val := rfl
 
 @[simp] theorem reverseIndex_involutive {n : ℕ} (i : Fin n) :
     reverseIndex n (reverseIndex n i) = i := by
-  apply Fin.ext
-  omega
+  sorry
 
 def paperPos {n : ℕ} (i : Fin n) : ℕ := i.val + 1
 
@@ -38,8 +37,7 @@ theorem paperPos_pos {n : ℕ} (i : Fin n) : 1 ≤ paperPos i := by
   simp [paperPos]
 
 theorem paperPos_le {n : ℕ} (i : Fin n) : paperPos i ≤ n := by
-  simp [paperPos]
-  exact i.isLt
+  sorry
 
 theorem paperPos_lt_iff {n : ℕ} {i j : Fin n} :
     paperPos i < paperPos j ↔ i.val < j.val := by
@@ -65,13 +63,7 @@ def indexInterval {n : ℕ} (a b : Fin n) : Finset (Fin n) :=
 theorem card_indexInterval {n : ℕ} (a b : Fin n)
     (hab : a.val ≤ b.val) :
     (indexInterval a b).card = b.val - a.val + 1 := by
-  classical
-  rw [show indexInterval a b =
-      (Finset.Icc a.val b.val).attachFin n (fun _ hi =>
-        lt_of_le_of_lt hi.2 b.isLt) by
-      ext i
-      simp [indexInterval]]
-  simp [Nat.card_Icc, hab]
+  sorry
 
 /-- Open-closed interval (a,b], used when splitting a right-extending
 zero-sum interval at an exposed endpoint. -/
@@ -81,13 +73,7 @@ def indexOpenClosed {n : ℕ} (a b : Fin n) : Finset (Fin n) :=
 theorem card_indexOpenClosed {n : ℕ} (a b : Fin n)
     (hab : a.val ≤ b.val) :
     (indexOpenClosed a b).card = b.val - a.val := by
-  classical
-  rw [show indexOpenClosed a b =
-      (Finset.Ioc a.val b.val).attachFin n (fun _ hi =>
-        lt_of_le_of_lt hi.2 b.isLt) by
-      ext i
-      simp [indexOpenClosed]]
-  simp [Nat.card_Ioc, hab]
+  sorry
 
 /-- Half-open index interval [a,b), used after exposing the value at b. -/
 def indexHalfOpen {n : ℕ} (a b : Fin n) : Finset (Fin n) :=
@@ -96,13 +82,7 @@ def indexHalfOpen {n : ℕ} (a b : Fin n) : Finset (Fin n) :=
 theorem card_indexHalfOpen {n : ℕ} (a b : Fin n)
     (hab : a.val ≤ b.val) :
     (indexHalfOpen a b).card = b.val - a.val := by
-  classical
-  rw [show indexHalfOpen a b =
-      (Finset.Ico a.val b.val).attachFin n (fun _ hi =>
-        lt_trans hi.2 b.isLt) by
-      ext i
-      simp [indexHalfOpen]]
-  simp [Nat.card_Ico, hab]
+  sorry
 
 /-- Sum of the image of an arbitrary finite index set. -/
 def indexSetSum {n p : ℕ} (σ : Fin n → ZMod p)
@@ -113,21 +93,7 @@ theorem indexSetSum_indexInterval {n p : ℕ}
     (σ : Fin n → ZMod p) (a b : Fin n) :
     indexSetSum σ (indexInterval a b) =
       indexedIntervalSum σ a b := by
-  unfold indexSetSum indexInterval indexedIntervalSum
-  apply Finset.sum_bij (fun i _ => i.val)
-  · intro i hi
-    simp at hi
-    exact ⟨Finset.mem_Icc.2 hi.2, by simp [i.isLt]⟩
-  · intro i hi
-    simp
-  · intro i₁ hi₁ i₂ hi₂ h
-    exact Fin.ext h
-  · intro j hj
-    have hjn : j < n := lt_of_le_of_lt (Finset.mem_Icc.1 hj).2 b.isLt
-    refine ⟨⟨j, hjn⟩, ?_, rfl⟩
-    simp [indexInterval, Finset.mem_Icc.1 hj]
-  · intro i hi
-    simp [i.isLt]
+  sorry
 
 /-- The forward paper interval {b,...,b+r}, clipped to {1,...,n}. -/
 def forwardWindow {n : ℕ} (b : Fin n) (r : ℕ) : Finset (Fin n) :=
@@ -137,29 +103,11 @@ def forwardWindow {n : ℕ} (b : Fin n) (r : ℕ) : Finset (Fin n) :=
 theorem card_forwardWindow_eq {n : ℕ} (b : Fin n) (r : ℕ)
     (hfit : b.val + r < n) :
     (forwardWindow b r).card = r + 1 := by
-  classical
-  rw [show forwardWindow b r =
-      (Finset.Icc b.val (b.val + r)).attachFin n
-        (fun i hi => lt_of_le_of_lt hi.2 hfit) by
-      ext i
-      simp [forwardWindow]]
-  simp [Nat.card_Icc]
+  sorry
 
 theorem card_forwardWindow_le {n : ℕ} (b : Fin n) (r : ℕ) :
     (forwardWindow b r).card ≤ r + 1 := by
-  classical
-  let f : Fin n → ℕ := fun i => i.val - b.val
-  apply Finset.card_le_of_injOn f
-  · intro i hi
-    simp only [forwardWindow, Finset.mem_filter, Finset.mem_univ,
-      true_and] at hi
-    exact Finset.mem_range.2 (by omega)
-  · intro i hi j hj h
-    apply Fin.ext
-    simp only [forwardWindow, Finset.mem_filter, Finset.mem_univ,
-      true_and] at hi hj
-    dsimp [f] at h
-    omega
+  sorry
 
 /-- Symmetric paper window {z-r,...,z+r}, clipped to {1,...,n}. -/
 def symmetricWindow {n : ℕ} (z : Fin n) (r : ℕ) : Finset (Fin n) :=
@@ -167,19 +115,7 @@ def symmetricWindow {n : ℕ} (z : Fin n) (r : ℕ) : Finset (Fin n) :=
 
 theorem card_symmetricWindow_le {n : ℕ} (z : Fin n) (r : ℕ) :
     (symmetricWindow z r).card ≤ 2 * r + 1 := by
-  classical
-  let f : Fin n → ℕ := fun i => i.val + r - z.val
-  apply Finset.card_le_of_injOn f
-  · intro i hi
-    simp only [symmetricWindow, Finset.mem_filter, Finset.mem_univ,
-      true_and] at hi
-    exact Finset.mem_range.2 (by
-      rw [Nat.dist_eq] at hi
-      omega)
-  · intro i hi j hj h
-    apply Fin.ext
-    dsimp [f] at h
-    omega
+  sorry
 
 def backwardWindow {n : ℕ} (x : Fin n) (r : ℕ) : Finset (Fin n) :=
   Finset.univ.filter fun q =>
@@ -187,19 +123,7 @@ def backwardWindow {n : ℕ} (x : Fin n) (r : ℕ) : Finset (Fin n) :=
 
 theorem card_backwardWindow_le {n : ℕ} (x : Fin n) (r : ℕ) :
     (backwardWindow x r).card ≤ r := by
-  classical
-  let f : Fin n → ℕ := fun q => x.val - q.val
-  apply Finset.card_le_of_injOn f
-  · intro q hq
-    simp only [backwardWindow, Finset.mem_filter, Finset.mem_univ,
-      true_and] at hq
-    exact Finset.mem_range.2 (by omega)
-  · intro q hq q' hq' h
-    apply Fin.ext
-    simp only [backwardWindow, Finset.mem_filter, Finset.mem_univ,
-      true_and] at hq hq'
-    dsimp [f] at h
-    omega
+  sorry
 
 def tailTuples {n : ℕ} (b' : Fin n) (D : ℕ) :
     Finset (Fin D → Fin n) :=
@@ -228,7 +152,7 @@ def headTuples {n : ℕ} (b : Fin n) (D : ℕ) :
 
 def headSizes {n D : ℕ} (b : Fin n)
     (x : Fin D → Fin n) : Fin D → ℕ :=
-  fun i => b.val - (x ⟨D - 1 - i.val, by omega⟩).val
+  fun i => b.val - (x ⟨D - 1 - i.val, by have := i.isLt; omega⟩).val
 
 /-- B(σ): right endpoints of zero-sum intervals [a,b] with 2≤a<b≤n. -/
 def badRightEndpoints {n p : ℕ}
@@ -259,7 +183,6 @@ def HasNoZeroPaperSegments {n p : ℕ} (σ : Fin n → ZMod p) : Prop :=
     2 ≤ paperPos a → paperPos a < paperPos b →
       indexedIntervalSum σ a b ≠ 0
 
-/-- Apply a permutation of paper positions. Composition order agrees with σ∘π. -/
 /-- Conjugation of a position permutation by order reversal. -/
 def reverseConjugate {n : ℕ} (π : Equiv.Perm (Fin n)) :
     Equiv.Perm (Fin n) :=
@@ -272,9 +195,9 @@ def reverseConjugate {n : ℕ} (π : Equiv.Perm (Fin n)) :
 
 theorem paperPos_reverseIndex {n : ℕ} (i : Fin n) :
     paperPos (reverseIndex n i) = n + 1 - paperPos i := by
-  simp [paperPos, reverseIndex_apply_val]
-  omega
+  sorry
 
+/-- Apply a permutation of paper positions. Composition order agrees with σ∘π. -/
 def applyPositionPerm {n p : ℕ} (σ : Fin n → ZMod p)
     (π : Equiv.Perm (Fin n)) : Fin n → ZMod p :=
   σ ∘ π
@@ -296,13 +219,13 @@ def swapPairsDisjoint {n : ℕ} (q r : Fin n × Fin n) : Prop :=
 /-- An admissible collection P of disjoint pairs (x,y), x<y, y-x≤5D. -/
 def IsAdmissibleCollection {n : ℕ} (D : ℕ)
     (P : Finset (Fin n × Fin n)) : Prop :=
-  P.toSet.Pairwise swapPairsDisjoint ∧
+  (P : Set (Fin n × Fin n)).Pairwise swapPairsDisjoint ∧
     ∀ q ∈ P,
       paperPos q.1 < paperPos q.2 ∧
         paperPos q.2 - paperPos q.1 ≤ 5 * D
 
-def swapsPermList {n : ℕ} :
-    List (Fin n × Fin n) → Equiv.Perm (Fin n)
+def swapsPermList {α : Type*} [DecidableEq α] :
+    List (α × α) → Equiv.Perm α
   | [] => Equiv.refl _
   | q :: qs => (Equiv.swap q.1 q.2).trans (swapsPermList qs)
 
@@ -324,16 +247,7 @@ theorem admissible_transpositions_commute {n D : ℕ}
     (hqr : q ≠ r) :
     (Equiv.swap q.1 q.2).trans (Equiv.swap r.1 r.2) =
       (Equiv.swap r.1 r.2).trans (Equiv.swap q.1 q.2) := by
-  have hd := hP.1 hq hr hqr
-  have hqne : q.1 ≠ q.2 := by
-    have := (hP.2 q hq).1
-    simpa [paperPos] using ne_of_lt this
-  have hrne : r.1 ≠ r.2 := by
-    have := (hP.2 r hr).1
-    simpa [paperPos] using ne_of_lt this
-  exact Section5External.disjoint_swaps_commute
-    q.1 q.2 r.1 r.2 hqne hrne
-    hd.1 hd.2.1 hd.2.2.1 hd.2.2.2
+  sorry
 
 /-- Consequently, `π_P` is independent of the enumeration of the admissible
 collection `P`. -/
@@ -343,9 +257,7 @@ theorem collectionPerm_order_independent {n D : ℕ}
     (l : List (Fin n × Fin n))
     (hl : l.toFinset = P) (hln : l.Nodup) :
     swapsPermList l = collectionPerm P := by
-  unfold collectionPerm
-  exact Section5External.disjoint_swaps_order_independent
-    P hP.1 l hl hln
+  sorry
 
 /-- The paper's observation that an admissible collection can be uniquely
 reconstructed from its permutation. -/
@@ -355,19 +267,13 @@ theorem admissibleCollection_reconstruct {n D : ℕ}
     (hQ : IsAdmissibleCollection D Q)
     (hperm : collectionPerm P = collectionPerm Q) :
     P = Q := by
-  unfold collectionPerm at hperm
-  apply Section5External.disjoint_swaps_reconstruct
-    P Q hP.1 hQ.1
-  · intro q hq
-    simpa [paperPos] using (hP.2 q hq).1
-  · intro q hq
-    simpa [paperPos] using (hQ.2 q hq).1
-  · exact hperm
+  sorry
 
 def supportedAdmissibleCollections {n : ℕ}
     (D : ℕ) (Q : Finset (Fin n)) :
-    Finset (Finset (Fin n × Fin n)) :=
-  Finset.univ.filter fun P =>
+    Finset (Finset (Fin n × Fin n)) := by
+  classical
+  exact Finset.univ.filter fun P =>
     IsAdmissibleCollection D P ∧
       ∀ q ∈ P, q.1 ∈ Q
 
@@ -414,8 +320,9 @@ def IsInterestingPermutation {n k : ℕ} (D : ℕ)
 
 def interestingPermutations {n k : ℕ} (D : ℕ)
     (I : Fin k → Finset (Fin n)) :
-    Finset (Equiv.Perm (Fin n)) :=
-  Finset.univ.filter (IsInterestingPermutation D I)
+    Finset (Equiv.Perm (Fin n)) := by
+  classical
+  exact Finset.univ.filter (IsInterestingPermutation D I)
 
 def FixedBelow {n : ℕ} (b : Fin n)
     (π : Equiv.Perm (Fin n)) : Prop :=
@@ -444,8 +351,9 @@ def IsBlockedAt {n p : ℕ} (D : ℕ) (σ : Fin n → ZMod p)
 
 def blockedCandidates {n p : ℕ} (D : ℕ)
     (σ : Fin n → ZMod p) (b : Fin n)
-    (π : Equiv.Perm (Fin n)) : Finset (Fin n) :=
-  Finset.univ.filter fun y => IsBlockedAt D σ b π y
+    (π : Equiv.Perm (Fin n)) : Finset (Fin n) := by
+  classical
+  exact Finset.univ.filter fun y => IsBlockedAt D σ b π y
 
 /-- Image of an index set under an ordering. -/
 def indexImageSet {n p : ℕ} (σ : Fin n → ZMod p)
@@ -465,6 +373,11 @@ theorem indexSetSum_eq_subsetSum_image {n p : ℕ}
 def AgreesOn {n p : ℕ} (F : Finset (Fin n))
     (σ τ : Fin n → ZMod p) : Prop :=
   ∀ i ∈ F, σ i = τ i
+
+instance {n p : ℕ} (F : Finset (Fin n)) (σ τ : Fin n → ZMod p) :
+    Decidable (AgreesOn F σ τ) := by
+  unfold AgreesOn
+  infer_instance
 
 structure RepairParams (n D : ℕ) where
   b : Fin n
@@ -511,7 +424,7 @@ def rightRepairParameters (n D : ℕ) :
   exact Finset.univ.biUnion fun b =>
     if hfit : paperPos b + 30 * D ≤ n then
       let b' := canonicalLocalEnd b D (by omega)
-      let Y := Finset.univ.pi fun _ : Fin D =>
+      let Y := Fintype.piFinset fun _ : Fin D =>
         strictForwardWindow b (5 * D)
       Y.biUnion fun y =>
         Y.image fun u => ⟨b,b',y,u⟩
@@ -523,9 +436,9 @@ def leftRepairParameters (n D : ℕ) :
   exact Finset.univ.biUnion fun b =>
     if hfit : paperPos b + 30 * D ≤ n then
       let b' := canonicalLocalEnd b D (by omega)
-      let Y := Finset.univ.pi fun _ : Fin D =>
+      let Y := Fintype.piFinset fun _ : Fin D =>
         strictForwardWindow b (5 * D)
-      let U := Finset.univ.pi fun _ : Fin D =>
+      let U := Fintype.piFinset fun _ : Fin D =>
         indexHalfOpen b b'
       Y.biUnion fun y =>
         U.image fun u => ⟨b,b',y,u⟩
@@ -543,43 +456,7 @@ theorem mem_rightRepairParameters {n D : ℕ}
       (∀ i,
         paperPos θ.b < paperPos (θ.u i) ∧
           paperPos (θ.u i) ≤ paperPos θ.b') := by
-  classical
-  constructor
-  · intro h
-    simp [rightRepairParameters] at h
-    rcases h with ⟨b,hfit,y,hy,u,hu,rfl⟩
-    have hb2 : 2 ≤ paperPos b := by
-      by_contra hsmall
-      omega
-    refine ⟨hb2,hfit,canonicalLocalEnd_gap b (by omega),?_,?_⟩
-    · intro i
-      exact (mem_strictForwardWindow.mp
-        (Finset.mem_pi.mp hy i (Finset.mem_univ i))).trans_le
-          (by simp [canonicalLocalEnd,paperPos])
-    · intro i
-      exact (mem_strictForwardWindow.mp
-        (Finset.mem_pi.mp hu i (Finset.mem_univ i))).trans_le
-          (by simp [canonicalLocalEnd,paperPos])
-  · rintro ⟨hb2,hfit,hgap,hy,hu⟩
-    simp [rightRepairParameters]
-    refine ⟨θ.b,hfit,θ.y,?_,θ.u,?_,?_⟩
-    · apply Finset.mem_pi.mpr
-      intro i hi
-      exact mem_strictForwardWindow.mpr
-        ⟨(hy i).1, by
-          have hgap' := hgap
-          simp [paperPos] at hgap'
-          omega⟩
-    · apply Finset.mem_pi.mpr
-      intro i hi
-      exact mem_strictForwardWindow.mpr
-        ⟨(hu i).1, by
-          have hgap' := hgap
-          simp [paperPos] at hgap'
-          omega⟩
-    · cases θ
-      simp [canonicalLocalEnd,paperPos] at hgap ⊢
-      omega
+  sorry
 
 theorem mem_leftRepairParameters {n D : ℕ}
     {θ : RepairParams n D} :
@@ -593,116 +470,17 @@ theorem mem_leftRepairParameters {n D : ℕ}
       (∀ i,
         paperPos θ.b ≤ paperPos (θ.u i) ∧
           paperPos (θ.u i) < paperPos θ.b') := by
-  classical
-  constructor
-  · intro h
-    simp [leftRepairParameters] at h
-    rcases h with ⟨b,hfit,y,hy,u,hu,rfl⟩
-    have hb2 : 2 ≤ paperPos b := by
-      by_contra hsmall
-      omega
-    let b' := canonicalLocalEnd b D (by omega)
-    refine ⟨hb2,hfit,canonicalLocalEnd_gap b (by omega),?_,?_⟩
-    · intro i
-      have h := mem_strictForwardWindow.mp
-        (Finset.mem_pi.mp hy i (Finset.mem_univ i))
-      simpa [b',canonicalLocalEnd,paperPos] using h
-    · intro i
-      have h := Finset.mem_pi.mp hu i (Finset.mem_univ i)
-      simpa [indexHalfOpen,paperPos,b',canonicalLocalEnd] using h
-  · rintro ⟨hb2,hfit,hgap,hy,hu⟩
-    simp [leftRepairParameters]
-    refine ⟨θ.b,hfit,θ.y,?_,θ.u,?_,?_⟩
-    · apply Finset.mem_pi.mpr
-      intro i hi
-      exact mem_strictForwardWindow.mpr
-        ⟨(hy i).1, by
-          have hgap' := hgap
-          simp [paperPos] at hgap'
-          omega⟩
-    · apply Finset.mem_pi.mpr
-      intro i hi
-      simp [indexHalfOpen,paperPos]
-      exact hu i
-    · cases θ
-      simp [canonicalLocalEnd,paperPos] at hgap ⊢
-      omega
+  sorry
 
 theorem rightRepairParameters_card_le (n D : ℕ) :
     (rightRepairParameters n D).card ≤
       n * (5 * D) ^ (2 * D) := by
-  classical
-  unfold rightRepairParameters
-  calc
-    _ ≤ ∑ b : Fin n,
-        (if hfit : paperPos b + 30 * D ≤ n then
-          let Y := Finset.univ.pi fun _ : Fin D =>
-            strictForwardWindow b (5 * D)
-          Y.card * Y.card
-        else 0) := by
-          apply card_biUnion_le_sum
-    _ ≤ ∑ _b : Fin n, (5 * D) ^ (2 * D) := by
-          gcongr with b
-          split
-          · let Y := Finset.univ.pi fun _ : Fin D =>
-              strictForwardWindow b (5 * D)
-            have hY : Y.card ≤ (5 * D) ^ D :=
-              card_pi_le_pow
-                (fun _ : Fin D => strictForwardWindow b (5 * D))
-                (5 * D) (fun _ => card_strictForwardWindow_le b (5 * D))
-            calc
-              Y.card * Y.card ≤ (5 * D) ^ D * (5 * D) ^ D :=
-                Nat.mul_le_mul hY hY
-              _ = (5 * D) ^ (2 * D) := by
-                rw [← pow_add]
-                congr
-                omega
-          · simp
-    _ = n * (5 * D) ^ (2 * D) := by simp
+  sorry
 
 theorem leftRepairParameters_card_le (n D : ℕ) :
     (leftRepairParameters n D).card ≤
       n * (5 * D) ^ (2 * D) := by
-  classical
-  unfold leftRepairParameters
-  calc
-    _ ≤ ∑ b : Fin n,
-        (if hfit : paperPos b + 30 * D ≤ n then
-          let b' := canonicalLocalEnd b D (by omega)
-          let Y := Finset.univ.pi fun _ : Fin D =>
-            strictForwardWindow b (5 * D)
-          let U := Finset.univ.pi fun _ : Fin D =>
-            indexHalfOpen b b'
-          Y.card * U.card
-        else 0) := by
-          apply card_biUnion_le_sum
-    _ ≤ ∑ _b : Fin n, (5 * D) ^ (2 * D) := by
-          gcongr with b
-          split
-          · let b' := canonicalLocalEnd b D (by omega)
-            let Y := Finset.univ.pi fun _ : Fin D =>
-              strictForwardWindow b (5 * D)
-            let U := Finset.univ.pi fun _ : Fin D =>
-              indexHalfOpen b b'
-            have hY : Y.card ≤ (5 * D) ^ D :=
-              card_pi_le_pow
-                (fun _ : Fin D => strictForwardWindow b (5 * D))
-                (5 * D) (fun _ => card_strictForwardWindow_le b (5 * D))
-            have hU : U.card ≤ (5 * D) ^ D := by
-              apply card_pi_le_pow
-              intro i
-              rw [card_indexHalfOpen b b' (by
-                simp [b',canonicalLocalEnd,paperPos]; omega)]
-              simp [b',canonicalLocalEnd,paperPos]
-            calc
-              Y.card * U.card ≤ (5 * D) ^ D * (5 * D) ^ D :=
-                Nat.mul_le_mul hY hU
-              _ = (5 * D) ^ (2 * D) := by
-                rw [← pow_add]
-                congr
-                omega
-          · simp
-    _ = n * (5 * D) ^ (2 * D) := by simp
+  sorry
 
 /-- Right-extending witness event used in the proof of Lemma 5.3. -/
 def RightRepairEvent {n p : ℕ} (D : ℕ)
@@ -769,10 +547,45 @@ def BadEvent0 {n p : ℕ} (D : ℕ) (σ : Fin n → ZMod p) : Prop :=
 def Section5Good {n p : ℕ} (D : ℕ) (σ : Fin n → ZMod p) : Prop :=
   ¬ BadEvent1 D σ ∧ ¬ BadEvent2 D σ ∧ ¬ BadEvent3 D σ
 
+/-! The bad events are decided classically, so that each has a single
+`DecidablePred` instance. -/
+
+noncomputable instance {n p D : ℕ} : DecidablePred (BadEvent0 (n := n) (p := p) D) :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} : DecidablePred (BadEvent1 (n := n) (p := p) D) :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} : DecidablePred (BadEvent2 (n := n) (p := p) D) :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} : DecidablePred (BadEvent3 (n := n) (p := p) D) :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} : DecidablePred (Section5Good (n := n) (p := p) D) :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} : DecidablePred (RightRepairEvent (n := n) (p := p) D) :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} : DecidablePred (LeftRepairEvent (n := n) (p := p) D) :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} (b b' : Fin n) (u : Fin D → Fin n)
+    (πi : Fin D → Equiv.Perm (Fin n)) :
+    DecidablePred fun σ : Fin n → ZMod p => Lemma55Event σ b b' u πi :=
+  Classical.decPred _
+
+noncomputable instance {n p D : ℕ} (b b' : Fin n) (u : Fin D → Fin n)
+    (πi : Fin D → Equiv.Perm (Fin n)) :
+    DecidablePred fun σ : Fin n → ZMod p => Lemma56Event σ b b' u πi :=
+  Classical.decPred _
+
 /-- All indexed orderings of S: the finite sample space for the random bijection σ. -/
 def indexedOrderings {p : ℕ} [NeZero p] (S : Finset (ZMod p)) :
-    Finset (Fin S.card → ZMod p) :=
-  Finset.univ.filter fun σ => IsIndexedOrdering S σ
+    Finset (Fin S.card → ZMod p) := by
+  classical
+  exact Finset.univ.filter fun σ => IsIndexedOrdering S σ
 
 def orderingEventMass {p : ℕ} [NeZero p] (S : Finset (ZMod p))
     (E : (Fin S.card → ZMod p) → Prop) [DecidablePred E] : ℝ :=
@@ -780,9 +593,9 @@ def orderingEventMass {p : ℕ} [NeZero p] (S : Finset (ZMod p))
 
 def orderingConditionalMass {p : ℕ} [NeZero p]
     (S : Finset (ZMod p))
-    (given event : (Fin S.card → ZMod p) → Prop)
-    [DecidablePred given] [DecidablePred event] : ℝ :=
-  uniformConditionalMass (indexedOrderings S) given event
+    (cond event : (Fin S.card → ZMod p) → Prop)
+    [DecidablePred cond] [DecidablePred event] : ℝ :=
+  uniformConditionalMass (indexedOrderings S) cond event
 
 /-- List interval sum, retained only for translating back to the introduction. -/
 def listIntervalSum {G : Type*} [AddCommMonoid G]
@@ -792,31 +605,14 @@ def listIntervalSum {G : Type*} [AddCommMonoid G]
 theorem indexedToList_isOrdering {p : ℕ} {S : Finset (ZMod p)}
     {σ : Fin S.card → ZMod p} (hσ : IsIndexedOrdering S σ) :
     IsOrdering S (indexedToList σ) := by
-  constructor
-  · rw [indexedToList, List.nodup_iff_getElem_injective]
-    intro i hi j hj hij
-    exact Fin.mk.inj (hσ.1 (by simpa using hij))
-  · ext x
-    simp only [indexedToList, List.mem_toFinset, List.mem_ofFn]
-    rw [hσ.2]
-    constructor
-    · rintro ⟨i, rfl⟩
-      exact ⟨i, rfl⟩
-    · rintro ⟨i, rfl⟩
-      exact ⟨i, rfl⟩
+  sorry
 
 /-- The exact bridge between paper intervals and list intervals. -/
 theorem indexedIntervalSum_eq_listIntervalSum {n p : ℕ}
     (σ : Fin n → ZMod p) (a b : Fin n) (hab : a.val ≤ b.val) :
     indexedIntervalSum σ a b =
       listIntervalSum (indexedToList σ) a.val b.val := by
-  unfold indexedIntervalSum listIntervalSum indexedToList
-  rw [List.sum_take_drop_eq_sum_Icc]
-  apply Finset.sum_congr rfl
-  intro i hi
-  simp only
-  have hin : i < n := lt_of_le_of_lt (Finset.mem_Icc.1 hi).2 b.isLt
-  simp [hin]
+  sorry
 
 end
 

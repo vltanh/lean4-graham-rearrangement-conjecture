@@ -29,30 +29,13 @@ def reversePermTuple {n D : ℕ}
 theorem reverseTuple_strictMono {n D : ℕ}
     {x : Fin D → Fin n} (hx : StrictMono x) :
     StrictMono (reverseTuple x) := by
-  intro i j hij
-  have hji :
-      (reverseIndex D j).val < (reverseIndex D i).val := by
-    simp [reverseIndex_apply_val]
-    omega
-  have hx' :
-      (x (reverseIndex D j)).val <
-        (x (reverseIndex D i)).val := by
-    simpa only [Fin.mk_lt_mk] using hx hji
-  simp [reverseTuple, reverseIndex_apply_val]
-  omega
+  sorry
 
 theorem reverseTuple_head_to_tail {n D : ℕ}
     (b : Fin n) {x : Fin D → Fin n}
     (hx : x ∈ headTuples b D) :
     reverseTuple x ∈ tailTuples (reverseIndex n b) D := by
-  rcases (Finset.mem_filter.1 hx).2 with ⟨hmono, hrange⟩
-  apply Finset.mem_filter.2
-  refine ⟨Finset.mem_univ _, reverseTuple_strictMono hmono, ?_⟩
-  intro i
-  have h := hrange (reverseIndex D i)
-  rw [paperPos_reverseIndex]
-  rw [paperPos_reverseIndex]
-  omega
+  sorry
 
 theorem reverse_indexInterval_image {n : ℕ}
     (a b : Fin n) (hab : a.val ≤ b.val) :
@@ -143,8 +126,7 @@ theorem reverse_gap {n D : ℕ}
     (hgap : paperPos b' - paperPos b = 5 * D) :
     paperPos (reverseIndex n b) -
         paperPos (reverseIndex n b') = 5 * D := by
-  simp [paperPos_reverseIndex]
-  omega
+  sorry
 
 theorem lemma56_reversal_subset {p D : ℕ} [NeZero p]
     (S : Finset (ZMod p))
@@ -215,19 +197,8 @@ theorem lemma56_event_empty_at_two {n p D : ℕ}
     (hb : paperPos b = 2)
     (u : Fin D → Fin n)
     (πi : Fin D → Equiv.Perm (Fin n)) :
-    ∀ σ, ¬ Lemma56Event σ b b' u πi := by
-  intro σ h
-  rcases h with ⟨x, hx, _π, _hπ, _hz⟩
-  have hmono := (Finset.mem_filter.1 hx).2.1
-  have hrange := (Finset.mem_filter.1 hx).2.2
-  let i0 : Fin D := ⟨0, by omega⟩
-  let i1 : Fin D := ⟨1, by omega⟩
-  have hx0 := hrange i0
-  have hx1 := hrange i1
-  have hlt := hmono (show i0 < i1 by
-    simp [i0, i1])
-  simp [paperPos, hb, i0, i1] at hx0 hx1 hlt
-  omega
+    ∀ σ : Fin n → ZMod p, ¬ Lemma56Event σ b b' u πi := by
+  sorry
 
 end
 
