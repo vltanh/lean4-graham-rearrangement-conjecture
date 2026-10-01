@@ -6,7 +6,7 @@ public import GrahamRearrangement.Rearrangement.Parameters
 
 open scoped BigOperators Pointwise
 
-namespace GrahamRearrangement.Section5External
+namespace GrahamRearrangement.Section5
 
 /-!
 # Generic finite-permutation facts used in Section 5
@@ -1591,4 +1591,4 @@ theorem reverseConjugate_fixedOutside {n : ℕ}
 
 end
 
-end GrahamRearrangement.Section5External
+end GrahamRearrangement.Section5

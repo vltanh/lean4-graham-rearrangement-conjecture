@@ -99,12 +99,12 @@ theorem expected_lowPsi_bound {p m t : ℕ} (hp : p.Prime)
     rcases Finset.mem_sdiff.1 hχ with ⟨hD, hB⟩
     exact lemma3_3 hp S hS hmLower hmUpper ht χ hD hB
   have hE1 :=
-    Section3External.partitionExpectation_filter_le (m := m)
+    Section3.partitionExpectation_filter_le (m := m)
       S T₁ (fun χ P => psi P χ < 2 * t) h1
   have hE2 :=
-    Section3External.partitionExpectation_filter_le (m := m)
+    Section3.partitionExpectation_filter_le (m := m)
       S T₂ (fun χ P => psi P χ < 2 * t) h2
-  have hparts := Section3External.balancedPartitions_nonempty (m := m) S hm hmS
+  have hparts := Section3.balancedPartitions_nonempty (m := m) S hm hmS
   have hExp :
       partitionExpectation (m := m) S
           (fun P => ((lowPsiNonzero P t).card : ℝ)) ≤
@@ -263,7 +263,7 @@ theorem expected_A0_bound {p m : ℕ} (hp : p.Prime)
         _ = 1 + (lowPsiNonzero P 1).card := by ring
     exact_mod_cast hcard
   have hparts :=
-    Section3External.balancedPartitions_nonempty (m := m) S hm hmS
+    Section3.balancedPartitions_nonempty (m := m) S hm hmS
   calc
     partitionExpectation (m := m) S (fun P => ((A0 P).card : ℝ))
       ≤ partitionExpectation (m := m) S
@@ -383,7 +383,7 @@ theorem theorem13_explicit :
           field_simp
   have htriv : ∀ l, E l ≤ p := fun l => expected_At_trivial S
   have hdy :=
-    External.weighted_dyadic_split m p K E hpR (by positivity) hsmall htriv
+    Auxiliary.weighted_dyadic_split m p K E hpR (by positivity) hsmall htriv
   -- The terminal tail `22 exp(-m/2^22) ≤ 22/(|S| √m)`.
   have hlogpos : 0 < Real.log (S.card : ℝ) := by
     apply Real.log_pos

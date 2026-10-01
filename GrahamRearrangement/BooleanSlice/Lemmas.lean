@@ -83,7 +83,7 @@ theorem section3_log_facts (SCard m : ℕ)
   have hlogmono : Real.log 2 ≤ Real.log (SCard : ℝ) :=
     Real.log_le_log (by norm_num) (by exact_mod_cast hS)
   have hlog : (1 / 2 : ℝ) ≤ Real.log (SCard : ℝ) :=
-    le_trans External.log_two_ge_half hlogmono
+    le_trans Auxiliary.log_two_ge_half hlogmono
   have hlogpos : 0 < Real.log (SCard : ℝ) := by linarith
   refine ⟨hlog, ?_⟩
   have h := (le_div_iff₀ hlogpos).1 hupper
@@ -182,7 +182,7 @@ theorem psi_ge_energy_div_sq {p m : ℕ} [NeZero p]
   apply Finset.sum_le_sum
   intro i _
   apply mul_le_mul_of_nonneg_right _ (by positivity)
-  have hb := Section3External.balanced_block_size_bounds S hm hmS hP i
+  have hb := Section3.balanced_block_size_bounds S hm hmS hP i
   have hdiv : 0 < S.card / m := Nat.div_pos hmS hm
   have hcpos : (0 : ℝ) < (P i).card := by
     exact_mod_cast lt_of_lt_of_le hdiv hb.1
@@ -219,7 +219,7 @@ theorem psi_ge_two_of_far_rows {p m t : ℕ} [NeZero p]
       (S.card : ℝ) * ((k : ℝ) * (64 * t / m)) ≤
         ∑ i, ∑ x ∈ P i, ∑ x' ∈ P i,
           zmodNorm (χ * x - χ * x') ^ 2 := by
-    have hrows := Section3External.partition_energy_lower_by_rows
+    have hrows := Section3.partition_energy_lower_by_rows
       S P ⟨hP.1, hP.2.1, hP.2.2.1⟩
       (fun a b => zmodNorm (χ * b - χ * a) ^ 2)
       (fun _ => (k : ℝ) * (64 * t / m))
@@ -469,7 +469,7 @@ theorem psi_ge_five_of_dense_rows {p m t : ℕ} [NeZero p]
       (k : ℝ) * ∑ x ∈ U, zmodNorm (χ * x - c) ^ 2 / 4 ≤
         ∑ i, ∑ x ∈ P i, ∑ x' ∈ P i,
           zmodNorm (χ * x - χ * x') ^ 2 := by
-    have hrows := Section3External.partition_energy_lower_by_rows
+    have hrows := Section3.partition_energy_lower_by_rows
       S P ⟨hP.1, hP.2.1, hP.2.2.1⟩
       (fun a b => zmodNorm (χ * a - χ * b) ^ 2)
       (fun x => if x ∈ U then (k : ℝ) * (zmodNorm (χ * x - c) ^ 2 / 4) else 0)
@@ -602,7 +602,7 @@ theorem lemma3_1 {p m t : ℕ} [NeZero p] (hp : p.Prime)
             rw [sub_self, sec3_zmodNorm_zero] at h
             have : 0 ≤ Real.sqrt ((t : ℝ) / m) := Real.sqrt_nonneg _
             linarith
-          exact Section3External.block_sparse_tail S (farSet S m t χ x') x'
+          exact Section3.block_sparse_tail S (farSet S m t χ x') x'
             hx' hx'G (Finset.filter_subset _ _) hfar hm hm4
     _ = (S.card : ℝ) * Real.exp (-(S.card : ℝ) / (64 * m)) := by
           rw [Finset.sum_const, nsmul_eq_mul]
@@ -663,7 +663,7 @@ theorem lemma3_3 {p m t : ℕ} [NeZero p] (hp : p.Prime)
             refine ⟨Finset.mem_univ _, ?_⟩
             have : 0 ≤ Real.sqrt ((t : ℝ) / m) := Real.sqrt_nonneg _
             linarith
-          exact Section3External.block_dense_tail S
+          exact Section3.block_dense_tail S
             (nearSet S m t χ (centerAt S m t χ)) x hxS hxG
             (Finset.filter_subset _ _) hGdensity hm hm4
     _ ≤ (S.card : ℝ) * Real.exp (-(S.card : ℝ) / (48 * m)) := by
@@ -714,7 +714,7 @@ theorem lemma3_5 {p m t : ℕ} [NeZero p]
   -- `E[X] ≤ |B| t/m` for `X(Y,Y') = ∑_{χ∈B} ‖χY-χY'‖²`.
   have hEX : uniformExpectation (S.product S) (fun q => f q.1 q.2) ≤
       (B.card : ℝ) * ((t : ℝ) / m) := by
-    rw [Section3External.pair_uniform_expectation S hS]
+    rw [Section3.pair_uniform_expectation S hS]
     have hswap :
         ∑ x ∈ S, ∑ y ∈ S, f x y =
           ∑ χ ∈ B, ∑ x ∈ S, ∑ y ∈ S, zmodNorm (χ * x - χ * y) ^ 2 := by
@@ -748,7 +748,7 @@ theorem lemma3_5 {p m t : ℕ} [NeZero p]
   -- Markov: `P[X ≥ (10t/m)|B|] ≤ 1/10`.
   have ha : (0 : ℝ) < (10 * t / m) * B.card := by positivity
   have hmarkov :=
-    External.uniform_markov (S.product S) (fun q => f q.1 q.2)
+    Auxiliary.uniform_markov (S.product S) (fun q => f q.1 q.2)
       ((10 * t / m) * B.card)
       (by intro q _; exact Finset.sum_nonneg (fun χ _ => sq_nonneg _)) ha
   have hbad :
@@ -783,7 +783,7 @@ theorem lemma3_5 {p m t : ℕ} [NeZero p]
       (fun q => q.1 - q.2 ∈ Q)
     linarith
   obtain ⟨y', hy'S, hyfiber⟩ :=
-    Section3External.exists_fiber_mass_ge_pair_mass S hS
+    Section3.exists_fiber_mass_ge_pair_mass S hS
       (fun y y' => y - y' ∈ Q)
   have hcardfiber :
       (9 : ℝ) / 10 * S.card ≤ (S.filter fun y => y - y' ∈ Q).card :=
@@ -872,7 +872,7 @@ theorem symmetric_character_square_sum
             intro χ _
             apply Finset.sum_congr rfl
             intro χ' _
-            exact External.zmod_character_orthogonality hp (χ + χ')
+            exact Auxiliary.zmod_character_orthogonality hp (χ + χ')
       _ = ∑ _χ ∈ B, (p : ℂ) := by
             apply Finset.sum_congr rfl
             intro χ hχ

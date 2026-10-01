@@ -54,7 +54,7 @@ theorem lemma43_kernel_row_bound {p n : ℕ} (hp : p.Prime)
     intro d _
     ring
   have h3 : ∑ d ∈ Finset.Icc 1 (n - a), 1 / Real.sqrt (d : ℝ) ≤ 2 * Real.sqrt (n : ℝ) := by
-    refine (Section4External.sum_one_div_sqrt_le (n - a)).trans ?_
+    refine (Section4.sum_one_div_sqrt_le (n - a)).trans ?_
     gcongr
     exact_mod_cast Nat.sub_le n a
   have h4 : (C * Real.sqrt (Real.log (n : ℝ)) / n) * (2 * Real.sqrt (n : ℝ)) =
@@ -79,7 +79,7 @@ theorem equation_4_1 {p n h : ℕ} (hp : p.Prime)
     (hn : 2 ≤ n) (C : ℝ) (hC : 0 < C) :
     prefixKernelSum n h (lemma43Kernel p n C) ≤
       (lemma43Base p n C) ^ h := by
-  apply Section4External.prefixKernelSum_le_pow
+  apply Section4.prefixKernelSum_le_pow
   · exact lemma43_kernel_nonneg hp C hC
   · intro a ha
     exact lemma43_kernel_row_bound hp hn C hC a ha
@@ -99,7 +99,7 @@ theorem lemma43_fixed_j {p n k : ℕ} (hp : p.Prime)
     have hpR : 0 < (p : ℝ) := by exact_mod_cast hp.pos
     unfold lemma43Base
     positivity
-  have h1 := Section4External.omittedKernelSum_le_prefix_mul n k
+  have h1 := Section4.omittedKernelSum_le_prefix_mul n k
     (lemma43Kernel p n C) hw j
   have h2 : prefixKernelSum n j.val (lemma43Kernel p n C) ≤
       (lemma43Base p n C) ^ j.val := equation_4_1 hp hn C hC

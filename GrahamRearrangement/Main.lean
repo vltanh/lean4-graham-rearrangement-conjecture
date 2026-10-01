@@ -39,7 +39,7 @@ theorem exists_section5_good_ordering
       orderingEventMass S (BadEvent3 D) ≤ (1 / 25 : ℝ)) :
     ∃ σ ∈ indexedOrderings S, Section5Good D σ := by
   have hspace :=
-    Section5External.indexedOrderings_nonempty S
+    Section5.indexedOrderings_nonempty S
   have h :=
     exists_avoiding_three_events
       (indexedOrderings S) hspace
@@ -70,7 +70,7 @@ theorem theorem12_of_section5_bounds
   have : NeZero p := ⟨hp.ne_zero⟩
   have hpone : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.one_le
   have hpow : (p : ℝ) ^ (1 - α) ≤ (p : ℝ) ^ (1 - β) :=
-    External.rpow_exponent_mono_of_one_le hpone (by linarith)
+    Auxiliary.rpow_exponent_mono_of_one_le hpone (by linarith)
   have hb := hbounds p hp S hzero hC (le_trans hsize hpow)
   have hDpos : 0 < Nat.ceil (3 / β) := section5D_pos hβ0 hβh
   obtain ⟨σ, hσmem, hgood⟩ :=

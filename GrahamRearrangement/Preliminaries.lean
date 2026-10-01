@@ -1,7 +1,7 @@
 module
 
 public import GrahamRearrangement.Introduction
-public import GrahamRearrangement.External
+public import GrahamRearrangement.Auxiliary
 public import Mathlib.Algebra.Order.Round
 public import Mathlib.Analysis.Calculus.Taylor
 

@@ -1,7 +1,7 @@
 module
 
 public import GrahamRearrangement.BooleanSlice.Definitions
-public import GrahamRearrangement.BooleanSlice.External
+public import GrahamRearrangement.BooleanSlice.Auxiliary
 public import GrahamRearrangement.BooleanSlice.Fourier
 public import GrahamRearrangement.BooleanSlice.Lemmas
 public import GrahamRearrangement.BooleanSlice.Theorem

@@ -154,7 +154,7 @@ theorem badEvent2_core_has_witness
       Lemma52Witness σ θ.1 θ.2 := by
   classical
   obtain ⟨b₀, hb₀, b, hbinj, hbmem, hbwin⟩ :=
-    Section5External.dense_window_extract (badRightEndpoints σ) hD h2
+    Section5.dense_window_extract (badRightEndpoints σ) hD h2
   have hb₀fit : paperPos b₀ + 30 * D ≤ n := by
     by_contra h
     exact h1 ⟨b₀, hb₀, by omega⟩
@@ -210,7 +210,7 @@ theorem badEvent2_core_has_witness
     by_contra hnot
     simp only [paperPos, not_lt] at hnot
     exact hkey (a i) (b i) (by omega) (le_of_lt (habv i).2) (hwin i).2 (hzero i)
-  obtain ⟨ρ, hmono⟩ := Section5External.exists_sorting_perm a hainj
+  obtain ⟨ρ, hmono⟩ := Section5.exists_sorting_perm a hainj
   refine ⟨(b₀, b ∘ ρ), ?_, hb₀, ?_⟩
   · exact mem_lemma52Parameters.mpr ⟨hb₀fit, fun i => hbwin (ρ i)⟩
   · exact ⟨fun i => hbwin (ρ i), a ∘ ρ, hmono, fun i => hab₀ (ρ i),
@@ -352,7 +352,7 @@ theorem lemma52_prefix_chain_bound
         chainUpperBound p (S \ indexImageSet τ F).card C (m a) :=
     fun a ha => hchain (m a) (hvalid a ha) (z a)
   have hgeneric :=
-    Section5External.conditional_chain_witness_union_bound
+    Section5.conditional_chain_witness_union_bound
       S τ hτ F A I m z C hdisj hnested (fun _ _ _ => rfl) hvalid hinj hchain' hC
   refine le_trans ?_ hgeneric
   unfold orderingConditionalMass uniformConditionalMass
@@ -391,8 +391,8 @@ theorem lemma52_fixed_parameter_mass_le
     intro τ hτ
     have hFcard : (forwardWindow θ.1 (20 * P.D)).card = 20 * P.D + 1 :=
       card_forwardWindow_eq θ.1 (20 * P.D) (by omega)
-    have himage := Section5External.exposed_image_card S hτ (forwardWindow θ.1 (20 * P.D))
-    have hsub := Section5External.exposedImage_subset S hτ (forwardWindow θ.1 (20 * P.D))
+    have himage := Section5.exposed_image_card S hτ (forwardWindow θ.1 (20 * P.D))
+    have hsub := Section5.exposedImage_subset S hτ (forwardWindow θ.1 (20 * P.D))
     have hTcard : (S \ indexImageSet τ (forwardWindow θ.1 (20 * P.D))).card =
         S.card - (20 * P.D + 1) := by
       rw [Finset.card_sdiff_of_subset hsub, himage, hFcard]
@@ -467,14 +467,14 @@ theorem lemma52_fixed_parameter_mass_le
       lemma4_3 P.D hD (chainConstant P.D) (chainConstant_pos P.D) p hp T.card hT2
     have hCpos := chainConstant_pos P.D
     have hbase : lemma43Base p T.card (chainConstant P.D) ≤ 2 * (S.card : ℝ) ^ (-α) :=
-      Section5External.half_ground_lemma43Base_le hS2 hhalf hTle (le_of_lt hCpos)
+      Section5.half_ground_lemma43Base_le hS2 hhalf hTle (le_of_lt hCpos)
         (section5_card_over_p hα0 hαh hp hreg)
         (section5_chainConstant_bound hreg P.D (Or.inr rfl))
     have hbase0 : 0 ≤ lemma43Base p T.card (chainConstant P.D) := by
       unfold lemma43Base
       positivity
     have hpow : (2 * (S.card : ℝ) ^ (-α)) ^ P.D ≤ (2 : ℝ) ^ P.D / (S.card : ℝ) ^ 3 :=
-      Section5External.two_neg_alpha_pow_le_cube (by omega) hα0
+      Section5.two_neg_alpha_pow_le_cube (by omega) hα0
         (section5Parameters_alphaD hα0 P)
     have hDnn : (0 : ℝ) ≤ (P.D : ℝ) + 1 := by positivity
     calc orderingConditionalMass S
@@ -490,7 +490,7 @@ theorem lemma52_fixed_parameter_mass_le
       _ ≤ (P.D + 1 : ℝ) * ((2 : ℝ) ^ P.D / (S.card : ℝ) ^ 3) :=
           mul_le_mul_of_nonneg_left hpow hDnn
       _ = (P.D + 1 : ℝ) * (2 : ℝ) ^ P.D / (S.card : ℝ) ^ 3 := by ring
-  exact Section5External.event_le_of_agreesOn_fibers S (forwardWindow θ.1 (20 * P.D))
+  exact Section5.event_le_of_agreesOn_fibers S (forwardWindow θ.1 (20 * P.D))
     (fun σ => Lemma52Witness σ θ.1 θ.2) _ hfiber
 
 /-- Lemma 5.2. -/
@@ -516,7 +516,7 @@ theorem lemma5_2
     intro θ hθ
     have hb : paperPos θ.1 + 30 * P.D ≤ S.card := (mem_lemma52Parameters.mp hθ).1
     exact lemma52_fixed_parameter_mass_le hα0 hαh P hp S hreg θ hθ hb
-  have hCore := Section5External.witness_union_bound (indexedOrderings S)
+  have hCore := Section5.witness_union_bound (indexedOrderings S)
     (lemma52Parameters S.card P.D)
     (fun σ => BadEvent2 P.D σ ∧ ¬ BadEvent0 P.D σ ∧ ¬ BadEvent1 P.D σ)
     (fun θ σ => Lemma52Witness σ θ.1 θ.2)
@@ -537,7 +537,7 @@ theorem lemma5_2
       rw [P.D_eq]
       exact section5D_ge_seven hα0 hαh
     have hDplus : (P.D + 1 : ℝ) ≤ (5 * P.D : ℝ) ^ (2 * P.D) :=
-      External.D_plus_one_le_fiveD_pow P.D hD7
+      Auxiliary.D_plus_one_le_fiveD_pow P.D hD7
     have hX : 100 * (5 * P.D : ℝ) ^ (2 * P.D) ≤ S.card := by linarith
     have hY : (40 * P.D : ℝ) ^ P.D ≤ S.card := by linarith
     have hkey : 100 * ((P.D + 1 : ℝ) * (40 * P.D : ℝ) ^ P.D) ≤ (S.card : ℝ) ^ 2 := by

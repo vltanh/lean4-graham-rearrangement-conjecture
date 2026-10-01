@@ -94,9 +94,9 @@ theorem conditional_badEndpoint_mass_le_four
     exposedWindow_card b (by omega)
   have himage : (indexImageSet τ (exposedWindow P.D b)).card =
       (exposedWindow P.D b).card :=
-    Section5External.exposed_image_card S hτ (exposedWindow P.D b)
+    Section5.exposed_image_card S hτ (exposedWindow P.D b)
   have hsub : indexImageSet τ (exposedWindow P.D b) ⊆ S :=
-    Section5External.exposedImage_subset S hτ (exposedWindow P.D b)
+    Section5.exposedImage_subset S hτ (exposedWindow P.D b)
   have hTcard : (S \ indexImageSet τ (exposedWindow P.D b)).card =
       S.card - (20 * P.D + 1) := by
     rw [Finset.card_sdiff_of_subset hsub, himage, hFcard]
@@ -139,7 +139,7 @@ theorem conditional_badEndpoint_mass_le_four
         (fun σ => b ∈ badRightEndpoints σ) ≤
       ∑ a ∈ leftEndpointCandidates b, sliceMass T (I a).card (z a) := by
     refine le_trans ?_
-      (Section5External.conditional_index_family_sumMass_le_zmod S τ hτ
+      (Section5.conditional_index_family_sumMass_le_zmod S τ hτ
         (exposedWindow P.D b) (leftEndpointCandidates b) I z hdisj)
     unfold orderingConditionalMass uniformConditionalMass
     apply l54_uniformMass_mono_on
@@ -152,7 +152,7 @@ theorem conditional_badEndpoint_mass_le_four
           4 * chainConstant 1 * Real.sqrt (Real.log (T.card : ℝ)) /
             Real.sqrt (T.card : ℝ) := by
     refine le_trans ?_
-      (External.two_sided_interval_kernel_sum_le T.card p (chainConstant 1) hC1)
+      (Auxiliary.two_sided_interval_kernel_sum_le T.card p (chainConstant 1) hC1)
     apply Finset.sum_le_sum_of_injOn (fun a => (I a).card)
     · intro a ha a' ha' h
       rw [Finset.mem_coe, l54_mem_leftEndpointCandidates] at ha ha'
@@ -245,7 +245,7 @@ theorem equation_5_1
   have hcollision :
       orderingEventMass S (fun σ => indexSetSum σ J = indexSetSum σ J') ≤
         2 / (S.card : ℝ) := by
-    have hraw := Section5External.distinct_index_subset_sums_mass_le S
+    have hraw := Section5.distinct_index_subset_sums_mass_le S
       (exposedWindow P.D b) J J' hJ hJ' hne (by rw [hFcard]; omega)
     rw [hFcard] at hraw
     refine le_trans hraw ?_
@@ -266,7 +266,7 @@ theorem equation_5_1
         (fun σ => AgreesOn (exposedWindow P.D b) σ τ)
         (fun σ => b ∈ badRightEndpoints σ) ≤ 4 * (S.card : ℝ) ^ (-α) :=
     fun τ hτ _ => conditional_badEndpoint_mass_le_four hα0 hαh P hp S hreg b hbfit τ hτ
-  have hjoint := Section5External.joint_event_le_of_agreesOn_fibers S
+  have hjoint := Section5.joint_event_le_of_agreesOn_fibers S
     (exposedWindow P.D b)
     (fun σ => indexSetSum σ J = indexSetSum σ J')
     (fun σ => b ∈ badRightEndpoints σ)
@@ -374,7 +374,7 @@ theorem lemma5_4
     rintro ⟨b, J, J'⟩ hθ
     obtain ⟨hbfit, hJ, hJ', hne⟩ := mem_bad0Parameters.1 hθ
     exact equation_5_1 hα0 hαh P hp S hreg b hbfit J J' hJ hJ' hne
-  have hmass := Section5External.witness_union_bound (indexedOrderings S)
+  have hmass := Section5.witness_union_bound (indexedOrderings S)
     (bad0Parameters (n := S.card) P.D) (BadEvent0 P.D)
     (fun θ σ => θ.1 ∈ badRightEndpoints σ ∧
       indexSetSum σ θ.2.1 = indexSetSum σ θ.2.2)

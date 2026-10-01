@@ -77,7 +77,7 @@ theorem lemma55_reduce_to_interesting
           (u i) (x i) = 0 := by
   rcases hπ with ⟨π, ⟨P, hPadm, hPπ⟩, hzero⟩
   obtain ⟨P', hPsub, hP'disj, hcross, himage⟩ :=
-    Section5External.trim_irrelevant_disjoint_swaps P hPadm.1
+    Section5.trim_irrelevant_disjoint_swaps P hPadm.1
       (fun i => constraintSet u x πi i)
   refine ⟨collectionPerm P', ?_, ?_⟩
   · simp only [interestingPermutations, Finset.mem_filter,
@@ -321,7 +321,7 @@ theorem interestingPermutations_card_le
   have hQ : Q.card ≤ 7 * D ^ 2 :=
     card_interestingLeftSupport_le hD7 b x
   have hcount :=
-    Section5External.supportedAdmissibleCollections_card_le
+    Section5.supportedAdmissibleCollections_card_le
       (D := D) Q
   have hbase : 5 * D + 1 ≤ D ^ 2 := by
     nlinarith
@@ -509,7 +509,7 @@ theorem lemma55_fixed_tail_conditional_bound
     unfold indexSetSum
     rw [Finset.sum_union (lemma55HeadTail_disjoint b b' u x hu πi hfix i)]
     congr 1
-    exact Section5External.indexSetSum_eq_of_agreesOn hagr
+    exact Section5.indexSetSum_eq_of_agreesOn hagr
       (lemma55HeadSet_subset_window b b' u hu πi hfix i)
   have hevent :
       orderingConditionalMass S
@@ -531,7 +531,7 @@ theorem lemma55_fixed_tail_conditional_bound
     intro i
     rw [key σ hagr i]
     exact add_eq_zero_iff_eq_neg'
-  rw [hevent, Section5External.conditional_nested_images_chainMass
+  rw [hevent, Section5.conditional_nested_images_chainMass
     S τ hτ (indexInterval b b') (lemma55TailSet b' x) hdisj
     (lemma55TailSet_nested b' hx) (tailSizes b' x)
     (lemma55TailSet_card b' hx)
@@ -572,14 +572,14 @@ theorem lemma55_fixed_x_pi_mass_le
   have hFcard : (indexInterval b b').card = 5 * P.D + 1 := by
     rw [card_indexInterval b b' (by omega)]
     omega
-  have hinv := Section5External.ordering_perm_invariant S π
+  have hinv := Section5.ordering_perm_invariant S π
     (fun σ => ∀ i,
       indexedIntervalSum (applyPositionPerm σ (πi i)) (u i) (x i) = 0)
   refine hinv.symm.trans_le ?_
-  apply Section5External.event_le_of_agreesOn_fibers S (indexInterval b b')
+  apply Section5.event_le_of_agreesOn_fibers S (indexInterval b b')
   intro τ hτ
-  have himage := Section5External.exposed_image_card S hτ (indexInterval b b')
-  have hsub := Section5External.exposedImage_subset S hτ (indexInterval b b')
+  have himage := Section5.exposed_image_card S hτ (indexInterval b b')
+  have hsub := Section5.exposedImage_subset S hτ (indexInterval b b')
   have hTcard :
       (S \ indexImageSet τ (indexInterval b b')).card =
         S.card - (5 * P.D + 1) := by
@@ -591,7 +591,7 @@ theorem lemma55_fixed_x_pi_mass_le
   have htuple :
       IsChainSizeTuple (S \ indexImageSet τ (indexInterval b b')).card
         (tailSizes b' x) :=
-    Section5External.tailSizes_valid b b' hb2 hgap x hx hTcard
+    Section5.tailSizes_valid b b' hb2 hgap x hx hTcard
   have hchain :
       ∀ z : Fin P.D → ZMod p,
         chainMass (S \ indexImageSet τ (indexInterval b b'))
@@ -666,7 +666,7 @@ theorem lemma5_5
         ((P.D ^ (14 * P.D ^ 2) : ℕ) : ℝ) *
           lemma43LHS p s P.D (chainConstant P.D) := by
     unfold orderingEventMass
-    apply Section5External.bounded_choice_witness_union
+    apply Section5.bounded_choice_witness_union
       (indexedOrderings S) (tailTuples b' P.D)
       (fun x => interestingPermutations P.D
         (fun i => constraintSet u x πi i))
@@ -692,7 +692,7 @@ theorem lemma5_5
         u x hu hx πi hfix π
     · apply lemma55_chainUpperBound_sum_le hCpos.le
       · intro x hx
-        exact Section5External.tailSizes_valid b b' hb2 hgap x hx hs
+        exact Section5.tailSizes_valid b b' hb2 hgap x hx hs
       · intro x hx y hy hxy
         have hxv := fun i => (Finset.mem_filter.mp hx).2.2 i
         have hyv := fun i => (Finset.mem_filter.mp hy).2.2 i
@@ -711,7 +711,7 @@ theorem lemma5_5
   have hbase :
       lemma43Base p s (chainConstant P.D) ≤
         2 * (S.card : ℝ) ^ (-α) := by
-    apply Section5External.half_ground_lemma43Base_le hn2
+    apply Section5.half_ground_lemma43Base_le hn2
     · omega
     · omega
     · exact hCpos.le
@@ -721,7 +721,7 @@ theorem lemma5_5
     unfold lemma43Base
     positivity
   have hpow :=
-    Section5External.two_neg_alpha_pow_le_cube
+    Section5.two_neg_alpha_pow_le_cube
       (n := S.card) (D := P.D) (α := α)
       (by omega) hα0
       (section5Parameters_alphaD hα0 P)

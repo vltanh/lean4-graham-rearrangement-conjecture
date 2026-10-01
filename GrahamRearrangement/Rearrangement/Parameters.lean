@@ -20,7 +20,7 @@ def section5D (α : ℝ) : ℕ :=
 theorem section5D_ge_seven {α : ℝ}
     (hα0 : 0 < α) (hαh : α < 1 / 2) :
     7 ≤ section5D α :=
-  External.ceil_three_div_ge_seven hα0 hαh
+  Auxiliary.ceil_three_div_ge_seven hα0 hαh
 
 theorem section5D_pos {α : ℝ}
     (hα0 : 0 < α) (hαh : α < 1 / 2) :
@@ -70,7 +70,7 @@ theorem exists_section5Parameters {α : ℝ}
   have hK : 0 ≤ 4 * max (chainConstant D) (chainConstant 1) :=
     mul_nonneg (by norm_num) (le_max_of_le_left (chainConstant_pos D).le)
   obtain ⟨N, -, hNasym⟩ :=
-    External.exists_sqrt_log_power_threshold
+    Auxiliary.exists_sqrt_log_power_threshold
       (α := α) (K := 4 * max (chainConstant D) (chainConstant 1)) hα0 hαh hK
   let A : ℝ := ((10 ^ 4 : ℝ) * (2 : ℝ) ^ (40 * D)) ^ (1 / α)
   let B : ℝ := (D + 1 : ℝ) * (2 : ℝ) ^ D * (D : ℝ) ^ (14 * D ^ 2)
@@ -82,7 +82,7 @@ theorem exists_section5Parameters {α : ℝ}
     le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) (le_max_right _ _)
   have hCN : (N : ℝ) ≤ Cα :=
     le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) (le_max_right _ _)
-  obtain ⟨hB100, h10040⟩ := External.section5_power_inequalities D hD7
+  obtain ⟨hB100, h10040⟩ := Auxiliary.section5_power_inequalities D hD7
   refine ⟨{
     D := D
     D_eq := rfl
@@ -139,7 +139,7 @@ theorem section5_card_over_p {α : ℝ} {P : Section5Parameters α}
     {p : ℕ} (hp : p.Prime) {S : Finset (ZMod p)}
     (hreg : Section5Regime P p S) :
     (S.card : ℝ) / p ≤ (S.card : ℝ) ^ (-α) := by
-  apply External.card_div_prime_le_neg_rpow hα0 (lt_trans hαh (by norm_num))
+  apply Auxiliary.card_div_prime_le_neg_rpow hα0 (lt_trans hαh (by norm_num))
   · exact le_trans (by norm_num) (section5_card_ge_two hα0 hαh hreg)
   · exact hp.one_le
   · exact hreg.2.2
@@ -178,7 +178,7 @@ theorem section5_Calpha_power {α : ℝ}
     (hα0 : 0 < α) (P : Section5Parameters α) :
     (10 ^ 4 : ℝ) * (2 : ℝ) ^ (40 * P.D) ≤ P.Cα ^ α := by
   have hbase :=
-    External.section5_rpow_threshold (D := P.D) hα0
+    Auxiliary.section5_rpow_threshold (D := P.D) hα0
   have hmono :=
     Real.rpow_le_rpow (by positivity) P.Cα_first (le_of_lt hα0)
   exact le_trans hbase hmono

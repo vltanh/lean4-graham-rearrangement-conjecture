@@ -1,19 +1,19 @@
 module
 
 public import GrahamRearrangement.BooleanSlice.Definitions
-public import GrahamRearrangement.External
+public import GrahamRearrangement.Auxiliary
 
 @[expose] public section
 
 open scoped BigOperators Pointwise
 
-namespace GrahamRearrangement.Section3External
+namespace GrahamRearrangement.Section3
 
 /-!
-# External sampling/Fourier inputs specialized to the Section 3 model
+# Auxiliary lemmas for Section 3
 
-These are still generic finite-probability or Fourier facts, not results of
-Pham--Sauermann.  The paper's Lemmas 3.1--3.7 are proved in subsequent modules.
+Finite-probability and Fourier facts specialized to the random-partition model of Section 3.
+None of them is a result of the paper; Lemmas 3.1–3.7 are proved in `Lemmas.lean`.
 -/
 
 noncomputable section
@@ -762,4 +762,4 @@ theorem exists_fiber_mass_ge_pair_mass {α : Type*} [DecidableEq α]
 
 end
 
-end GrahamRearrangement.Section3External
+end GrahamRearrangement.Section3

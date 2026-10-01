@@ -477,7 +477,7 @@ theorem badEvent3_core_side_reduction
       exact ⟨h5, by omega, h1, h2, by omega, h4⟩
     have htinj := right_witness_endpoints_injective σ b _ hgap hb hbfar h0 π
       hπadm hπfix y s t hyinj hw
-    obtain ⟨ρ, hρ⟩ := Section5External.exists_sorting_perm t htinj
+    obtain ⟨ρ, hρ⟩ := Section5.exists_sorting_perm t htinj
     left
     refine ⟨b, ⟨b.val + 5 * D, hb'lt⟩, by omega, hbfar, hgap, y ∘ ρ, s ∘ ρ,
       fun i => ⟨(hw (ρ i)).1, (hw (ρ i)).2.1⟩,
@@ -502,7 +502,7 @@ theorem badEvent3_core_side_reduction
       exact ⟨h5, by omega, h1, h2, h3, h4⟩
     have hsinj := left_witness_endpoints_injective σ b _ hgap hb hbfar h0 π
       hπadm hπfix y s t hyinj hw
-    obtain ⟨ρ, hρ⟩ := Section5External.exists_sorting_perm s hsinj
+    obtain ⟨ρ, hρ⟩ := Section5.exists_sorting_perm s hsinj
     right
     refine ⟨b, ⟨b.val + 5 * D, hb'lt⟩, by omega, hbfar, hgap, y ∘ ρ, t ∘ ρ,
       fun i => ⟨(hw (ρ i)).1, (hw (ρ i)).2.1⟩,
@@ -565,7 +565,7 @@ theorem rightRepairEvent_mass
         ((rightRepairParameters S.card P.D).card : ℝ) *
           (1 / (S.card : ℝ) ^ 2) := by
     unfold orderingEventMass
-    apply Section5External.witness_union_bound
+    apply Section5.witness_union_bound
       (indexedOrderings S) (rightRepairParameters S.card P.D)
       (RightRepairEvent P.D)
       (fun θ σ => Lemma55Event σ θ.b θ.b' θ.u
@@ -599,7 +599,7 @@ theorem leftRepairEvent_mass
         ((leftRepairParameters S.card P.D).card : ℝ) *
           (1 / (S.card : ℝ) ^ 2) := by
     unfold orderingEventMass
-    apply Section5External.witness_union_bound
+    apply Section5.witness_union_bound
       (indexedOrderings S) (leftRepairParameters S.card P.D)
       (LeftRepairEvent P.D)
       (fun θ σ => Lemma56Event σ θ.b θ.b' θ.u

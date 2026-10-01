@@ -172,7 +172,7 @@ theorem lemma56_reversal_subset {p D : ℕ} [NeZero p]
   let rx := reverseTuple x
   let rπ := reverseConjugate π
   refine ⟨rx, reverseTuple_head_to_tail b hx,
-    rπ, Section5External.reverseConjugate_admissible π hπadm, ?_⟩
+    rπ, Section5.reverseConjugate_admissible π hπadm, ?_⟩
   intro i
   let j := reverseIndex D i
   have hxu :
@@ -206,7 +206,7 @@ theorem lemma56_mass_le_reversed {p D : ℕ} [NeZero p]
             (reverseIndex S.card b)
             (reverseTuple u)
             (reversePermTuple πi)) := by
-  rw [Section5External.ordering_perm_invariant
+  rw [Section5.ordering_perm_invariant
     S (reverseIndex S.card)
     (fun σ => Lemma56Event σ b b' u πi)]
   apply uniformMass_mono

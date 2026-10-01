@@ -1,6 +1,6 @@
 module
 
-public import GrahamRearrangement.BooleanSlice.External
+public import GrahamRearrangement.BooleanSlice.Auxiliary
 
 @[expose] public section
 
@@ -32,7 +32,7 @@ theorem block_character_decay {p : ℕ} (hp : p.Prime)
       ∑ x ∈ T, ∑ x' ∈ T,
         zmodNorm (χ * x - χ * x') ^ 2 with hδdef
   have hsq :=
-    External.zmod_character_average_norm_sq T hT χ
+    Auxiliary.zmod_character_average_norm_sq T hT χ
   -- Fact 2.5 applied to every pair `(x,x')`.
   have hdouble :
       (∑ x ∈ T, ∑ x' ∈ T,
@@ -98,7 +98,7 @@ theorem zmod_eq_indicator_fourier {p : ℕ} (hp : p.Prime)
       (1 / (p : ℂ)) *
         ∑ χ : ZMod p, ZMod.stdAddChar (χ * a) := by
   letI : NeZero p := ⟨hp.ne_zero⟩
-  rw [External.zmod_character_orthogonality hp a]
+  rw [Auxiliary.zmod_character_orthogonality hp a]
   by_cases ha : a = 0
   · simp [ha, hp.ne_zero]
   · simp [ha]
@@ -244,7 +244,7 @@ theorem balancedPartition_block_nonempty {p m : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (hm : 0 < m) (hmS : m ≤ S.card)
     {P : Fin m → Finset (ZMod p)} (hP : IsBalancedPartition S P)
     (i : Fin m) : (P i).Nonempty := by
-  have hb := Section3External.balanced_block_size_bounds S hm hmS hP i
+  have hb := Section3.balanced_block_size_bounds S hm hmS hP i
   have hdiv : 0 < S.card / m := Nat.div_pos hmS hm
   exact Finset.card_pos.mp (lt_of_lt_of_le hdiv hb.1)
 
@@ -299,7 +299,7 @@ theorem psi_lower_bound {p m : ℕ} [NeZero p]
   intro i _
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
   have hcard :=
-    Section3External.balanced_block_sqrt_two_bound S hS hm4 hP i
+    Section3.balanced_block_sqrt_two_bound S hS hm4 hP i
   have hcardpos : 0 < ((P i).card : ℝ) := by
     exact_mod_cast (balancedPartition_block_nonempty S hm hmS hP i).card_pos
   have hSpos : 0 < (S.card : ℝ) := by
@@ -469,7 +469,7 @@ theorem dyadic_conditional_bound {p m : ℕ} (hp : p.Prime)
     · right
       have hχ1 : 1 ≤ psi P χ := le_of_not_gt hχ
       obtain ⟨l, hl, hlo, hhi⟩ :=
-        External.exists_dyadic_interval hχ1 (hψ χ)
+        Auxiliary.exists_dyadic_interval hχ1 (hψ χ)
       refine ⟨l, hl, ?_⟩
       simp only [At, Finset.mem_filter, Finset.mem_univ, true_and]
       push_cast
@@ -517,7 +517,7 @@ theorem equation_3_4 {p m : ℕ} (hp : p.Prime)
               Real.exp (-(2 : ℝ) ^ l) := by
   letI : NeZero p := ⟨hp.ne_zero⟩
   have hmS : m ≤ S.card := le_trans hm4 (Nat.div_le_self _ _)
-  rw [Section3External.sliceMass_eq_partition_average hp S hm hmS z]
+  rw [Section3.sliceMass_eq_partition_average hp S hm hmS z]
   have hmono :
       partitionExpectation (m := m) S (fun P => conditionalSumMass P z) ≤
         partitionExpectation (m := m) S (fun P =>

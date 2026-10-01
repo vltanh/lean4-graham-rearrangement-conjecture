@@ -1,6 +1,6 @@
 module
 
-public import GrahamRearrangement.Rearrangement.External
+public import GrahamRearrangement.Rearrangement.Auxiliary
 
 @[expose] public section
 
@@ -76,7 +76,7 @@ theorem fixed_interval_sum_mass {p : ℕ} [NeZero p]
     orderingEventMass S (fun σ => indexedIntervalSum σ a b = 0) =
       sliceMass S (b.val - a.val + 1) 0 := by
   have h :=
-    Section5External.fixedIndexSet_sumMass S (indexInterval a b) (0 : ZMod p)
+    Section5.fixedIndexSet_sumMass S (indexInterval a b) (0 : ZMod p)
   rw [card_indexInterval a b hab] at h
   rw [← h]
   unfold orderingEventMass
@@ -105,7 +105,7 @@ theorem endpoint_cor42_sum_bound {α : ℝ}
             Real.sqrt (S.card : ℝ) := by
   have hC : 0 ≤ chainConstant 1 := le_of_lt (chainConstant_pos 1)
   refine le_trans ?_
-    (External.two_sided_interval_kernel_sum_le S.card p (chainConstant 1) hC)
+    (Auxiliary.two_sided_interval_kernel_sum_le S.card p (chainConstant 1) hC)
   apply Finset.sum_le_sum_of_injOn (fun a : Fin S.card => b.val - a.val + 1)
   · intro a ha a' ha' h
     rw [Finset.mem_coe, l51_mem_leftEndpointCandidates] at ha ha'
@@ -236,7 +236,7 @@ theorem lemma5_1 {α : ℝ}
             nlinarith
           have hlarge :
               100 * (P.D : ℝ) * 100 ≤ (10 ^ 4 : ℝ) * (2 : ℝ) ^ (40 * P.D) := by
-            have := External.nat_le_two_pow_40 P.D
+            have := Auxiliary.nat_le_two_pow_40 P.D
             nlinarith
           have hpowercard :
               (10 ^ 4 : ℝ) * (2 : ℝ) ^ (40 * P.D) ≤

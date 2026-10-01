@@ -1,7 +1,7 @@
 module
 
 public import GrahamRearrangement.Combinatorial.Definitions
-public import GrahamRearrangement.Combinatorial.External
+public import GrahamRearrangement.Combinatorial.Auxiliary
 public import GrahamRearrangement.Combinatorial.Lemma41
 public import GrahamRearrangement.Combinatorial.Corollary14
 public import GrahamRearrangement.Combinatorial.Corollary42

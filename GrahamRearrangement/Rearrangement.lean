@@ -17,7 +17,6 @@ public import GrahamRearrangement.Rearrangement.BadEvents
 /-!
 # Section 5: rearrangement conjecture
 
-Umbrella module for the complete Section 5 formalization.
-External/general-purpose finite-probability and permutation inputs are isolated in
-`Rearrangement/External.lean` and `Rearrangement/ReversalExternal.lean`.
+Umbrella module for Section 5 of Pham--Sauermann. General-purpose finite-probability and
+permutation lemmas are in `Rearrangement/Auxiliary.lean`.
 -/

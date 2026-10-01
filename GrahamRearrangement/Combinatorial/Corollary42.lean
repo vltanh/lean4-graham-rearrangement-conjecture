@@ -1446,7 +1446,7 @@ theorem corollary42 : Corollary42Statement := by
   intro p hp
   have : NeZero p := ⟨hp.ne_zero⟩
   intro S hS m hm z
-  obtain ⟨j, hj⟩ := Section4External.exists_large_chain_gap m hm
+  obtain ⟨j, hj⟩ := Section4.exists_large_chain_gap m hm
   have hgapj : 1 / (k + 1 : ℝ) * S.card ≤ chainGap S.card m j := by
     have : 1 / (k + 1 : ℝ) * S.card = (S.card : ℝ) / (k + 1 : ℝ) := by ring
     rw [this]

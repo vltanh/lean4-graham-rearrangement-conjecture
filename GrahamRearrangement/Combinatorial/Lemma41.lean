@@ -1,6 +1,6 @@
 module
 
-public import GrahamRearrangement.Combinatorial.External
+public import GrahamRearrangement.Combinatorial.Auxiliary
 
 @[expose] public section
 
@@ -48,7 +48,7 @@ theorem lemma4_1 {p m : ℕ} (hp : p.Prime)
   let _ : NeZero p := ⟨hp.ne_zero⟩
   show sliceMass S m z ≤ 1 / ((S.card - m + 1 : ℕ) : ℝ)
   unfold sliceMass
-  rw [Section4External.uniformSubset_twoStage S m hm hmS]
+  rw [Section4.uniformSubset_twoStage S m hm hmS]
   apply uniformExpectation_le_const _ (powersetCard_nonempty S (by omega))
   intro R hR
   rw [Finset.mem_powersetCard] at hR

@@ -6,7 +6,7 @@ public import GrahamRearrangement.Combinatorial.Definitions
 
 open scoped BigOperators Pointwise
 
-namespace GrahamRearrangement.Section4External
+namespace GrahamRearrangement.Section4
 
 /-!
 # Finite sampling and tuple bookkeeping for Section 4
@@ -445,4 +445,4 @@ theorem sum_one_div_sqrt_le (N : ℕ) :
 
 end
 
-end GrahamRearrangement.Section4External
+end GrahamRearrangement.Section4

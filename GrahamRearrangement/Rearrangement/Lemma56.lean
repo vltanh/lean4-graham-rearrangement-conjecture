@@ -83,7 +83,7 @@ theorem lemma5_6
         ∀ i, FixedOutside rb rb' (rπi i) := by
       intro i
       dsimp [rb, rb', rπi, reversePermTuple]
-      exact Section5External.reverseConjugate_fixedOutside
+      exact Section5.reverseConjugate_fixedOutside
         b b' (πi (reverseIndex P.D i))
         (hfix (reverseIndex P.D i))
     have hmass :=

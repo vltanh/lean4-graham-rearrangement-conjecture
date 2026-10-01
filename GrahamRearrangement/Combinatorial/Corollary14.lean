@@ -270,7 +270,7 @@ theorem cor14_large_m {p m : ℕ} (hp : p.Prime) (ε : ℝ) (hε0 : 0 < ε) (hε
     have hm : sliceMass S m z = sliceMass S ((m - m₂) + m₂) z := by
       rw [Nat.sub_add_cancel hm₂m]
     rw [hm]
-    exact Section4External.uniformSubset_split S (m - m₂) m₂ (by omega) _
+    exact Section4.uniformSubset_split S (m - m₂) m₂ (by omega) _
   rw [hsplit]
   apply uniformExpectation_le_const _ (powersetCard_nonempty S (by omega))
   intro R₁ hR₁

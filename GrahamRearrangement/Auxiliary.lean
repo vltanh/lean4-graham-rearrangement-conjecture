@@ -10,15 +10,16 @@ public import Mathlib.Data.Nat.Log
 
 open scoped BigOperators Pointwise
 
-namespace GrahamRearrangement.External
+namespace GrahamRearrangement.Auxiliary
 
 /-!
-# External inputs
+# Auxiliary lemmas
 
-This module now contains proved general-purpose lemmas used across the
-formalization.  The bibliographic hypergeometric input cited by
-Pham--Sauermann is formalized in `External/Hypergeometric/`; no project axiom
-is used anywhere in this hierarchy.
+General-purpose lemmas used across the formalization: real-analysis estimates, the
+orthogonality of the additive characters of `ZMod p`, dyadic decompositions, and the numerical
+inequalities of Sections 3 and 5. None of them is a result of the paper. The one result from
+prior work that the paper cites, the hypergeometric tail bound, is proved in
+`External/Hypergeometric/`.
 -/
 
 noncomputable section
@@ -115,8 +116,7 @@ theorem uniform_markov {Ω : Type*} [DecidableEq Ω]
 
 /-!
 The two lower-tail theorems used by Section 3 are proved in
-`External/Hypergeometric/` and re-exported in namespace
-`GrahamRearrangement.External`.  No project axiom is used.
+`External/Hypergeometric/`, in namespace `GrahamRearrangement.External`.
 -/
 
 /-- A convenient monotonic consequence of exp for the numerical tail comparisons. -/
@@ -619,4 +619,4 @@ theorem exists_sqrt_log_power_threshold {α K : ℝ}
 
 end
 
-end GrahamRearrangement.External
+end GrahamRearrangement.Auxiliary
