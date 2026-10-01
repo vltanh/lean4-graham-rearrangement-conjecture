@@ -195,13 +195,11 @@ and [`Solution.lean`](Solution.lean) imports the whole development and proves th
 
 The CI workflows come from the Lake `math` template. [`lean_action_ci.yml`](.github/workflows/lean_action_ci.yml) builds
 the project on every push and pull request, runs the axiom audit, and checks that the
-documentation's links to the code are current; the badge above shows its status. To use the
-other workflows:
-
-- Under the repository's **Settings → Actions → General**, check **Allow GitHub
-  Actions to create and approve pull requests** (used by [`update.yml`](.github/workflows/update.yml)).
-- Under **Settings → Pages**, set **Source** to "GitHub Actions" (used by
-  [`docs.yml`](.github/workflows/docs.yml), which publishes the API documentation).
+documentation's links to the code are current; the badge above shows its status.
+[`update.yml`](.github/workflows/update.yml) opens a pull request that moves to a newer Mathlib when run by hand; for it to
+work, check **Allow GitHub Actions to create and approve pull requests** under the
+repository's **Settings → Actions → General**. [`create-release.yml`](.github/workflows/create-release.yml) tags a release
+whenever [`lean-toolchain`](lean-toolchain) changes, and [`palomar_preflight.yml`](.github/workflows/palomar_preflight.yml) is described above.
 
 ## License
 
