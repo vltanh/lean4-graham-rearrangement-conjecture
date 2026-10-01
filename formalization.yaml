@@ -1,0 +1,164 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Graham's rearrangement conjecture for small sets (Pham–Sauermann)"
+  description: >-
+    A Lean 4 / Mathlib formalization of H. T. Pham and L. Sauermann, "On Graham's
+    rearrangement conjecture" (arXiv:2602.15797v1). Graham conjectured in 1971 that for
+    every prime p, every subset S of Z_p \ {0} has an ordering whose partial sums are
+    pairwise distinct. The formalization proves the paper's main theorem (Theorem 1.2): for
+    every 0 < α < 1 there is a constant C_α > 0 such that, for every prime p, every
+    S ⊆ Z_p \ {0} with C_α ≤ |S| ≤ p^(1-α) has such an ordering. It also proves the paper's
+    anticoncentration bounds for the sum of a uniformly random m-element subset R of a set
+    S ⊆ Z_p with |S| ≥ 2: the probability that the sum of R equals any given z is at most
+    1/p + C/(|S|√m) when C log|S| ≤ m ≤ 10^-3 |S|/log|S| (Theorem 1.3), and at most
+    1/p + C_ε √(log|S|)/(|S|√m) for every positive m ≤ (1-ε)|S| (Corollary 1.4). Every
+    numbered result of the paper is proved following its argument, together with the
+    hypergeometric Chernoff bound that the paper cites from Janson, Łuczak and Ruciński.
+  authors:
+    - "The-Anh Vu-Le"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "The-Anh Vu-Le"
+
+classification:
+  arxiv: ["math.CO", "math.NT"]
+  msc2020: ["11B75", "05D40", "11B30", "60C05", "11P70", "05A05"]
+
+sources:
+  - title: "On Graham's rearrangement conjecture"
+    authors:
+      - "Huy Tuan Pham"
+      - "Lisa Sauermann"
+    id: "arXiv:2602.15797v1"
+    type: "paper"
+    location: "https://arxiv.org/abs/2602.15797v1"
+    relationship: "formalizes"
+    note: >-
+      Theorems 1.2 and 1.3 and Corollary 1.4 are formalized exactly as stated, and every
+      other numbered result of the paper is proved along the way. REPORT.md audits the
+      paper against its arXiv LaTeX source; the slips it records in the proofs do not affect
+      any result.
+    license: "unknown"
+    author_endorsement: "not-contacted"
+  - title: "Random Graphs"
+    authors:
+      - "Svante Janson"
+      - "Tomasz Łuczak"
+      - "Andrzej Ruciński"
+    type: "book"
+    location: "John Wiley & Sons (cited by the paper as Wiley, 2011)"
+    relationship: "background"
+    note: >-
+      The paper cites Theorem 2.10 and Eq. (2.6), the Chernoff bound for hypergeometric
+      distributions, in the proofs of Lemmas 3.1 and 3.3. The two tail estimates it uses are
+      proved in GrahamRearrangement/External/ from Hoeffding's inequality for sampling
+      without replacement.
+    license: "unknown"
+    author_endorsement: "n/a"
+
+related_formalizations:
+  - id: "https://github.com/vltanh/lean4-examples/pull/2"
+    relationship: "builds-on"
+    note: >-
+      An uncompiled Lean draft of the same paper, written by ChatGPT. This repository
+      imports it at commit 59c67ba4912d26586d3aa77c61bffb5e081f7a0b and completes it: the
+      draft did not compile, and 15 of its helper lemmas were false as stated.
+
+status:
+  scope: >-
+    Formalized: Theorems 1.2 and 1.3 and Corollary 1.4 exactly as stated in the paper, and
+    every other numbered result (Facts 2.1–2.5, Lemmas 3.1–3.7, Lemma 4.1, Corollary 4.2,
+    Lemma 4.3, Lemmas 5.1–5.6, and equations (3.1)–(3.4), (4.1), (5.1)), together with the
+    hypergeometric tail bounds that the paper cites. Not formalized: Graham's conjecture
+    itself (Conjecture 1.1), and the paper's deduction of it for all sufficiently large
+    primes from Theorem 1.2 and the earlier results of Bedert–Kravitz and
+    Bedert–Bucić–Kravitz–Montgomery–Müyesser, which are not formalized.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["ChatGPT (OpenAI), Extra High reasoning setting"]
+      framework: "ChatGPT"
+      tool_setup: >-
+        Wrote the complete Lean draft (definitions, statements and proofs) without compiling
+        it, in vltanh/lean4-examples pull request 2.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "not tracked"
+      prompting_notes: "n/a"
+    - method: "agent"
+      models: ["Claude Opus 5.5 (claude-opus-5-5)"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Claude Code with parallel subagents, the Lean 4 toolchain and Lake. It set up the
+        project on current Mathlib, moved it to the module system, replaced the 332 steps
+        that did not compile with proofs, corrected the false helper lemmas, audited the
+        statements against the paper, and wrote Challenge.lean, Solution.lean, the audit
+        script and the documentation.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "local machine"
+      prompting_notes: >-
+        Asked to make the draft compile, to audit it against the paper in the style of an
+        earlier formalization, and to package it for Palomar.
+  spend_usd: "not tracked"
+  notes: >-
+    The Lean code was written by AI systems: a first, uncompiled draft by ChatGPT, then
+    compilation, repair and the audit by Claude. The human author directed the work and is
+    responsible for the submission. README.md and REPORT.md describe the process and its
+    results.
+
+fidelity:
+  divergences: >-
+    None in the statements of the three main results. The paper's probability that a
+    uniformly random m-subset has sum z is written as the proportion of m-subsets with sum
+    z, the integer m of Theorem 1.3 is a natural number (the hypotheses force m > 0), and
+    "max over z" is read as "for every z". Several lemmas of Section 3 state the section's
+    standing assumptions as explicit hypotheses, and some intermediate counts use
+    natural-number quotients; REPORT.md, Sections 4 and 6, lists these readings.
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "Claude Opus 5.5 (automated audit)"
+  notes: >-
+    The statements were compared with the arXiv LaTeX source of the paper, and the paper's
+    arguments were checked step by step while formalizing them; REPORT.md records the
+    results. scripts/Audit.lean checks that every declaration depends only on propext,
+    Classical.choice and Quot.sound, and lake comparator accepts the solution. No human
+    review of the Lean code has been performed.
+
+alignment:
+  namespace: "PhamSauermann"
+  statements:
+    - source: "Theorem 1.2"
+      lean: "PhamSauermann.theorem_1_2"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        A valid ordering is a list of the elements of S, each appearing once, whose partial
+        sums are pairwise distinct. Proved in Solution.lean from GrahamRearrangement.theorem12.
+    - source: "Theorem 1.3"
+      lean: "PhamSauermann.theorem_1_3"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        The probability is the number of m-subsets of S with sum z divided by the number of
+        m-subsets. Proved in Solution.lean from GrahamRearrangement.theorem13.
+    - source: "Corollary 1.4"
+      lean: "PhamSauermann.corollary_1_4"
+      module: "Challenge"
+      status: "proved"
+      note: "Proved in Solution.lean from GrahamRearrangement.corollary14."
+
+acknowledgements: >-
+  Built on Mathlib. Checked with Lean's Comparator. The formalization started from a draft
+  written by ChatGPT (OpenAI); compilation, repair and the audit were done with Claude
+  (Anthropic).

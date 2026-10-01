@@ -1,0 +1,21 @@
+name: Lean Action CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read # Read access to repository contents
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1
+      - name: Audit axioms and dependencies
+        run: lake env lean scripts/Audit.lean
+      - name: Check that the documentation's links to the code are current
+        run: python3 scripts/linkify_docs.py --check
