@@ -70,7 +70,9 @@ Comparator without it, copy the file with `"enable_nanoda": false` and pass the 
 Before submitting, run Palomar's own mechanical verification on the commit to submit: the
 workflow [`palomar_preflight.yml`](.github/workflows/palomar_preflight.yml) (**Actions → Palomar preflight → Run workflow**) calls
 Palomar's verifier at a pinned commit and publishes its report as an artifact. The
-verifier fetches the repository anonymously, so the repository must be public.
+verifier fetches the repository anonymously, so the repository must be public. The preflight
+does not cover the rendering of the Challenge, which Palomar runs after verification; see
+[Building](#building) for the Mathlib pin that rendering needs.
 
 ## Audit summary
 
@@ -139,8 +141,11 @@ lake build
 lake env lean scripts/Audit.lean   # optional: axiom and dependency audit
 ```
 
-Toolchain `leanprover/lean4:v4.35.0-rc3`; Mathlib tracks `master`, with the exact revision
-pinned in [`lake-manifest.json`](lake-manifest.json).
+Toolchain `leanprover/lean4:v4.35.0-rc3`; Mathlib is pinned to its release tag `v4.35.0-rc3`, with
+the exact revision in [`lake-manifest.json`](lake-manifest.json). Keep Mathlib on the release tag that matches the
+toolchain: Palomar renders the Challenge with Verso's release for the same toolchain, and the
+render fails when a package that Mathlib and Verso share, such as `plausible`, is pinned at two
+different revisions, as it soon is on Mathlib `master`.
 
 The Markdown files link each Lean name they mention to its declaration. After editing the
 Lean code, run `lake build` and then `python3 scripts/linkify_docs.py` to update the line numbers of those

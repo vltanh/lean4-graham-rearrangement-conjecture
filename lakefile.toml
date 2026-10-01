@@ -11,7 +11,7 @@ maxSynthPendingDepth = 3
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
-rev = "master"
+rev = "v4.35.0-rc3"
 
 # The paper: Pham–Sauermann, arXiv:2602.15797v1.
 [[lean_lib]]
