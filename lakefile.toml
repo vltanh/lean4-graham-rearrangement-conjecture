@@ -1,0 +1,18 @@
+name = "GrahamRearrangement"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["GrahamRearrangement"]
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+autoImplicit = false
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "master"
+
+# The paper: Pham–Sauermann, arXiv:2602.15797v1.
+[[lean_lib]]
+name = "GrahamRearrangement"
