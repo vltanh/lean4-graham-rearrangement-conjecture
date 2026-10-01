@@ -1,7 +1,7 @@
 name = "GrahamRearrangement"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["GrahamRearrangement"]
+defaultTargets = ["GrahamRearrangement", "Challenge", "Solution"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -16,3 +16,11 @@ rev = "master"
 # The paper: Pham–Sauermann, arXiv:2602.15797v1.
 [[lean_lib]]
 name = "GrahamRearrangement"
+
+# The paper's three main results, stated with Mathlib's vocabulary only (Palomar challenge).
+[[lean_lib]]
+name = "Challenge"
+
+# Their proofs from `GrahamRearrangement` (Palomar solution).
+[[lean_lib]]
+name = "Solution"
