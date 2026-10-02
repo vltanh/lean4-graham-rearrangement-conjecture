@@ -12,13 +12,14 @@ with `C_α ≤ |S| ≤ p^{1-α}`, for any fixed `0 < α < 1` (Theorem 1.2). The 
 anticoncentration bound for the sum of a uniformly random `m`-element subset of `S`
 (Theorem 1.3 and Corollary 1.4).
 
-Every result that the paper proves is proved here, following the paper's argument. The
-proofs use one result from prior work, the Chernoff bound for hypergeometric distributions;
-the two tail bounds that they take from it are proved as well, in [`GrahamRearrangement/External/`](GrahamRearrangement/External/README.md).
+Every result that the paper proves is proved here, following the paper's argument;
+[REPORT.md](REPORT.md), §6, notes where the formal proofs differ in detail. The proofs cite one
+result from prior work, the Chernoff bound for hypergeometric distributions; the two tail
+bounds that they take from it are proved as well, in [`GrahamRearrangement/External/`](GrahamRearrangement/External/README.md).
 
 `lake build` succeeds. The only `sorry`s are the three placeholders of the Palomar challenge
 in [`Challenge.lean`](Challenge.lean); the library and [`Solution.lean`](Solution.lean) have none. The repository declares
-no `axiom`: every theorem depends only on Lean's standard axioms [`propext`](https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#propext), [`Classical.choice`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Classical.choice) and [`Quot.sound`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Quot.sound). The script
+no `axiom`, and every theorem of the library and of [`Solution.lean`](Solution.lean) depends only on Lean's standard axioms [`propext`](https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#propext), [`Classical.choice`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Classical.choice) and [`Quot.sound`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Quot.sound). The script
 [`scripts/Audit.lean`](scripts/Audit.lean) checks this for all 1896 declarations of the library, and lists which
 results from prior work each result of the paper uses; run it with
 `lake env lean scripts/Audit.lean`.
@@ -38,7 +39,7 @@ and proved from the formalization in [`Solution.lean`](Solution.lean):
   elements, each appearing once, whose partial sums `(l.take (k + 1)).sum` are pairwise
   distinct.
 - [`PhamSauermann.theorem_1_3`](Challenge.lean#L58) (Theorem 1.3): there is `C > 0` such that for every prime `p`,
-  every `S ⊆ ℤ_p` with `|S| ≥ 2`, every integer `m` with `C log |S| ≤ m ≤ 10⁻³ |S| / log |S|`
+  every `S ⊆ ℤ_p` with `|S| ≥ 2`, every natural number `m` with `C log |S| ≤ m ≤ 10⁻³ |S| / log |S|`
   and every `z ∈ ℤ_p`, the proportion of the `m`-element subsets of `S` with sum `z` is at
   most `1/p + C / (|S| √m)`.
 - [`PhamSauermann.corollary_1_4`](Challenge.lean#L72) (Corollary 1.4): for every `0 < ε < 1` there is `C > 0` such
@@ -59,7 +60,7 @@ The repository is set up for submission to the [Palomar](https://github.com/Palo
 registry: [`comparator.json`](comparator.json) names the challenge and solution modules and the three theorems
 above, and [`formalization.yaml`](formalization.yaml) carries the metadata. Every `.lean` file uses the module system.
 To check the solution against the challenge, with [bubblewrap](https://github.com/containers/bubblewrap)
-installed:
+and the NanoDa kernel (`nanoda_bin`) installed:
 
 ```sh
 lake build
@@ -111,12 +112,11 @@ as stated, and proved here. The slips, in decreasing order of substance:
 makes the standing assumptions of each section explicit (§4 of the report).
 
 **Redundant hypotheses.** Several statements include hypotheses that their proofs do not
-use: primality in Facts 2.3 and 2.5, most of the range of `m` in (3.4), `t ≥ 1` in Lemmas
-3.1, 3.6 and 3.7, `χ ∈ D_t` in Lemma 3.2, `δ > 0` in Lemma 3.7, and `b' ≤ |S| − 2` in
-Lemma 5.5. Lemma 4.3
-holds for every constant `C > 0`, not only the constant `C_k` of Corollary 4.2. The Lean
-statements omit these hypotheses, so each implies the paper's statement
-([`REPORT.md`](REPORT.md), §5).
+use: primality in Facts 2.3 and 2.5, the bounds `2^24 log |S| ≤ m ≤ 10⁻³ |S|/log |S|` in (3.4)
+(`1 ≤ m ≤ |S|/4` suffices), `t ≥ 1` in Lemmas 3.1, 3.6 and 3.7, `χ ∈ D_t` in Lemma 3.2,
+`δ > 0` in Lemma 3.7, and `b' ≤ |S| − 2` in Lemma 5.5. Lemma 4.3 holds for every constant
+`C > 0`, not only the constant `C_k` of Corollary 4.2. The Lean statements omit these
+hypotheses, so each implies the paper's statement ([`REPORT.md`](REPORT.md), §5).
 
 **Use of cited results.** The proofs cite one result, the Chernoff bound for hypergeometric
 distributions (Janson–Łuczak–Ruciński, *Random Graphs*, Theorem 2.10 and Eq. (2.6)), in
@@ -192,7 +192,7 @@ The paper, in [`GrahamRearrangement/`](GrahamRearrangement), in dependency order
 | [`GrahamRearrangement/Rearrangement/BadEvents.lean`](GrahamRearrangement/Rearrangement/BadEvents.lean) | Lemmas 5.1–5.3 together |
 | [`GrahamRearrangement/Main.lean`](GrahamRearrangement/Main.lean) | Theorem 1.2 |
 
-The hypergeometric tail bounds cited from Janson–Łuczak–Ruciński are proved in
+The two hypergeometric tail bounds that the proofs take from Janson–Łuczak–Ruciński are proved in
 [`GrahamRearrangement/External/Hypergeometric/`](GrahamRearrangement/External/README.md): sampling without replacement (`Sampling.lean`),
 Hoeffding's inequality (`Hoeffding.lean`) and the two tail bounds (`Tails.lean`).
 
@@ -202,9 +202,10 @@ and [`Solution.lean`](Solution.lean) imports the whole development and proves th
 
 ## GitHub configuration
 
-The CI workflows come from the Lake `math` template. [`lean_action_ci.yml`](.github/workflows/lean_action_ci.yml) builds
-the project on every push and pull request, runs the axiom audit, and checks that the
-documentation's links to the code are current; the badge above shows its status.
+Three of the workflows come from the Lake `math` template. [`lean_action_ci.yml`](.github/workflows/lean_action_ci.yml)
+builds the project on every push and pull request; this repository adds the axiom audit and
+the check that the documentation's links to the code are current. The badge above shows its
+status.
 [`update.yml`](.github/workflows/update.yml) opens a pull request that moves to a newer Mathlib when run by hand; for it to
 work, check **Allow GitHub Actions to create and approve pull requests** under the
 repository's **Settings → Actions → General**. [`create-release.yml`](.github/workflows/create-release.yml) tags a release

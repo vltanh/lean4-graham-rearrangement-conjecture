@@ -1,7 +1,7 @@
 # Results from prior work
 
-The paper's proofs use one result from prior work: the Chernoff bound for hypergeometric
-distributions, cited from S. Janson, T. Łuczak and A. Ruciński, *Random Graphs* (Wiley,
+The paper's proofs cite one result from prior work: the Chernoff bound for hypergeometric
+distributions, from S. Janson, T. Łuczak and A. Ruciński, *Random Graphs* (Wiley,
 2011), Theorem 2.10 and Eq. (2.6). The proofs of Lemmas 3.1 and 3.3 apply it in two forms.
 Both are proved in this directory.
 

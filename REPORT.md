@@ -8,8 +8,9 @@ Status of the formalization:
 
 - Every result that the paper proves is proved in Lean, following the paper's argument:
   Theorems 1.2 and 1.3, Corollaries 1.4 and 4.2, Facts 2.1–2.5, Lemmas 3.1–3.7, 4.1, 4.3
-  and 5.1–5.6, and the numbered equations (3.1)–(3.4), (4.1) and (5.1).
-- The proofs use one result from prior work, the Chernoff bound for hypergeometric
+  and 5.1–5.6, and the numbered equations (3.1)–(3.4), (4.1) and (5.1). Section 6 notes
+  where the formal proofs differ in detail.
+- The proofs cite one result from prior work, the Chernoff bound for hypergeometric
   distributions; the two tail bounds that they take from it are proved too, in [`GrahamRearrangement/External/`](GrahamRearrangement/External/README.md).
   Standard facts that the paper uses without citation come from Mathlib or are proved here
   (Section 2).
@@ -33,8 +34,9 @@ Status of the formalization:
   Lemma 3.2 that makes the next inequality false, and wrong cross-references and index
   ranges (Section 3).
 - **Gaps.** Three small ones: the proof of Fact 2.4 recalls Cauchy–Davenport for arbitrary
-  sets, where it fails if one of them is empty, Section 3 asserts `m ≥ 2^24` without the step that justifies it, and the proof of
-  Corollary 4.2 does not treat the extreme cases `j = 0` and `j = k`.
+  sets, where it fails if one set is empty and the other has at least two elements; Section 3
+  asserts `m ≥ 2^24` without the step that justifies it; and the proof of Corollary 4.2 does
+  not treat the extreme cases `j = 0` and `j = k`.
 - **Missing hypotheses.** None in the statements of the paper's results. Several lemmas of
   Sections 3 and 5 rely on their section's standing assumptions; the formalization states
   them as hypotheses (Section 4).
@@ -49,8 +51,8 @@ Status of the formalization:
 
 | Result | Where the paper uses it | Source | Theorem in `External/` |
 | --- | --- | --- | --- |
-| Lower tail of the hypergeometric distribution: if `\|G\| ≥ \|U\|/4`, a uniformly random `k`-subset of `U` meets `G` in at least `k/8` elements, except with probability `e^{-k/32}` | Lemma 3.1 | Janson–Łuczak–Ruciński, *Random Graphs*, Thm 2.10 and Eq. (2.6) | [`External.hypergeom_quarter_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L222) |
-| The same with `\|G\| ≥ 3\|U\|/4`: at least `k/2` elements, except with probability `e^{-k/24}` | Lemma 3.3 | same | [`External.hypergeom_three_quarters_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L233) |
+| Lower tail of the hypergeometric distribution: if `\|G\| ≥ \|U\|/4`, a uniformly random `k`-subset of `U` meets `G` in at least `k/8` elements (in Lean, `⌊k/8⌋`), except with probability `e^{-k/32}` | Lemma 3.1 | Janson–Łuczak–Ruciński, *Random Graphs*, Thm 2.10 and Eq. (2.6) | [`External.hypergeom_quarter_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L222) |
+| The same with `\|G\| ≥ 3\|U\|/4`: at least `k/2` elements (in Lean, `⌊k/2⌋`), except with probability `e^{-k/24}` | Lemma 3.3 | same | [`External.hypergeom_three_quarters_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L233) |
 
 Both are deduced from Hoeffding's inequality for sampling without replacement,
 [`uniformSubset_hoeffding_lower_tail`](GrahamRearrangement/External/Hypergeometric/Tails.lean#L66), which is proved from Mathlib's Hoeffding lemma
@@ -67,9 +69,9 @@ cases `μ = k/4, t = k/8` and `μ = 3k/4, t = k/4` give `e^{-k/32}` and `e^{-k/2
 | Cauchy–Schwarz inequality | Fact 2.1 | Mathlib, [`Multiset.sq_sum_le_card_mul_sum_sq`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Chebyshev.html#Multiset.sq_sum_le_card_mul_sum_sq) |
 | Taylor's theorem with Lagrange remainder | Fact 2.2 | Mathlib, [`taylor_mean_remainder_lagrange_iteratedDeriv`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Taylor.html#taylor_mean_remainder_lagrange_iteratedDeriv) |
 | Cauchy–Davenport theorem | Fact 2.4 | Mathlib, [`ZMod.cauchy_davenport`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/Additive/CauchyDavenport.html#ZMod.cauchy_davenport) |
-| Orthogonality of the additive characters of `ℤ_p` | (3.1); Lemma 3.6 | [`Auxiliary.zmod_character_orthogonality`](GrahamRearrangement/Auxiliary.lean#L41), from Mathlib's [`AddChar.sum_mulShift`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LegendreSymbol/AddCharacter.html#AddChar.sum_mulShift) |
+| Orthogonality of the additive characters of `ℤ_p` | (3.1); Lemma 3.6 | [`Auxiliary.zmod_character_orthogonality`](GrahamRearrangement/Auxiliary.lean#L42), from Mathlib's [`AddChar.sum_mulShift`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LegendreSymbol/AddCharacter.html#AddChar.sum_mulShift) |
 | A random balanced partition followed by one uniform choice per part gives a uniformly random `m`-subset ("it is easy to see") | §3, start | [`Section3.sliceMass_eq_partition_average`](GrahamRearrangement/BooleanSlice/Auxiliary.lean#L275) |
-| Markov's inequality | Lemma 3.5 | [`Auxiliary.uniform_markov`](GrahamRearrangement/Auxiliary.lean#L88) |
+| Markov's inequality | Lemma 3.5 | [`Auxiliary.uniform_markov`](GrahamRearrangement/Auxiliary.lean#L89) |
 | Union bounds, conditioning, exposure of a uniformly random chain or bijection one block at a time | §3–§5 | [`GrahamRearrangement/Probability.lean`](GrahamRearrangement/Probability.lean) and the `Auxiliary.lean` files |
 
 The paper's other citations (Graham; Erdős–Graham; Bedert–Kravitz; Kravitz; Sawin;
@@ -105,9 +107,9 @@ that `1 + k(|A| − 1)` may be negative, and treats `A = ∅` separately.
 - "Note that this in particular implies `|S| ≥ m ≥ 2^24 ≥ 10^7`": from `m ≥ 2^24 log |S|`,
   the bound `m ≥ 2^24` needs `log |S| ≥ 1`. It holds, because the two bounds on `m` give
   `2^24 (log |S|)² ≤ 10⁻³ |S|`, which forces `|S| > 10^{13}`; for `|S| = 2` there is no
-  admissible `m` at all. The formalization never derives `m ≥ 2^24`: from
-  `m ≥ 2^24 log |S| ≥ 2^24 log 2` it gets `m ≥ 10^7` and `|S| ≥ 10^7`
-  ([`section3_basic_bounds`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L93)), and `m ≥ 2^23` ([`theorem13_m_ge`](GrahamRearrangement/BooleanSlice/Theorem.lean#L57)).
+  admissible `m` at all. The formalization never derives `m ≥ 2^24`. It uses
+  `m ≥ 2^24 log |S| ≥ 2^24 log 2 ≥ 10^7` together with the upper bound on `m` to get `|S| ≥ 10^7`
+  ([`section3_basic_bounds`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L93)), and the lower bound alone to get `m ≥ 2^23` ([`theorem13_m_ge`](GrahamRearrangement/BooleanSlice/Theorem.lean#L57)).
 
 **E4. The random partition (§3).** "`|S_1| ≥ |S_2| ≥ ⋯ ≥ |S_m| ≥ |S_m| − 1`" should end with
 `|S_1| − 1`, and "exactly the first `|S| − m⌊|S|/m⌋` of the sets have size `⌈|S|/m⌉ + 1`"
@@ -123,8 +125,7 @@ the final computation use `B_{2000t}`, and the formalization follows them.
 **E6. Lemma 3.2.** The contribution of `S ∩ J_{χ,t}` is bounded by `|S ∩ J_{χ,t}| · 265t/m`,
 and the next step bounds `(4|S ∩ J_{χ,t}|/|S|) · 265t/m` by `1024t/m`, which needs
 `4 · 265 ≤ 1024`, false. The radius of `J_{χ,t}` is `16√(t/m)`, so the bound is `256t/m`, and
-`4 · 256 = 1024`. The lemma would survive the typo,
-since `(2000 − 1060)/4 ≥ 200`. [`lemma3_2`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L314) is proved with 256. It holds for any choice of the
+`4 · 256 = 1024`. The lemma would survive the typo, since `(2000 − 1060)/4 ≥ 200`. [`lemma3_2`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L314) is proved with 256. It holds for any choice of the
 centre `y_χ`: the hypothesis `χ ∈ D_t`, which the paper needs to define `y_χ`, is not used in
 the proof, and the Lean statement omits it.
 
@@ -153,9 +154,10 @@ established, and the computation uses, `|S|/p ≤ |S|^{−α}`.
 **E11. Lemma 5.5.** In the final display, the change of variables `m_i = x_i − b'` is written
 as an equality but replaces the constant `C_D` in every factor by `2C_D`. Two steps later,
 Lemma 4.3 turns the constant `c` of the factors into `2c`, and the display writes `2C_D`,
-which is correct only for `c = C_D`. With `c = 2C_D`, Lemma 4.3 gives `4C_D`, and the following step,
-which uses `s ≥ |S|/2`, would need `4√2 C_D ≤ 4C_D`. The two middle lines should keep `C_D`,
-as the display before them does; the conclusion is then correct.
+which is correct only for `c = C_D`. With `c = 2C_D`, Lemma 4.3 gives `4C_D`, and the
+following step, which uses `s ≥ |S|/2`, would need `4√2 C_D ≤ 4C_D`. The two lines after the
+change of variables should keep `C_D`, as the line before them does; the conclusion is then
+correct.
 
 **E12. Lemma 5.3.** In the proof that `t_1, …, t_D` are distinct (event `E_1`), the set
 `π(π_{b,y_i}({b+5D+1, …, t_i}))` is rewritten as `π({b+5D, …, t_i})`; it should be
@@ -194,7 +196,7 @@ Theorems 1.2, 1.3 and Corollary 1.4 in [`Challenge.lean`](Challenge.lean) are ex
 | --- | --- | --- |
 | Fact 2.3 | `p` prime: the fact holds in `ℤ_n` for every `n ≥ 1` | [`fact2_3`](GrahamRearrangement/Preliminaries.lean#L304) |
 | Fact 2.5 | `p` prime | [`fact2_5`](GrahamRearrangement/Preliminaries.lean#L456) |
-| (3.4) | most of the range of `m`: only `1 ≤ m ≤ \|S\|/4` is assumed (which forces `\|S\| ≥ 4`) | [`equation_3_4`](GrahamRearrangement/BooleanSlice/Fourier.lean#L501) |
+| (3.4) | the bounds `2^24 log \|S\| ≤ m ≤ 10⁻³ \|S\|/log \|S\|` of Section 3: the Lean statement assumes only `1 ≤ m ≤ \|S\|/4` (which forces `\|S\| ≥ 4`), the bound the paper uses to make every part of the random partition have at least 4 elements | [`equation_3_4`](GrahamRearrangement/BooleanSlice/Fourier.lean#L501) |
 | Lemma 3.1 | `t ≥ 1`: for `t = 0` the event `ψ(χ) < 0` is empty | [`lemma3_1`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L559) |
 | Lemma 3.2 | `χ ∈ D_t`, which the paper needs only to define `y_χ` (E6) | [`lemma3_2`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L314) |
 | Lemma 3.6 | `t ≥ 1` | [`lemma3_6`](GrahamRearrangement/BooleanSlice/Lemmas.lean#L899) |

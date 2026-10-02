@@ -1471,8 +1471,9 @@ theorem supportedAdmissibleCollections_card_le {n D : ℕ}
               exact card_shortPartners_le q.1
     _ = (5 * D + 1) ^ Q.card := by simp
 
-/-- The image of a swap pair under the reversal of positions `i ↦ n + 1 − i`, reordered so
-that the first entry is the smaller one. -/
+/-- The image of a swap pair `(q, r)` under the reversal of positions (`i ↦ n + 1 − i` in the
+paper's numbering), with its entries exchanged, so that a pair with `q < r` again has its
+smaller entry first. -/
 def reverseSwapPair {n : ℕ} (q : Fin n × Fin n) :
     Fin n × Fin n :=
   (reverseIndex n q.2, reverseIndex n q.1)

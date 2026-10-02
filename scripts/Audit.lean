@@ -46,7 +46,8 @@ Run with `lake env lean scripts/Audit.lean` after `lake build`.
 
 For every result that the paper proves, this prints the axioms it depends on and the results from
 prior work (`GrahamRearrangement/External/`) that its proof uses. Standard theorems that the paper
-uses without citation, such as Cauchy–Davenport, come from Mathlib and are not listed. It then checks every declaration
+uses without citation, such as Cauchy–Davenport or Markov's inequality, come from Mathlib or are
+proved in the library, and are not listed. It then checks every declaration
 of the library and the three theorems of `Solution.lean`. The run fails if any of them depends on
 an axiom other than Lean's standard `propext`, `Classical.choice` and `Quot.sound` (a `sorry`
 shows up as the axiom `sorryAx`).

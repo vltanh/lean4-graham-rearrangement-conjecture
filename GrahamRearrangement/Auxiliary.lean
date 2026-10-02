@@ -19,8 +19,9 @@ General-purpose lemmas used across the formalization: real-analysis estimates, t
 orthogonality of the additive characters of `ZMod p`, dyadic decompositions, and the numerical
 inequalities of Sections 3 and 5. None of them is a result of the paper. The one result that
 the paper's proofs cite from the literature, the Chernoff bound for hypergeometric
-distributions, is proved in the two forms they use in `External/Hypergeometric/`; standard
-theorems that the paper uses without citation, such as Cauchy–Davenport, come from Mathlib.
+distributions, is proved in the two forms they use in `External/Hypergeometric/`. Standard
+theorems that the paper uses without citation come from Mathlib (Cauchy–Davenport, for one) or
+are proved here (Markov's inequality, for one).
 -/
 
 noncomputable section

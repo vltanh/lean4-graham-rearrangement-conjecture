@@ -88,8 +88,8 @@ theorem equation_4_1 {p n h : ℕ} (hp : p.Prime)
     positivity
 
 /-- The fixed-`j` bound in the proof of Lemma 4.3 (the unnumbered display after (4.1)): with
-the `j`-th gap omitted, the sum factors into a left sum and a reversed right sum, each bounded
-by (4.1). -/
+the `j`-th gap omitted, the sum is at most the product of a left sum and a reversed right sum,
+each bounded by (4.1). -/
 theorem lemma43_fixed_j {p n k : ℕ} (hp : p.Prime)
     (hn : 2 ≤ n) (C : ℝ) (hC : 0 < C)
     (j : Fin (k + 1)) :
