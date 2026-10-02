@@ -2,7 +2,7 @@
 version: "v0.4"
 
 project:
-  name: "Graham's rearrangement conjecture for small sets (Pham–Sauermann)"
+  name: "On Graham's rearrangement conjecture (Pham–Sauermann)"
   description: >-
     A Lean 4 / Mathlib formalization of H. T. Pham and L. Sauermann, "On Graham's
     rearrangement conjecture" (arXiv:2602.15797v1). Graham conjectured in 1971 that for
@@ -14,8 +14,9 @@ project:
     S ⊆ Z_p with |S| ≥ 2: the probability that the sum of R equals any given z is at most
     1/p + C/(|S|√m) when C log|S| ≤ m ≤ 10^-3 |S|/log|S| (Theorem 1.3), and at most
     1/p + C_ε √(log|S|)/(|S|√m) for every positive m ≤ (1-ε)|S| (Corollary 1.4). Every
-    numbered result of the paper is proved following its argument, together with the
-    hypergeometric Chernoff bound that the paper cites from Janson, Łuczak and Ruciński.
+    result that the paper proves is formalized, following its argument, and so are the two
+    hypergeometric tail bounds that its proofs take from the Chernoff bound of Janson,
+    Łuczak and Ruciński.
   authors:
     - "The-Anh Vu-Le"
   license: "Apache-2.0"
@@ -37,7 +38,7 @@ sources:
     relationship: "formalizes"
     note: >-
       Theorems 1.2 and 1.3 and Corollary 1.4 are formalized exactly as stated, and every
-      other numbered result of the paper is proved along the way. REPORT.md audits the
+      other result that the paper proves is formalized along the way. REPORT.md audits the
       paper against its arXiv LaTeX source; the slips it records in the proofs do not affect
       any result.
     license: "unknown"
@@ -61,12 +62,14 @@ sources:
 status:
   scope: >-
     Formalized: Theorems 1.2 and 1.3 and Corollary 1.4 exactly as stated in the paper, and
-    every other numbered result (Facts 2.1–2.5, Lemmas 3.1–3.7, Lemma 4.1, Corollary 4.2,
-    Lemma 4.3, Lemmas 5.1–5.6, and equations (3.1)–(3.4), (4.1), (5.1)), together with the
-    hypergeometric tail bounds that the paper cites. Not formalized: Graham's conjecture
-    itself (Conjecture 1.1), and the paper's deduction of it for all sufficiently large
-    primes from Theorem 1.2 and the earlier results of Bedert–Kravitz and
-    Bedert–Bucić–Kravitz–Montgomery–Müyesser, which are not formalized.
+    every other result that the paper proves (Facts 2.1–2.5, Lemmas 3.1–3.7, Lemma 4.1,
+    Corollary 4.2, Lemma 4.3, Lemmas 5.1–5.6, and equations (3.1)–(3.4), (4.1), (5.1)),
+    together with the two hypergeometric tail bounds that its proofs take from
+    Janson–Łuczak–Ruciński. Not formalized: Graham's conjecture itself (Conjecture 1.1),
+    and the paper's statement, made without further argument, that Theorem 1.2 together
+    with the earlier results of Bedert–Kravitz (small sets) and
+    Bedert–Bucić–Kravitz–Montgomery–Müyesser (large sets) settles it for all sufficiently
+    large primes; those earlier results are not formalized.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -89,7 +92,7 @@ automation:
       framework: "Claude Code"
       tool_setup: >-
         Claude Code with parallel subagents, the Lean 4 toolchain and Lake. It set up the
-        project on current Mathlib, moved it to the module system, completed the proofs
+        project on Mathlib, moved it to the module system, completed the proofs
         until the project builds, audited the statements against the paper, and wrote
         Challenge.lean, Solution.lean, the audit script and the documentation.
       cost:

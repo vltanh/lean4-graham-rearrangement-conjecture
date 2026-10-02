@@ -83,7 +83,7 @@ def Conjecture11Statement : Prop :=
   ∀ (p : ℕ), p.Prime →
     ∀ S : Finset (ZMod p), 0 ∉ S → HasValidOrdering S
 
-/-- The theorem-range predicate used in Theorem 1.2. -/
+/-- The hypotheses of Theorem 1.2 on `S`: `0 ∉ S` and `C ≤ |S| ≤ p^(1−α)`. -/
 def InGrahamRange (α C : ℝ) (p : ℕ) (S : Finset (ZMod p)) : Prop :=
   0 ∉ S ∧ C ≤ (S.card : ℝ) ∧
     (S.card : ℝ) ≤ (p : ℝ) ^ (1 - α)

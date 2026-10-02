@@ -51,8 +51,8 @@ theorem near_far_card {p m t : ℕ} [NeZero p]
       · exact Or.inr ⟨hx, lt_of_not_ge hle⟩
   rw [← Finset.card_union_of_disjoint hdisj, hunion]
 
-/-- If χ is not in D_t, every translate χx' has at least a quarter of S outside
-the radius-8 ball. -/
+/-- If `χ ≠ 0` and `χ ∉ D_t`, then for every `x'` at least a quarter of `S` lies outside the
+`‖·‖ₚ`-ball of radius `8√(t/m)` around `χx'`. -/
 theorem farSet_quarter {p m t : ℕ} [NeZero p]
     (S : Finset (ZMod p)) (χ : ZMod p)
     (hχ0 : χ ≠ 0) (hχD : χ ∉ Dset S m t)

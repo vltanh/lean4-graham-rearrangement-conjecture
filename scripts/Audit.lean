@@ -44,8 +44,9 @@ import all Solution
 
 Run with `lake env lean scripts/Audit.lean` after `lake build`.
 
-For every numbered result of the paper, this prints the axioms it depends on and the results from
-prior work (`GrahamRearrangement/External/`) that its proof uses. It then checks every declaration
+For every result that the paper proves, this prints the axioms it depends on and the results from
+prior work (`GrahamRearrangement/External/`) that its proof uses. Standard theorems that the paper
+uses without citation, such as Cauchy–Davenport, come from Mathlib and are not listed. It then checks every declaration
 of the library and the three theorems of `Solution.lean`. The run fails if any of them depends on
 an axiom other than Lean's standard `propext`, `Classical.choice` and `Quot.sound` (a `sorry`
 shows up as the axiom `sorryAx`).
@@ -64,7 +65,7 @@ meta def externalResults : List (String × Name) :=
    ("hypergeometric tail, density 3/4",
      ``GrahamRearrangement.External.hypergeom_three_quarters_lower_tail)]
 
-/-- The numbered results of the paper, in the order of the paper. -/
+/-- The results that the paper proves, in the order of the paper. -/
 meta def paperResults : List (String × Name) :=
   [("Thm 1.2", ``GrahamRearrangement.theorem12),
    ("Thm 1.3", ``GrahamRearrangement.theorem13),

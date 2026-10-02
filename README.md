@@ -1,4 +1,4 @@
-# Graham's rearrangement conjecture for small sets — Lean formalization
+# On Graham's rearrangement conjecture (Pham–Sauermann) — Lean formalization
 
 [![Lean Action CI](https://github.com/vltanh/lean4-graham-rearrangement-conjecture/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/vltanh/lean4-graham-rearrangement-conjecture/actions/workflows/lean_action_ci.yml)
 
@@ -12,12 +12,13 @@ with `C_α ≤ |S| ≤ p^{1-α}`, for any fixed `0 < α < 1` (Theorem 1.2). The 
 anticoncentration bound for the sum of a uniformly random `m`-element subset of `S`
 (Theorem 1.3 and Corollary 1.4).
 
-Every result that the paper proves is proved here, following the paper's argument. The one
-result from prior work that the proofs use, the Chernoff bound for hypergeometric
-distributions, is proved as well, in [`GrahamRearrangement/External/`](GrahamRearrangement/External/README.md).
+Every result that the paper proves is proved here, following the paper's argument. The
+proofs use one result from prior work, the Chernoff bound for hypergeometric distributions;
+the two tail bounds that they take from it are proved as well, in [`GrahamRearrangement/External/`](GrahamRearrangement/External/README.md).
 
-`lake build` succeeds with no `sorry`, and the repository declares no `axiom`: every theorem
-depends only on Lean's standard axioms [`propext`](https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#propext), [`Classical.choice`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Classical.choice) and [`Quot.sound`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Quot.sound). The script
+`lake build` succeeds. The only `sorry`s are the three placeholders of the Palomar challenge
+in [`Challenge.lean`](Challenge.lean); the library and [`Solution.lean`](Solution.lean) have none. The repository declares
+no `axiom`: every theorem depends only on Lean's standard axioms [`propext`](https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#propext), [`Classical.choice`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Classical.choice) and [`Quot.sound`](https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Quot.sound). The script
 [`scripts/Audit.lean`](scripts/Audit.lean) checks this for all 1896 declarations of the library, and lists which
 results from prior work each result of the paper uses; run it with
 `lake env lean scripts/Audit.lean`.
@@ -46,9 +47,11 @@ and proved from the formalization in [`Solution.lean`](Solution.lean):
 
 They match the paper's statements exactly; the paper's probability `ℙ[Σ(R) = z]` for a uniformly
 random `m`-subset `R` is written as the number of `m`-subsets with sum `z` divided by
-`(|S| choose m)`. Combined with earlier results (Bedert–Kravitz for small sets,
-Bedert–Bucić–Kravitz–Montgomery–Müyesser for large sets), the paper deduces Graham's
-conjecture for all sufficiently large primes; those earlier results are not formalized.
+`(|S| choose m)`. The paper also states, without further argument, that Theorem 1.2 together
+with earlier results settles Graham's conjecture for all sufficiently large primes: Bedert and
+Kravitz proved it for small sets (`|S| ≤ exp((log p)^{1/4})`), and Bedert, Bucić, Kravitz,
+Montgomery and Müyesser for large sets (`|S| ≥ p^{1−c}` for a small constant `c > 0`). Those
+results, and this consequence, are not formalized.
 
 ## Palomar
 
@@ -78,28 +81,28 @@ does not cover the rendering of the Challenge, which Palomar runs after verifica
 
 References are to the paper's numbering; E-numbers refer to [`REPORT.md`](REPORT.md), §3.
 
-**Errors in the paper.** None affects a result: every numbered result is true as stated, and
-proved here. The slips, in decreasing order of substance:
+**Errors in the paper.** None affects a result: every result that the paper proves is true
+as stated, and proved here. The slips, in decreasing order of substance:
 
 - Corollary 4.2: the displayed product in the proof counts the factor `i = k` twice, and is
-  only right for `1 ≤ j ≤ k − 1`; its final line is correct (E9).
+  written only for `1 ≤ j ≤ k − 1`; its final line is correct (E9).
 - Lemma 5.5: one step of the final display replaces the constant `C_D` by `2C_D`, after
   which the next steps fail (they would need `4√2 C_D ≤ 4C_D`); with `C_D`, as in the
   previous display, they hold (E11).
 - Lemma 3.2: `265t/m` should be `256t/m`; with 265 the next step (`4 · 265 ≤ 1024`) is false
   (E6).
-- Section 3 twice writes `B_{32t}` where Lemma 3.3 and the proof use `B_{2000t}` (E5), and
-  describes the random partition with two wrong size formulas (E4). It opens with "we
-  prove Theorem 1.2", and the proof of Corollary 1.4 takes "C as in Theorem 1.2"; both mean
-  Theorem 1.3 (E3, E8).
-- Lemma 5.4 uses `|S|/p ≤ |S|^{1−α}` where `|S|^{−α}` is meant (E10), Lemma 5.3 writes
+- Section 3 writes `B_{32t}` three times where Lemmas 3.2 and 3.3 and the proof of
+  Theorem 1.3 use `B_{2000t}` (E5), and describes the random partition with two wrong size
+  formulas (E4). Twice it refers to Theorem 1.2 where it means Theorem 1.3, and so does the
+  proof of Corollary 1.4 (E3, E8).
+- Lemma 5.4 recalls `|S|/p ≤ |S|^{1−α}` where `|S|^{−α}` is meant (E10), Lemma 5.3 writes
   `{b+5D, …, t_i}` for `{b+5D+1, …, t_i}` (E12), and Lemma 3.6 writes `χ` for `χ'` (E7).
 - Fact 2.3's proof cites itself instead of Fact 2.1 (E1).
 
 **Gaps.** Each is closed here.
 
-- Fact 2.4's proof applies the Cauchy–Davenport theorem to sets that may be empty, where it
-  is false; Fact 2.4 itself holds (E2).
+- Fact 2.4's proof recalls the Cauchy–Davenport theorem for arbitrary sets, where it is false
+  if one set is empty and the other has at least two elements; Fact 2.4 itself holds (E2).
 - Section 3 claims `m ≥ 2^24` from `m ≥ 2^24 log |S|`, which needs `log |S| ≥ 1`; it holds
   because the two bounds on `m` force `|S|` to be huge (E3).
 - Corollary 4.2's exposure argument does not treat the cases `j = 0` and `j = k` (E9).
@@ -108,8 +111,9 @@ proved here. The slips, in decreasing order of substance:
 makes the standing assumptions of each section explicit (§4 of the report).
 
 **Redundant hypotheses.** Several statements include hypotheses that their proofs do not
-use: primality in Facts 2.3 and 2.5, `|S| ≥ 2` in (3.4), `t ≥ 1` in Lemmas 3.1 and 3.6,
-`χ ∈ D_t` in Lemma 3.2, `δ > 0` in Lemma 3.7, and `b' ≤ |S| − 2` in Lemma 5.5. Lemma 4.3
+use: primality in Facts 2.3 and 2.5, most of the range of `m` in (3.4), `t ≥ 1` in Lemmas
+3.1, 3.6 and 3.7, `χ ∈ D_t` in Lemma 3.2, `δ > 0` in Lemma 3.7, and `b' ≤ |S| − 2` in
+Lemma 5.5. Lemma 4.3
 holds for every constant `C > 0`, not only the constant `C_k` of Corollary 4.2. The Lean
 statements omit these hypotheses, so each implies the paper's statement
 ([`REPORT.md`](REPORT.md), §5).
@@ -126,8 +130,8 @@ orthogonality of characters, Markov's inequality) come from Mathlib or are prove
 - **Formalization:** first written by ChatGPT (OpenAI, "Extra High" setting), as a draft
   that was complete at the source level but had never been compiled. The first commit of
   this repository imports it verbatim.
-- **Compilation and fidelity:** Claude (Anthropic) set up this Lean project on current
-  Mathlib, moved it to the module system, completed the proofs until the project builds,
+- **Compilation and fidelity:** Claude (Anthropic) set up this Lean project on Mathlib,
+  moved it to the module system, completed the proofs until the project builds,
   checked the statements against the paper, and wrote the Palomar challenge, the audit and
   this documentation.
 

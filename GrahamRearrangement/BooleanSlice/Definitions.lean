@@ -563,7 +563,7 @@ def Jset {p : ℕ} [NeZero p] (S : Finset (ZMod p))
     zmodNorm (χ * x - centerAt S m t χ) ≤
       16 * Real.sqrt ((t : ℝ) / m)
 
-/-- The set `Q_{t,δ}` from Lemma 3.4. -/
+/-- The set `Q_{t,δ}`, defined for the proof of Lemma 3.4 and used in Lemmas 3.5–3.7. -/
 def Qset {p : ℕ} [NeZero p] (S : Finset (ZMod p))
     (m t : ℕ) (δ : ℝ) : Finset (ZMod p) :=
   Finset.univ.filter fun x =>

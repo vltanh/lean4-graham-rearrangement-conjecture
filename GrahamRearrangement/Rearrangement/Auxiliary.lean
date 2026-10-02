@@ -130,7 +130,7 @@ theorem exposedImage_subset {p : ℕ} [NeZero p]
   rcases Finset.mem_image.mp hx with ⟨i,hi,rfl⟩
   exact (hτ.2 _).2 ⟨i,rfl⟩
 
-/-- Conditioning on a window gives the obvious complement cardinality. -/
+/-- An indexed ordering is injective, so the image of a set `F` of positions has `|F|` elements. -/
 theorem exposed_image_card {p : ℕ} [NeZero p]
     (S : Finset (ZMod p))
     {τ : Fin S.card → ZMod p} (hτ : IsIndexedOrdering S τ)
@@ -397,8 +397,8 @@ theorem ordering_conditional_perm_invariant {p : ℕ} [NeZero p]
   · intro σ _
     simp only [applyPositionPerm_apply_symm]
 
-/-- Distinct index subsets in a window have equal image sums with probability at
-most the reciprocal number of choices left for one exposed coordinate. -/
+/-- A uniformly random one-element subset of a nonempty set `T` has sum `z` with
+probability at most `1/|T|`. -/
 theorem sliceMass_one_le_inv_card {p : ℕ} [NeZero p]
     (T : Finset (ZMod p)) (hT : T.Nonempty) (z : ZMod p) :
     sliceMass T 1 z ≤ 1 / (T.card : ℝ) := by
@@ -1327,9 +1327,9 @@ theorem bounded_choice_witness_union
     _ = (M : ℝ) * ∑ θ ∈ outer, w θ := by rw [Finset.mul_sum]
     _ ≤ (M : ℝ) * B := mul_le_mul_of_nonneg_left hsum (Nat.cast_nonneg M)
 
-/-- Generic count of disjoint oriented short-swap collections when all first
-endpoints lie in Q. Each q∈Q has at most 5D possible partners, plus the option
-that no pair starts at q. -/
+/-- The possible partners `r ∈ {q+1, …, q+5D}` of a first endpoint `q` of a short swap
+(at most `5D` of them); used to count the admissible swap collections whose first endpoints
+lie in a given set. -/
 def shortPartners {n D : ℕ} (q : Fin n) : Finset (Fin n) :=
   (forwardWindow q (5 * D)).erase q
 
@@ -1471,8 +1471,8 @@ theorem supportedAdmissibleCollections_card_le {n D : ℕ}
               exact card_shortPartners_le q.1
     _ = (5 * D + 1) ^ Q.card := by simp
 
-/-- Reversal conjugation preserves admissibility of a collection of local
-disjoint swaps and preserves the same distance bound. -/
+/-- The image of a swap pair under the reversal of positions `i ↦ n + 1 − i`, reordered so
+that the first entry is the smaller one. -/
 def reverseSwapPair {n : ℕ} (q : Fin n × Fin n) :
     Fin n × Fin n :=
   (reverseIndex n q.2, reverseIndex n q.1)

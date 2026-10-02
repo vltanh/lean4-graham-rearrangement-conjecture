@@ -17,9 +17,9 @@ deductions.
 
 noncomputable section
 
-/-- All nested chains R₁ ⊂ ... ⊂ Rₖ ⊂ S with prescribed cardinalities.
-The paper writes strict inclusions; strict growth of the supplied sizes makes the
-subset conditions strict automatically. -/
+/-- All nested chains R₁ ⊆ ⋯ ⊆ Rₖ ⊆ S with prescribed cardinalities |Rᵢ| = mᵢ, as in
+Corollary 4.2. When the sizes are strictly increasing, the inclusions are automatically
+strict. -/
 def chainFamily {p k : ℕ} [NeZero p] (S : Finset (ZMod p))
     (m : Fin k → ℕ) : Finset (Fin k → Finset (ZMod p)) := by
   classical
@@ -563,7 +563,8 @@ def Corollary42Statement : Prop :=
         ∀ z : Fin k → ZMod p,
           chainMass S m z ≤ chainUpperBound p S.card Ck m
 
-/-- Lemma 4.3 exactly, expressed using the finite family of increasing tuples. -/
+/-- Lemma 4.3, expressed using the finite family of increasing tuples, for every constant
+`C_k > 0` (not only that of Corollary 4.2) and every `n = |S| ≥ 2`. -/
 def Lemma43Statement : Prop :=
   ∀ (k : ℕ), 0 < k →
     ∀ Ck : ℝ, 0 < Ck →

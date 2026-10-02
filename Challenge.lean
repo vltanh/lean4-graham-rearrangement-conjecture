@@ -39,9 +39,9 @@ such that, for every prime `p`, every subset `S ⊆ ℤ_p ∖ {0}` with `C_α �
 valid ordering: an enumeration `s₁, …, s_{|S|}` of the elements of `S` whose partial sums
 `s₁ + ⋯ + s_k` (`1 ≤ k ≤ |S|`) are pairwise distinct.
 
-Combined with earlier work (Bedert–Kravitz for small sets, Bedert–Bucić–Kravitz–Montgomery–
-Müyesser for large sets), the paper deduces Graham's conjecture for all sufficiently large
-primes. Those earlier results are not formalized here. -/
+The paper states that, together with earlier work (Bedert–Kravitz for small sets,
+Bedert–Bucić–Kravitz–Montgomery–Müyesser for large sets), this settles Graham's conjecture
+for all sufficiently large primes. Those earlier results are not formalized here. -/
 theorem theorem_1_2 (α : ℝ) (hα₀ : 0 < α) (hα₁ : α < 1) :
     ∃ C : ℝ, 0 < C ∧
       ∀ (p : ℕ), p.Prime →

@@ -165,7 +165,7 @@ theorem lemma53_swap_image_subset_window {n D : ℕ} (b y : Fin n)
     · rw [Equiv.swap_apply_of_ne_of_ne hwb hwy]
       omega
 
-/-- This is the dichotomy in the first paragraph of the proof of Lemma 5.3:
+/-- This is the dichotomy in the third and fourth paragraphs of the proof of Lemma 5.3:
 a blocked interval cannot be wholly contained in the 5D-window, so it must
 extend to the right or to the left. -/
 theorem blocked_witness_has_side

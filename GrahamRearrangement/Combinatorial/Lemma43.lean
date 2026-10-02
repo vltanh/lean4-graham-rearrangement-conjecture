@@ -87,8 +87,9 @@ theorem equation_4_1 {p n h : ℕ} (hp : p.Prime)
     unfold lemma43Base
     positivity
 
-/-- The fixed-j estimate (4.14 in the prose following (4.1)): after omitting the
-j-th gap the left and reversed-right tuple sums are independent upper bounds. -/
+/-- The fixed-`j` bound in the proof of Lemma 4.3 (the unnumbered display after (4.1)): with
+the `j`-th gap omitted, the sum factors into a left sum and a reversed right sum, each bounded
+by (4.1). -/
 theorem lemma43_fixed_j {p n k : ℕ} (hp : p.Prime)
     (hn : 2 ≤ n) (C : ℝ) (hC : 0 < C)
     (j : Fin (k + 1)) :

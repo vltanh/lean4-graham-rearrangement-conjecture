@@ -17,9 +17,10 @@ namespace GrahamRearrangement.Auxiliary
 
 General-purpose lemmas used across the formalization: real-analysis estimates, the
 orthogonality of the additive characters of `ZMod p`, dyadic decompositions, and the numerical
-inequalities of Sections 3 and 5. None of them is a result of the paper. The one result from
-prior work that the paper cites, the hypergeometric tail bound, is proved in
-`External/Hypergeometric/`.
+inequalities of Sections 3 and 5. None of them is a result of the paper. The one result that
+the paper's proofs cite from the literature, the Chernoff bound for hypergeometric
+distributions, is proved in the two forms they use in `External/Hypergeometric/`; standard
+theorems that the paper uses without citation, such as Cauchy–Davenport, come from Mathlib.
 -/
 
 noncomputable section
@@ -175,8 +176,8 @@ theorem sq_le_real_exp {x : ℝ} (hx : 0 ≤ x) : x ^ 2 ≤ Real.exp x := by
   simp [Finset.sum_range_succ, Nat.factorial] at h
   nlinarith [mul_nonneg hx (sq_nonneg (x - 3 / 2))]
 
-/-- Generic weighted dyadic split: small shells are controlled by a square-root
-bound and the at most 22 remaining shells by the trivial bound. -/
+/-- `√(2^l) · exp(−2^l) ≤ 2^{−l}`: the weights of the dyadic shells in the proof of
+Theorem 1.3 decay geometrically. -/
 theorem dyadic_weight_le_geometric (l : ℕ) :
     Real.sqrt ((2 : ℝ) ^ l) * Real.exp (-(2 : ℝ) ^ l) ≤
       (1 / 2 : ℝ) ^ l := by
